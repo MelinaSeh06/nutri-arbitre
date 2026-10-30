@@ -1,0 +1,8 @@
+# Jamais de clé d'API dans le dépôt (exigence R1)
+.env
+*.key
+__pycache__/
+.pytest_cache/
+.venv/
+# Données brutes : on les re-télécharge avec nutri/download.py
+data/raw_*.json

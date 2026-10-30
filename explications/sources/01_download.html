@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Nutri-Arbitre — 1. download.py expliqué</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 10.5pt;
+         line-height: 1.5; color: #1d1d1f; }
+  h1 { font-size: 20pt; margin: 0 0 2mm; color: #0b3d2e; }
+  .sous-titre { color: #666; margin: 0 0 6mm; }
+  h2 { font-size: 13pt; color: #0b3d2e; border-bottom: 1.5px solid #cfe3d8; padding-bottom: 1mm;
+       margin-top: 7mm; page-break-after: avoid; }
+  pre { background: #f5f7f6; border-left: 3px solid #2e7d5b; padding: 3mm 4mm; font-size: 8.8pt;
+        line-height: 1.4; overflow: hidden; white-space: pre-wrap; page-break-inside: avoid; }
+  code { font-family: Menlo, Consolas, monospace; font-size: 9pt; background: #eef2f0;
+         padding: 0 1mm; border-radius: 2px; }
+  pre code { background: none; padding: 0; }
+  .ln { color: #999; }
+  .resume { background: #e8f4ee; border-radius: 4px; padding: 3mm 5mm; }
+  .reel { background: #fff6e0; border-left: 3px solid #e0a100; padding: 3mm 5mm; page-break-inside: avoid; }
+  .q { background: #eef1fa; border-left: 3px solid #4a62b0; padding: 3mm 5mm; page-break-inside: avoid; }
+  .corrige { page-break-before: always; }
+  li { margin-bottom: 1.2mm; }
+</style>
+</head>
+<body>
+
+<h1>1. <code>download.py</code> expliqué</h1>
+<p class="sous-titre">Nutri-Arbitre — fiche de révision · étape 1 sur 5 du trajet des données
+(download → clean → tools → garde_fou → agent)</p>
+
+<div class="resume">
+<b>En une phrase :</b> ce fichier va chercher sur Internet la liste des céréales du petit-déjeuner
+vendues en France (Open Food Facts) et l'enregistre dans <code>data/raw_cereales.json</code>.
+<br><b>Lancer :</b> <code>python -m nutri.download --pages 20</code>
+</div>
+
+<h2>Lignes 15 à 18 : les réglages</h2>
+<pre><code><span class="ln">15</span> URL = "https://world.openfoodfacts.org/api/v2/search"
+<span class="ln">16</span> USER_AGENT = "nutri-arbitre/0.1 (projet etudiant Coding for AI)"
+<span class="ln">17</span> FIELDS = "code,product_name,brands,labels_tags,nutriscore_grade,nutriments"
+<span class="ln">18</span> SORTIE = Path("data/raw_cereales.json")</code></pre>
+<p>Ce sont des <b>constantes</b> : des valeurs fixes, écrites en MAJUSCULES par convention.</p>
+<ul>
+  <li><code>URL</code> : l'adresse de l'API Open Food Facts. Une <b>API</b>, c'est un site fait pour
+      les programmes plutôt que pour les humains : il répond en données brutes (JSON) au lieu d'une page web.</li>
+  <li><code>USER_AGENT</code> : la « carte de visite » du programme. Open Food Facts demande qu'on se
+      présente, pour savoir qui fait les requêtes.</li>
+  <li><code>FIELDS</code> : les seules informations qu'on demande (code-barres, nom, marque, labels,
+      Nutri-Score, valeurs nutritionnelles). Inutile de télécharger les photos ou les ingrédients.</li>
+  <li><code>SORTIE</code> : le fichier où on enregistre.</li>
+</ul>
+
+<h2><code>telecharger_page</code> (lignes 21 à 40) : récupérer une page</h2>
+<pre><code><span class="ln">21</span> def telecharger_page(page: int, page_size: int = 100) -> list[dict]:
+<span class="ln">23</span>     params = {
+<span class="ln">24</span>         "categories_tags_en": "breakfast-cereals",
+<span class="ln">25</span>         "countries_tags_en": "france",
+<span class="ln">26</span>         "fields": FIELDS,
+<span class="ln">27</span>         "page": page,
+<span class="ln">28</span>         "page_size": page_size,
+<span class="ln">29</span>     }
+<span class="ln">31</span>     for essai in range(5):
+<span class="ln">32</span>         try:
+<span class="ln">33</span>             r = requests.get(URL, params=params, headers={"User-Agent": USER_AGENT}, timeout=60)
+<span class="ln">34</span>             r.raise_for_status()
+<span class="ln">35</span>             return r.json().get("products", [])
+<span class="ln">36</span>         except requests.RequestException as e:
+<span class="ln">37</span>             attente = 15 * (essai + 1)
+<span class="ln">38</span>             print(f"page {page} : erreur (...), nouvel essai dans {attente} s")
+<span class="ln">39</span>             time.sleep(attente)
+<span class="ln">40</span>     raise RuntimeError(f"page {page} : échec après 5 essais")</code></pre>
+<p>L'API ne renvoie pas tout d'un coup : elle découpe les résultats en <b>pages</b> de 100 produits,
+comme les pages de résultats de Google.</p>
+<ul>
+  <li><code>params</code> est un dictionnaire qui décrit ce qu'on cherche : la catégorie « céréales du
+      petit-déjeuner », le pays « France », le numéro de la page.</li>
+  <li><code>requests.get(...)</code> envoie la requête, comme quand on tape une adresse dans le navigateur.</li>
+  <li><code>raise_for_status()</code> déclenche une erreur si le serveur répond « problème »
+      (par exemple le code 503 : « serveur surchargé »).</li>
+  <li><code>r.json().get("products", [])</code> lit la réponse et renvoie la liste des produits,
+      ou une liste vide s'il n'y en a pas.</li>
+  <li><b>La boucle <code>for essai in range(5)</code> avec <code>try / except</code></b> : on essaie
+      au maximum 5 fois. Si ça échoue (<code>except</code>), on attend 15 s, puis 30, 45… avant de
+      recommencer. Si ça réussit, <code>return</code> sort immédiatement de la fonction. Si les 5 essais
+      échouent, on abandonne avec un message clair (<code>raise RuntimeError</code>).</li>
+</ul>
+
+<h2><code>sauver</code> (lignes 43 à 45) : écrire le fichier</h2>
+<pre><code><span class="ln">43</span> def sauver(produits: list[dict]) -> None:
+<span class="ln">44</span>     SORTIE.parent.mkdir(exist_ok=True)
+<span class="ln">45</span>     SORTIE.write_text(json.dumps(produits, ensure_ascii=False), encoding="utf-8")</code></pre>
+<ul>
+  <li><code>mkdir(exist_ok=True)</code> crée le dossier <code>data/</code> s'il n'existe pas,
+      sans erreur s'il existe déjà.</li>
+  <li><code>json.dumps(...)</code> transforme la liste Python en texte JSON ; <code>write_text</code>
+      écrit ce texte dans le fichier.</li>
+</ul>
+
+<h2><code>main</code> (lignes 48 à 58) : le chef d'orchestre</h2>
+<pre><code><span class="ln">48</span> def main(nb_pages: int) -> None:
+<span class="ln">49</span>     produits = []
+<span class="ln">50</span>     for page in range(1, nb_pages + 1):
+<span class="ln">51</span>         lot = telecharger_page(page)
+<span class="ln">52</span>         print(f"page {page} : {len(lot)} produits")
+<span class="ln">53</span>         if not lot:  # plus aucun produit : on s'arrête
+<span class="ln">54</span>             break
+<span class="ln">55</span>         produits.extend(lot)
+<span class="ln">56</span>         sauver(produits)  # on écrit après chaque page
+<span class="ln">57</span>         time.sleep(7)     # respecter la limite de l'API</code></pre>
+<p>On demande les pages une par une, de 1 à 20 :</p>
+<ul>
+  <li>si une page est vide, il n'y a plus de produits et on s'arrête (<code>break</code>) ;</li>
+  <li>sinon on ajoute ses produits à la liste (<code>extend</code>) et on enregistre ;</li>
+  <li><code>time.sleep(7)</code> fait une pause de 7 s, parce qu'Open Food Facts limite à environ
+      10 recherches par minute. Ça montre qu'on respecte les règles du service.</li>
+</ul>
+
+<h2>Lignes 61 à 64 : le lancement</h2>
+<pre><code><span class="ln">61</span> if __name__ == "__main__":
+<span class="ln">62</span>     parser = argparse.ArgumentParser()
+<span class="ln">63</span>     parser.add_argument("--pages", type=int, default=20)
+<span class="ln">64</span>     main(parser.parse_args().pages)</code></pre>
+<p><code>if __name__ == "__main__"</code> veut dire « seulement si on lance ce fichier directement »
+(<code>python -m nutri.download</code>), et pas quand un autre fichier l'importe. <code>argparse</code>
+lit l'option <code>--pages 20</code> tapée dans le terminal.</p>
+
+<div class="reel">
+<b>Ce qui s'est vraiment passé (30 octobre 2026) :</b> le serveur a renvoyé plusieurs erreurs 503.
+Les pages 4, 6, 7, 9 et 10 ont réussi après un ou deux nouveaux essais. La page 11 a échoué 5 fois
+de suite, donc le script s'est arrêté. Comme on enregistre après chaque page, les 10 premières pages
+(1 000 produits) étaient déjà dans le fichier. Après nettoyage : <b>957 céréales</b>.
+<br><b>Limite à connaître :</b> Open Food Facts renvoie les produits dans son propre ordre. Nos 1 000
+produits ne sont donc pas forcément représentatifs de toutes les céréales vendues en France
+(par exemple, 57 % sont bio).
+</div>
+
+<h2>Questions d'examinateur</h2>
+<div class="q">
+<ol>
+  <li>Pourquoi attendre 7 secondes entre deux pages ?</li>
+  <li>Que se passe-t-il si le serveur répond « 503 » ?</li>
+  <li>Pourquoi enregistre-t-on après <i>chaque</i> page et pas une seule fois à la fin ?</li>
+  <li>Pourquoi ne demande-t-on que certains champs (<code>FIELDS</code>) ?</li>
+</ol>
+<p>Essaie d'y répondre avec tes mots avant de lire le corrigé à la page suivante.</p>
+</div>
+
+<div class="corrige">
+<h2>Corrigé</h2>
+<ol>
+  <li><b>7 secondes :</b> Open Food Facts autorise environ 10 recherches par minute, soit une toutes les
+      6 s. Avec 7 s, on reste sous la limite : on respecte le service gratuit et on évite d'être bloqué.</li>
+  <li><b>Erreur 503 :</b> <code>raise_for_status()</code> déclenche une erreur, que <code>except</code>
+      attrape. Le programme attend (15 s, puis 30, 45…) et réessaie, jusqu'à 5 fois. Après 5 échecs,
+      il s'arrête avec un message clair au lieu de continuer avec des données manquantes.</li>
+  <li><b>Enregistrer après chaque page :</b> si le téléchargement s'arrête en route, on garde ce qui est
+      déjà arrivé. C'est exactement ce qui s'est passé le 30 octobre : la page 11 a échoué, mais les
+      1 000 produits des pages 1 à 10 étaient sauvés.</li>
+  <li><b>Seulement certains champs :</b> une fiche produit complète contient des centaines
+      d'informations (photos, ingrédients, emballage…). On ne demande que ce dont on a besoin :
+      le téléchargement est plus rapide, le fichier plus petit, et on charge moins le serveur.</li>
+</ol>
+</div>
+
+</body>
+</html>
