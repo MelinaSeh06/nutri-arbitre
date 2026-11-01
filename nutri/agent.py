@@ -25,7 +25,9 @@ DOSSIER_TRACES = Path("traces")
 PROMPT_SYSTEME = """Tu es un analyste nutrition. Tu réponds en français à des questions sur les
 céréales du petit-déjeuner vendues en France (données Open Food Facts, valeurs pour 100 g).
 Pour tout chiffre, appelle un outil : n'écris jamais un nombre que tu n'as pas reçu d'un outil.
-Recopie les nombres tels que les outils les donnent. Réponds en 2 à 4 phrases."""
+Recopie les nombres tels que les outils les donnent. Réponds en 2 à 4 phrases.
+Quand un outil donne une marge d'erreur (marge_95), écris-la : « 13,2 g ± 0,9 g ».
+Si difference_nette vaut false, dis que l'écart peut venir du hasard et qu'on ne peut pas conclure."""
 
 
 def charger_donnees() -> pd.DataFrame:

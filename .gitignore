@@ -6,3 +6,5 @@ __pycache__/
 .venv/
 # Données brutes : on les re-télécharge avec nutri/download.py
 data/raw_*.json
+# Fichiers cachés de macOS
+.DS_Store

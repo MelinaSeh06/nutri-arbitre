@@ -1,0 +1,45 @@
+{
+  "question": "Les céréales bio contiennent-elles moins de sucre ?",
+  "modele": "qwen3.5:4b-q4_K_M",
+  "avec_outils": true,
+  "appels": [
+    {
+      "outil": "comparer",
+      "arguments": {
+        "nutriment": "sucres",
+        "groupe": "bio"
+      },
+      "resultat": {
+        "nutriment": "sucres",
+        "groupe": "bio",
+        "groupes": [
+          {
+            "groupe": "False",
+            "n": 410,
+            "moyenne": 18.59,
+            "marge_95": 0.82
+          },
+          {
+            "groupe": "True",
+            "n": 543,
+            "moyenne": 13.17,
+            "marge_95": 0.69
+          }
+        ],
+        "ecart_bio_moins_non_bio": -5.42,
+        "marge_95_ecart": 1.07,
+        "intervalle_95_ecart": [
+          -6.49,
+          -4.35
+        ],
+        "difference_nette": true
+      }
+    }
+  ],
+  "tokens_entree": 2305,
+  "tokens_sortie": 99,
+  "reponse_brute": "Oui, les céréales bio contiennent en moyenne moins de sucre que les autres (13,2 g contre 18,6 g pour 100 g). Cet écart significatif de plus de 5 g est statistiquement réel et ne vient pas du hasard.",
+  "reponse": "Oui, les céréales bio contiennent en moyenne moins de sucre que les autres (13,2 g contre 18,6 g pour 100 g). Cet écart significatif de plus de 5 g est statistiquement réel et ne vient pas du hasard.",
+  "bloquee": false,
+  "duree_s": 28.8
+}

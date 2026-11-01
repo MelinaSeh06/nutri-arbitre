@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Nutri-Arbitre — 3. tools.py expliqué</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 10.5pt;
+         line-height: 1.5; color: #1d1d1f; }
+  h1 { font-size: 20pt; margin: 0 0 2mm; color: #0b3d2e; }
+  .sous-titre { color: #666; margin: 0 0 6mm; }
+  h2 { font-size: 13pt; color: #0b3d2e; border-bottom: 1.5px solid #cfe3d8; padding-bottom: 1mm;
+       margin-top: 7mm; page-break-after: avoid; }
+  h3 { font-size: 11pt; color: #2e7d5b; margin: 5mm 0 1mm; page-break-after: avoid; }
+  pre { background: #f5f7f6; border-left: 3px solid #2e7d5b; padding: 3mm 4mm; font-size: 8.6pt;
+        line-height: 1.4; overflow: hidden; white-space: pre-wrap; page-break-inside: avoid; }
+  code { font-family: Menlo, Consolas, monospace; font-size: 9pt; background: #eef2f0;
+         padding: 0 1mm; border-radius: 2px; }
+  pre code { background: none; padding: 0; }
+  .ln { color: #999; }
+  .resume { background: #e8f4ee; border-radius: 4px; padding: 3mm 5mm; }
+  .cle { background: #f3eefa; border-left: 3px solid #7a4fb5; padding: 3mm 5mm; page-break-inside: avoid; }
+  .reel { background: #fff6e0; border-left: 3px solid #e0a100; padding: 3mm 5mm; page-break-inside: avoid; }
+  .q { background: #eef1fa; border-left: 3px solid #4a62b0; padding: 3mm 5mm; page-break-inside: avoid; }
+  .corrige { page-break-before: always; }
+  table { border-collapse: collapse; font-size: 9.5pt; margin: 2mm 0; }
+  td, th { border: 1px solid #cfd8d3; padding: 1mm 3mm; text-align: left; vertical-align: top; }
+  th { background: #eef2f0; }
+  li { margin-bottom: 1.2mm; }
+</style>
+</head>
+<body>
+
+<h1>3. <code>tools.py</code> expliqué</h1>
+<p class="sous-titre">Nutri-Arbitre — fiche de révision · étape 3 sur 5 du trajet des données
+(download → clean → <b>tools</b> → garde_fou → agent) · <b>briques 1 et 8</b></p>
+
+<div class="resume">
+<b>En une phrase :</b> ce fichier contient les <b>outils</b> que Qwen peut appeler. Ce sont des fonctions
+Python qui font les calculs sur le tableau propre. <b>Ce sont elles, et elles seules, qui produisent les
+chiffres</b> : Qwen choisit quel outil appeler, mais il ne calcule jamais lui-même.
+<br><b>Brique 1</b> (votre propre outil) : ces fonctions, appelées par le modèle, avec une trace.
+<br><b>Brique 8</b> (des chiffres avec leur incertitude) : chaque moyenne vient avec sa marge d'erreur, et
+la comparaison bio / non bio dit si l'écart est net.
+</div>
+
+<h2>Vue d'ensemble : 4 outils, 6 aides, 1 « mode d'emploi »</h2>
+<table>
+<tr><th>Partie</th><th>Lignes</th><th>Rôle</th></tr>
+<tr><td>Les <b>4 outils</b> : <code>decrire</code>, <code>comparer</code>,
+    <code>classement_marques</code>, <code>compter</code></td><td>63 à 153</td>
+    <td>Les calculs que Qwen peut demander.</td></tr>
+<tr><td>Les <b>fonctions d'aide</b>, dont le nom commence par <code>_</code></td><td>18 à 60</td>
+    <td>Vérifier les paramètres, filtrer, arrondir, calculer la marge. Le <code>_</code> est une convention :
+    « fonction interne, pas un outil ».</td></tr>
+<tr><td><code>FONCTIONS</code> et <code>SCHEMAS</code></td><td>156 à 185</td>
+    <td>Le « mode d'emploi » des outils, envoyé à Qwen pour qu'il sache lesquels existent et quels
+    paramètres leur donner.</td></tr>
+</table>
+
+<h2>Les fonctions d'aide (lignes 18 à 60)</h2>
+<ul>
+  <li><b><code>_verifier_nutriment</code></b> : si Qwen demande un nutriment qui n'existe pas
+      (<code>"vitamine_c"</code>), on déclenche une erreur avec la liste des choix possibles. Cette erreur
+      est renvoyée à Qwen (voir <code>agent.py</code>), qui peut alors corriger son appel.</li>
+  <li><b><code>_booleen</code></b> : un petit modèle envoie parfois <code>"false"</code> en texte au lieu de
+      <code>false</code>. Or en Python, <code>bool("false")</code> vaut <b>True</b>, car tout texte non vide
+      est « vrai ». Cette fonction lit le texte correctement, ce qui évite d'inverser le filtre bio.</li>
+  <li><b><code>_filtrer</code></b> : garde seulement les produits bio (ou non bio), ou d'une lettre de
+      Nutri-Score. C'est la technique du <b>masque</b> vue dans <code>clean.py</code> :
+      <code>df[df["bio"] == True]</code>. Si un filtre vaut <code>None</code>, on ne filtre pas.</li>
+  <li><b><code>_arrondi</code></b> : arrondit à 2 décimales, et renvoie <code>None</code> s'il n'y a pas de
+      valeur. Les résultats sont donc lisibles et le cas « aucune valeur » ne plante pas.</li>
+  <li><b><code>_erreur_type</code></b> et <b><code>_intervalle</code></b> : la brique 8, expliquée
+      ci-dessous.</li>
+</ul>
+
+<h2>La notion clé (brique 8) : la marge d'erreur</h2>
+<div class="cle">
+<p><b>Le problème :</b> nos 953 céréales ne sont qu'un <i>échantillon</i> de toutes les céréales vendues.
+Avec un autre échantillon, la moyenne aurait été un peu différente. De combien ? C'est ce que dit la marge
+d'erreur, exactement comme dans un sondage (« 52 % ± 3 points »).</p>
+<pre><code><span class="ln">46</span> def _erreur_type(valeurs):
+<span class="ln">50</span>     if len(valeurs) &lt; 2:
+<span class="ln">51</span>         return None
+<span class="ln">52</span>     return valeurs.std() / math.sqrt(len(valeurs))
+<span class="ln">53</span>
+<span class="ln">55</span> def _intervalle(centre, erreur_type):
+<span class="ln">59</span>     marge = Z_95 * erreur_type
+<span class="ln">60</span>     return marge, [centre - marge, centre + marge]</code></pre>
+<ol>
+  <li><b>L'écart-type</b> (<code>std()</code>) mesure si les valeurs sont dispersées ou regroupées
+      autour de la moyenne.</li>
+  <li><b>L'erreur type</b> = écart-type ÷ √n. Elle mesure la précision <i>de la moyenne</i>. Plus il y a
+      de produits, plus elle est petite : la moyenne de 500 produits est plus fiable que celle de 5.</li>
+  <li><b>La marge à 95 %</b> = 1,96 × erreur type. On peut dire : « la vraie moyenne a 95 % de chances
+      d'être entre moyenne − marge et moyenne + marge ». Ce sont les bornes de
+      l'<b>intervalle de confiance</b>.</li>
+</ol>
+<p><b>Cas limite :</b> avec une seule valeur, on ne peut pas mesurer de dispersion. La fonction renvoie
+<code>None</code> au lieu d'inventer une marge.</p>
+<p><b>D'où vient 1,96 ?</b> Avec beaucoup de produits, les moyennes possibles se répartissent en
+« courbe en cloche » (loi normale). 95 % de cette courbe se trouve à moins de 1,96 erreur type du centre.</p>
+</div>
+
+<h2>Les 4 outils</h2>
+
+<h3><code>decrire</code> (lignes 63 à 79) : un nutriment en détail</h3>
+<p>Elle donne le nombre de produits <code>n</code>, la moyenne avec sa marge et son intervalle, la médiane, le
+minimum et le maximum. Les filtres <code>bio</code> et <code>nutriscore</code> sont facultatifs.
+<code>dropna()</code> retire les cases vides <i>de ce nutriment seulement</i>.</p>
+<p><i>Exemple réel :</i> <code>decrire("fibres", nutriscore="e")</code> → n = 29, moyenne 4,34 g ± 0,61 g,
+intervalle [3,73 ; 4,95].</p>
+
+<h3><code>comparer</code> (lignes 82 à 125) : la moyenne par groupe</h3>
+<ol>
+  <li>On garde les produits qui ont une valeur pour ce nutriment.</li>
+  <li><code>groupby(groupe)</code> découpe le tableau en paquets : un paquet bio et un non bio, ou un par
+      lettre de Nutri-Score. Pour chaque paquet, on calcule n, la moyenne et la marge.</li>
+  <li><b>Pour le Nutri-Score</b>, on ajoute <code>sans_nutriscore</code> : le nombre de produits écartés
+      parce qu'ils n'ont pas de lettre. Sans ça, la somme des groupes (928) ne correspondrait pas au total
+      (953) sans explication.</li>
+  <li><b>Pour le bio</b>, on calcule l'écart bio − non bio <b>et sa propre marge</b> :</li>
+</ol>
+<pre><code><span class="ln">118</span>  marge, intervalle = _intervalle(ecart, math.sqrt(et_bio ** 2 + et_non_bio ** 2))
+<span class="ln">122</span>  sortie["difference_nette"] = not (intervalle[0] &lt;= 0 &lt;= intervalle[1])</code></pre>
+<ul>
+  <li>L'erreur type d'un écart entre deux groupes indépendants vaut
+      <b>√(erreur type₁² + erreur type₂²)</b> : les deux incertitudes s'additionnent.</li>
+  <li><b><code>difference_nette</code></b> : si l'intervalle de l'écart contient 0, il est possible qu'il n'y ait
+      en réalité <i>aucune</i> différence, et que l'écart observé vienne du hasard de l'échantillon. On ne
+      peut alors pas conclure (<code>false</code>). Si 0 est en dehors, l'écart est net (<code>true</code>).
+      S'il y a trop peu de produits pour calculer une marge, la réponse est <code>None</code> : on ne sait pas.</li>
+</ul>
+
+<h3><code>classement_marques</code> (lignes 128 à 148) : les marques les plus (ou moins) riches</h3>
+<p>Quatre étapes, numérotées dans le code : garder les produits qui ont une marque et une valeur ;
+calculer par marque le nombre de produits (<code>count</code>) et la moyenne (<code>mean</code>) ; écarter
+les marques de moins de <code>min_produits</code> produits (5 par défaut, car une moyenne sur 1 produit ne
+dit rien) ; trier et garder les <code>n</code> premières.</p>
+<p><i>Exemple réel :</i> les 3 marques les moins sucrées sont jardin bio etic (6,5 g, 5 produits), markal
+(6,8 g, 7 produits) et celnat (7,4 g, 21 produits).</p>
+
+<h3><code>compter</code> (lignes 151 à 153) : combien de produits</h3>
+<p>Elle filtre, puis compte les lignes avec <code>len</code>. <i>Exemple réel :</i> 543 produits bio, 270 notés A.</p>
+
+<h2>Le « mode d'emploi » pour Qwen (lignes 156 à 185)</h2>
+<ul>
+  <li><b><code>FONCTIONS</code></b> est un dictionnaire « nom de l'outil → fonction Python ». Quand Qwen
+      demande <code>"comparer"</code>, <code>agent.py</code> y trouve la fonction <code>comparer</code> à
+      exécuter.</li>
+  <li><b><code>SCHEMAS</code></b> décrit chaque outil au format <b>JSON Schema</b> attendu par Ollama : son nom,
+      une phrase qui explique ce qu'il fait, ses paramètres, et lesquels sont obligatoires
+      (<code>required</code>). <b>C'est tout ce que Qwen sait des outils</b> : il ne voit jamais le code Python,
+      seulement ces descriptions.</li>
+  <li>Les <b><code>enum</code></b> donnent la liste fermée des valeurs permises (les 8 nutriments, les lettres
+      a à e). Ça aide le modèle à ne pas inventer de nom de nutriment.</li>
+  <li><code>_schema</code> est une petite fonction qui évite de recopier quatre fois la même structure.</li>
+</ul>
+
+<div class="reel">
+<b>Ce qui s'est vraiment passé (1er novembre 2026)</b>, question « Les céréales bio contiennent-elles moins
+de sucre ? ». Qwen a appelé <code>comparer(nutriment="sucres", groupe="bio")</code>, qui a renvoyé :
+<table>
+<tr><th>Groupe</th><th>n</th><th>Moyenne</th><th>Marge 95 %</th></tr>
+<tr><td>non bio</td><td>410</td><td>18,59 g</td><td>± 0,82 g</td></tr>
+<tr><td>bio</td><td>543</td><td>13,17 g</td><td>± 0,69 g</td></tr>
+<tr><td><b>écart</b></td><td></td><td><b>−5,42 g</b></td><td>± 1,07 g → [−6,49 ; −4,35] → net</td></tr>
+</table>
+<p>Réponse de Qwen : « Oui, les céréales bio contiennent en moyenne moins de sucre que les autres
+(13,2 g contre 18,6 g pour 100 g). Cet écart significatif de plus de 5 g est statistiquement réel et ne
+vient pas du hasard. » La trace est enregistrée dans <code>traces/trace_20261101_125333.json</code>.</p>
+<p><b>Limite :</b> Qwen n'a pas écrit la marge, alors que le prompt le demande. Un petit modèle ne suit pas
+toujours toutes les consignes.</p>
+<p><b>Ce que les données ne permettent pas de conclure (brique 8) :</b> la marge ne mesure que le hasard
+de l'échantillon, pas son biais. Nos 1 000 produits sont ceux qu'Open Food Facts a renvoyés en premier
+(57 % de bio), et pas un tirage au hasard parmi toutes les céréales vendues en France. L'écart est net
+<i>dans notre échantillon</i>, mais on ne peut pas l'affirmer pour tout le marché français. Et on ne peut
+pas dire que le bio <i>cause</i> moins de sucre : les céréales bio sont peut-être surtout des mueslis et
+des flocons, moins sucrés par nature.</p>
+</div>
+
+<h2>Questions d'examinateur</h2>
+<div class="q">
+<ol>
+  <li>Pourquoi Qwen ne calcule-t-il pas les moyennes lui-même ?</li>
+  <li>Que se passe-t-il si Qwen demande <code>decrire("vitamine_c")</code> ?</li>
+  <li>Pourquoi a-t-on besoin de <code>_booleen</code> ? Que vaut <code>bool("false")</code> en Python ?</li>
+  <li>Comment calcule-t-on la marge d'erreur à 95 % ? Pourquoi diminue-t-elle quand il y a plus de produits ?</li>
+  <li>Que veut dire <code>difference_nette: false</code> ?</li>
+  <li>Pourquoi la marge vaut-elle <code>None</code> quand il n'y a qu'une seule valeur ?</li>
+  <li>Pourquoi <code>classement_marques</code> ignore-t-il les marques de moins de 5 produits ?</li>
+  <li>Comment Qwen sait-il quels outils existent ?</li>
+  <li>L'écart de sucre entre bio et non bio est « net ». Peut-on en conclure que, en France, les céréales
+      bio sont moins sucrées ?</li>
+</ol>
+<p>Essaie d'y répondre avec tes mots avant de lire le corrigé à la page suivante.</p>
+</div>
+
+<div class="corrige">
+<h2>Corrigé</h2>
+<ol>
+  <li><b>Qwen ne calcule pas</b> : un modèle de langage prédit du texte, il ne fait pas de vrai calcul. Il peut
+      écrire une moyenne fausse avec assurance. C'est le principe du projet : le modèle choisit l'outil, le
+      code calcule, et le garde-fou vérifie que les chiffres de la réponse viennent bien des outils.</li>
+  <li><b><code>"vitamine_c"</code></b> : <code>_verifier_nutriment</code> déclenche une <code>ValueError</code>
+      avec la liste des nutriments possibles. <code>agent.py</code> l'attrape et la renvoie à Qwen sous la
+      forme <code>{"erreur": ...}</code> : le programme ne plante pas, et Qwen peut corriger son appel.
+      C'est vérifié par un test.</li>
+  <li><b><code>_booleen</code></b> : <code>bool("false")</code> vaut <code>True</code>, parce que tout texte non
+      vide est « vrai » en Python. Si Qwen envoie <code>"false"</code> en texte, le filtre « non bio »
+      deviendrait « bio » : la réponse serait l'inverse de la vérité. <code>_booleen</code> lit le texte.</li>
+  <li><b>La marge</b> : 1,96 × écart-type ÷ √n. Le √n est au dénominateur : quand n augmente, la marge
+      diminue. Avec plus de produits, le hasard de l'échantillon pèse moins, et la moyenne est plus précise.</li>
+  <li><b><code>difference_nette: false</code></b> : l'intervalle de l'écart contient 0. Il est donc possible que
+      la vraie différence soit nulle, et que l'écart observé ne vienne que du hasard. On ne peut pas conclure.</li>
+  <li><b>Une seule valeur</b> : la marge repose sur la dispersion des valeurs. Avec une seule valeur, il n'y a
+      pas de dispersion à mesurer. Plutôt que d'inventer un chiffre, l'outil renvoie <code>None</code> :
+      « on ne sait pas ».</li>
+  <li><b>Moins de 5 produits</b> : une moyenne sur 1 ou 2 produits ne représente pas une marque. Une marque
+      avec un seul muesli sans sucre finirait première du classement par hasard.</li>
+  <li><b>Comment Qwen connaît les outils</b> : par <code>SCHEMAS</code>, envoyé à chaque appel. Il y lit le nom de
+      chaque outil, ce qu'il fait et ses paramètres. Il ne voit jamais le code Python.</li>
+  <li><b>Peut-on généraliser à la France ?</b> Non. La marge ne mesure que le hasard de l'échantillon, pas son
+      biais : nos produits ne sont pas tirés au hasard (57 % de bio, ceux qu'Open Food Facts renvoie en
+      premier). L'écart est net dans notre échantillon, mais on ne peut pas l'affirmer pour tout le marché.
+      Et ce n'est pas une preuve de cause : les céréales bio sont peut-être surtout d'un type moins sucré
+      (mueslis, flocons). C'est la « phrase sur ce que les données ne permettent pas de conclure » demandée
+      par la brique 8.</li>
+</ol>
+</div>
+
+</body>
+</html>
