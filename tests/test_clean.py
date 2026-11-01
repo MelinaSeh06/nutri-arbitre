@@ -1,7 +1,7 @@
 """Brique 6 / R2 : le nettoyage donne le résultat calculé à la main."""
 import pandas as pd
 
-from nutri.clean import nettoyer, normaliser_marque
+from nutri.clean import nettoyer, normaliser_marque, regrouper_marques
 
 
 def test_lignes_retirees(produits_bruts):
@@ -44,6 +44,19 @@ def test_valeurs_impossibles_mises_a_vide(df):
 def test_bio_et_marques(df):
     assert df["bio"].sum() == 2
     assert set(df["marque"]) == {"bio village", "kelloggs"}
+
+
+def test_regroupement_des_marques():
+    marques = pd.Series(["kelloggs", "kelloggs", "kellogg s produits aliment sas", "carrefour",
+                         "carrefour bio", "lu", "lucien georgelin", "aline olivier", "alineolivier",
+                         "societe des produits nestle sa", None])
+    regroupees, fusions = regrouper_marques(marques)
+    assert list(regroupees[:5]) == ["kelloggs", "kelloggs", "kelloggs", "carrefour", "carrefour"]
+    assert regroupees[6] == "lucien georgelin"         # mots entiers : pas rangé chez « lu »
+    assert regroupees[8] == "aline olivier"            # même nom sans espaces
+    assert regroupees[9] == "nestle"                   # table écrite à la main
+    assert pd.isna(regroupees[10])                     # pas de marque : reste vide
+    assert "carrefour bio -> carrefour" in fusions
 
 
 def test_marque_cas_limites():

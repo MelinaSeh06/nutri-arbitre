@@ -11,6 +11,35 @@
 - Énergie déclarée à plus de 20 % du calcul INCO (fiche incohérente), produits retirés : 4.
 - Nutri-Score non valide (unknown, not-applicable…) mis à vide : 30.
 - Marques normalisées : 294 libellés bruts -> 177 marques.
+- Marques regroupées (même début de nom, ou table écrite à la main) : 28 fusions -> 149 marques.
+-   fusion : alineolivier -> aline olivier
+-   fusion : auchan bio -> auchan
+-   fusion : auchan retail services -> auchan
+-   fusion : bjorg et cie -> bjorg
+-   fusion : carrefour bio -> carrefour
+-   fusion : carrefour france -> carrefour
+-   fusion : carrefour kids -> carrefour
+-   fusion : casino bio -> casino
+-   fusion : cereco sarl -> cereco
+-   fusion : crownfields -> crownfield
+-   fusion : jordans bio -> jordans
+-   fusion : kellogg s produits aliment sas -> kelloggs
+-   fusion : kelloggs extra -> kelloggs
+-   fusion : markal bio -> markal
+-   fusion : monoprix bio -> monoprix
+-   fusion : onedaymore -> one day more
+-   fusion : societe des produits nestle sa -> nestle
+-   fusion : supernature -> super nature
+-   fusion : tc -> terres et cereales
+-   fusion : tc bio -> terres et cereales
+-   fusion : tc terre et cereales -> terres et cereales
+-   fusion : tc terres cereales bio -> terres et cereales
+-   fusion : tc terres et cereales bio -> terres et cereales
+-   fusion : terre et cereales -> terres et cereales
+-   fusion : terres cereales -> terres et cereales
+-   fusion : terres cereales bio -> terres et cereales
+-   fusion : terres et cereales bio -> terres et cereales
+-   fusion : the jordans ryvita company limited a division of abf grain products limited -> jordans
 - Produits bio (label AB ou bio UE) : 547.
 - Produits sans aucune valeur nutritionnelle retirés : 15.
 - Arrivée : 953 produits.

@@ -81,7 +81,7 @@ qu'on obtient les nombres écrits dans le journal.</p>
       doublons.</li>
 </ul>
 
-<h2>Trois petites fonctions d'aide</h2>
+<h2>Les fonctions d'aide</h2>
 
 <h3><code>normaliser_marque</code> (lignes 38 à 53)</h3>
 <p>La même marque est écrite de plusieurs façons. Exemple réel tiré de nos données :
@@ -97,25 +97,50 @@ regrouper, on les écrit toutes de la même manière :</p>
 <p>Résultat : <code>"Kellogg's"</code> → <code>"kelloggs"</code> ; <code>"Nestlé, Nestle France"</code> →
 <code>"nestle"</code>.</p>
 
-<h3><code>est_bio</code> (lignes 56 à 61)</h3>
+<h3><code>regrouper_marques</code> et <code>ALIAS_MARQUES</code> (lignes 58 à 107)</h3>
+<p>Même normalisées, certaines marques restent écrites de plusieurs façons : « kelloggs » et
+« kellogg s produits aliment sas », « carrefour » et « carrefour bio ». Sans regroupement, Kellogg's
+apparaîtrait deux fois dans le classement des marques, avec deux moyennes différentes.</p>
+<p><b>La règle :</b> si une marque <b>commence par les mots entiers</b> d'une autre marque présente dans les
+données, c'est la même marque. On compare sans les espaces.</p>
+<pre><code><span class="ln">93</span>         for k in range(1, len(mots)):
+<span class="ln">94</span>             debut = "".join(mots[:k])         # 1 mot, puis 2 mots collés, etc.
+<span class="ln">95</span>             if debut in ecriture:
+<span class="ln">96</span>                 cible = ecriture[debut]
+<span class="ln">97</span>                 break</code></pre>
+<ul>
+  <li>« carrefour bio » commence par le mot « carrefour », qui est une marque → carrefour.</li>
+  <li>« kellogg s produits… » : les deux premiers mots collés donnent « kelloggs », qui est une marque → kelloggs.</li>
+  <li><b>Pourquoi des mots entiers ?</b> Pour éviter les fausses fusions : « lucien georgelin » commence par
+      les <i>lettres</i> « lu », mais son premier <i>mot</i> est « lucien ». Il n'est donc pas rangé chez LU.</li>
+  <li><b>La table <code>ALIAS_MARQUES</code></b>, écrite à la main, couvre les cas que la règle ne peut pas trouver
+      seule : la marque au milieu du nom (« societe des produits nestle sa » → nestle), une faute
+      (« crownfields »), ou une abréviation (« TC » = Terres &amp; Céréales, qui avait 6 écritures).</li>
+  <li><b>Le bio n'est pas touché :</b> la colonne <code>bio</code> vient du label officiel, pas du nom de la
+      marque. « carrefour bio » devient « carrefour », mais ses produits restent <code>bio = True</code>.</li>
+  <li>Chaque fusion est écrite dans le journal (« carrefour bio -&gt; carrefour »), pour pouvoir les vérifier
+      une par une.</li>
+</ul>
+
+<h3><code>est_bio</code> (lignes 110 à 115)</h3>
 <p>Elle reçoit la liste des labels d'un produit et renvoie <code>True</code> dès qu'elle trouve un label bio.
 Si elle a tout parcouru sans en trouver, elle renvoie <code>False</code>.</p>
 
-<h3><code>aplatir</code> (lignes 64 à 80)</h3>
+<h3><code>aplatir</code> (lignes 118 à 134)</h3>
 <p>Les données brutes sont « emboîtées » : chaque produit contient un sous-dictionnaire
 <code>nutriments</code>. Un tableau a besoin d'une seule ligne plate par produit. La fonction parcourt les
 produits, recopie le code, le nom, la marque, les labels et le Nutri-Score, puis va chercher chaque
 nutriment dans le sous-dictionnaire. <code>p.get("code")</code> renvoie <code>None</code> au lieu de
 planter si l'information manque.</p>
 
-<h2>La fonction principale : <code>nettoyer</code> (lignes 83 à 172)</h2>
+<h2>La fonction principale : <code>nettoyer</code> (lignes 137 à 231)</h2>
 <p>Elle applique 10 étapes dans l'ordre. Après chacune, elle ajoute une phrase au <code>journal</code>
 (une liste de textes). On peut les ranger en 5 familles :</p>
 
 <h3>A. Retirer des lignes entières (étapes 1, 2, 10)</h3>
-<pre><code><span class="ln">90</span>     avant = len(df)
-<span class="ln">91</span>     df = df.drop_duplicates(subset="code")
-<span class="ln">92</span>     journal.append(f"Doublons de code-barres retirés : {avant - len(df)}.")</code></pre>
+<pre><code><span class="ln">144</span>     avant = len(df)
+<span class="ln">145</span>     df = df.drop_duplicates(subset="code")
+<span class="ln">146</span>     journal.append(f"Doublons de code-barres retirés : {avant - len(df)}.")</code></pre>
 <p>Toujours la même méthode : on compte les lignes <i>avant</i>, on retire, et la différence donne le nombre
 de lignes retirées.</p>
 <ul>
@@ -140,13 +165,23 @@ valeurs remplies avant et après pour savoir combien ont été perdues.</p>
 </ul>
 <p><b>Choix important :</b> on vide la <i>case</i> fausse, pas toute la ligne. Le produit garde ses autres
 valeurs, qui sont peut-être justes.</p>
+<p><b>Mais comment savoir que le reste de la fiche est juste ?</b> Une valeur hors bornes vient presque toujours
+d'une erreur sur <i>une seule case</i> : une mauvaise unité (des mg écrits comme des g, des kJ écrits comme
+des kcal) ou une faute de frappe. Si toute la fiche était fausse, par exemple saisie pour une portion au lieu
+de 100 g, le <b>contrôle INCO de l'étape 7</b> le verrait (l'énergie ne collerait plus avec les
+macronutriments) et retirerait la fiche. On ne fait donc pas un pari : on a un contrôle.</p>
+<p><i>Exemple réel :</i> « Pétales blé goût chocolat » (marque U) déclarait <b>2114 kcal</b> pour 100 g,
+ce qui est impossible. Mais 2114 <b>kJ</b> est normal pour des céréales : la valeur en kilojoules a été mise
+dans la case des kilocalories. Les autres valeurs donnent 4 × 66 + 4 × 11 + 9 × 24 + 2 × 8,7 = 541 kcal, et
+2114 kJ ≈ 505 kcal : 7 % d'écart seulement, donc le reste de la fiche est cohérent. Le nettoyage a vidé les
+2114, et l'étape 7 a recalculé l'énergie.</p>
 
 <h3>D. Les règles du règlement INCO, absentes du fichier (étapes 6 et 7)</h3>
 <p>Le règlement européen n° 1169/2011 (« INCO », annexe XIV) fixe comment calculer les valeurs
 affichées sur les emballages. Le fichier ne le dit nulle part : c'est la « règle obtenue dans un
 document » que demande la brique 6.</p>
-<pre><code><span class="ln">127</span>     a_completer = df["sel"].isna() &amp; df["sodium"].notna()
-<span class="ln">128</span>     df.loc[a_completer, "sel"] = df.loc[a_completer, "sodium"] * 2.5</code></pre>
+<pre><code><span class="ln">181</span>     a_completer = df["sel"].isna() &amp; df["sodium"].notna()
+<span class="ln">182</span>     df.loc[a_completer, "sel"] = df.loc[a_completer, "sodium"] * 2.5</code></pre>
 <ul>
   <li><b>6. Sel = sodium × 2,5</b> : si le sel manque mais que le sodium est connu, on calcule le sel.
       Le masque se lit : « sel vide <b>et</b> sodium rempli ».</li>
@@ -159,10 +194,10 @@ document » que demande la brique 6.</p>
             de la fiche se contredisent. <code>calcul.where(calcul &gt; 0)</code> évite une division par zéro.</li>
       </ul></li>
 </ul>
-<pre><code><span class="ln">139</span>     ecart = (df["energie_kcal"] - calcul).abs() / calcul.where(calcul &gt; 0)
-<span class="ln">140</span>     suspect = (ecart &gt; 0.20).fillna(False)
-<span class="ln">141</span>     avant = len(df)
-<span class="ln">142</span>     df = df[~suspect]          # ~ = « non » : on garde les non suspects</code></pre>
+<pre><code><span class="ln">198</span>     ecart = (df["energie_kcal"] - calcul).abs() / calcul.where(calcul &gt; 0)
+<span class="ln">199</span>     suspect = (ecart &gt; 0.20).fillna(False)
+<span class="ln">200</span>     avant = len(df)
+<span class="ln">201</span>     df = df[~suspect]          # ~ = « non » : on garde les non suspects</code></pre>
 <p><b>Pourquoi retirer la ligne entière ici, alors qu'ailleurs on vide seulement la case ?</b>
 Quand une valeur est impossible (150 g de sel), on sait <i>laquelle</i> est fausse : on la vide et on garde
 le reste. Mais quand l'énergie ne colle pas avec les macronutriments, <b>on ne peut pas savoir laquelle est
@@ -178,13 +213,14 @@ les retire. <i>(Décision prise le 1er novembre 2026.)</i></p>
       (« unknown », « not-applicable ») devient vide. Le <code>~</code> veut dire « non » :
       <code>~df["nutriscore"].isin(...)</code> = « n'est pas dans la liste ».</li>
   <li><b>9. Marques et bio</b> : <code>.map(fonction)</code> applique une fonction à chaque case d'une
-      colonne. On l'utilise avec <code>normaliser_marque</code> et <code>est_bio</code>.</li>
+      colonne. On l'utilise avec <code>normaliser_marque</code> et <code>est_bio</code>. Puis
+      <code>regrouper_marques</code> fusionne les écritures d'une même marque.</li>
 </ul>
 
-<p>À la fin (lignes 170 à 172), on écrit le nombre de produits à l'arrivée, on ne garde que les colonnes utiles
+<p>À la fin (lignes 229 à 231), on écrit le nombre de produits à l'arrivée, on ne garde que les colonnes utiles
 dans un ordre fixe, et <code>reset_index(drop=True)</code> renumérote les lignes de 0 à n−1.</p>
 
-<h2><code>main</code> (lignes 175 à 182)</h2>
+<h2><code>main</code> (lignes 234 à 241)</h2>
 <p>Elle lit le JSON brut, appelle <code>nettoyer</code>, écrit le tableau en CSV
 (<code>index=False</code> : sans la colonne des numéros de ligne) et le journal en Markdown, avec un tiret
 devant chaque phrase.</p>
@@ -196,13 +232,13 @@ devant chaque phrase.</p>
 <tr><td>Départ</td><td>1 000 produits</td></tr>
 <tr><td>Doublons</td><td>0</td></tr>
 <tr><td>Sans nom</td><td>28 retirés</td></tr>
-<tr><td>Énergie impossible</td><td>1 valeur vidée</td></tr>
+<tr><td>Énergie impossible</td><td>1 valeur vidée (2114 kJ écrits comme des kcal)</td></tr>
 <tr><td>Sucres &gt; glucides, AGS &gt; lipides</td><td>0</td></tr>
 <tr><td>Sel calculé depuis le sodium</td><td>0 produit</td></tr>
-<tr><td>Énergie calculée (INCO)</td><td>1 produit</td></tr>
+<tr><td>Énergie calculée (INCO)</td><td>1 produit (le même, recalculé)</td></tr>
 <tr><td>Énergie incohérente (fiche douteuse)</td><td>4 retirés</td></tr>
 <tr><td>Nutri-Score invalide</td><td>30 vidés (unknown, not-applicable)</td></tr>
-<tr><td>Marques</td><td>294 libellés bruts → 177 marques</td></tr>
+<tr><td>Marques</td><td>294 libellés bruts → 177 marques normalisées → <b>149 marques</b> après 28 fusions</td></tr>
 <tr><td>Sans aucune valeur</td><td>15 retirés</td></tr>
 <tr><td><b>Arrivée</b></td><td><b>953 produits</b> (543 bio, 410 non bio)</td></tr>
 </table>
@@ -211,8 +247,9 @@ devant chaque phrase.</p>
   <li>La règle du sel n'a servi pour aucun produit : Open Food Facts calcule déjà le sel lui-même. On la
       garde quand même, car elle protège contre de futures données où le sel manquerait. La règle de
       l'énergie, elle, a servi deux fois : 1 valeur complétée et 4 fiches incohérentes repérées et retirées.</li>
-  <li>La normalisation des marques a une limite : « KELLOGG S PRODUITS ALIMENT SAS » ne devient pas
-      « kelloggs ». Un même fabricant peut donc apparaître sous deux noms.</li>
+  <li>Le regroupement des marques n'est pas parfait : la règle ne trouve que les marques qui
+      <i>commencent</i> pareil, et la table à la main ne couvre que les cas repérés dans ces données-ci. Avec
+      de nouvelles données, il faudrait relire la liste des fusions dans le journal.</li>
 </ul>
 </div>
 
@@ -226,6 +263,8 @@ devant chaque phrase.</p>
   <li>Comment le journal obtient-il le nombre de lignes retirées ?</li>
   <li>Que se passe-t-il si on appelle <code>nettoyer([])</code>, avec une liste vide ?</li>
   <li>Pourquoi retire-t-on toute la fiche quand l'énergie ne colle pas, alors qu'ailleurs on vide seulement la case ?</li>
+  <li>Une valeur dépasse 100 g. Comment peut-on faire confiance aux autres valeurs de la fiche ?</li>
+  <li>Pourquoi la règle de regroupement des marques compare-t-elle des mots entiers et pas des lettres ?</li>
   <li>La règle du sel n'a servi pour aucun produit. Est-ce qu'elle est inutile ?</li>
 </ol>
 <p>Essaie d'y répondre avec tes mots avant de lire le corrigé à la page suivante.</p>
@@ -261,6 +300,14 @@ devant chaque phrase.</p>
       valeurs se contredisent et on ne peut pas savoir laquelle est fausse : la fiche a été mal remplie ou
       remplie en partie, et toute la ligne devient douteuse. Comme ça ne concerne que 4 produits sur 957,
       les retirer ne fait presque rien perdre et rend les calculs plus sûrs.</li>
+  <li><b>Faire confiance au reste de la fiche</b> : une valeur hors bornes vient presque toujours d'une erreur sur
+      une seule case (mauvaise unité, faute de frappe). Et le contrôle INCO de l'étape 7 vérifie que l'énergie
+      colle avec les macronutriments : si toute la fiche était fausse, elle serait retirée. Exemple réel :
+      2114 kJ écrits dans la case des kcal ; les autres valeurs donnaient 541 kcal, cohérent avec 2114 kJ
+      (505 kcal).</li>
+  <li><b>Des mots entiers</b> : pour éviter de fusionner deux marques différentes. « lucien georgelin »
+      commence par les lettres « lu », mais pas par le mot « lu » : comparer des lettres le rangerait chez LU,
+      qui est une autre marque.</li>
 </ol>
 </div>
 

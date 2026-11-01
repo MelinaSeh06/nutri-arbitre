@@ -1,17 +1,17 @@
 code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,proteines,sel
 3168930010265,cruesly mélange de noix,pepsico france,False,b,462.0,57.0,12.0,19.0,2.0,10.0,8.5,0.0
-3229820019307,Flocons d'avoine,bjorg et cie,True,a,363.333333333333,58.0,1.7,7.1,1.3,11.0,11.0,0.02
+3229820019307,Flocons d'avoine,bjorg,True,a,363.333333333333,58.0,1.7,7.1,1.3,11.0,11.0,0.02
 3229820129488,"muesli raisin,datte,figue",bjorg,True,a,352.0,59.0,14.0,5.8,0.9,10.0,11.0,0.03
-5010477348678,Special Muesli 30% fruits & noix,the jordans ryvita company limited a division of abf grain products limited,False,a,360.0,60.0,17.0,7.2,2.0,8.8,10.0,0.03
+5010477348678,Special Muesli 30% fruits & noix,jordans,False,a,360.0,60.0,17.0,7.2,2.0,8.8,10.0,0.03
 3387390123210,Chocapic,nestle,False,b,384.0,73.8,19.9,4.4,1.1,7.7,8.5,0.2
 3229820782560,"Muesli Superfruits Raisins, cassis, cranberry, myrtille",bjorg,True,a,358.571428571429,60.0,13.0,6.0,0.857142857142857,10.0,12.0,0.04
 7613036669146,NESTLE CHOCAPIC BIO Céréales - Boite de 375g,nestle,True,b,390.0,71.7,19.9,5.6,1.6,8.2,9.1,0.2
 5010477348357,Country Crisp 4 noix,jordans,False,c,465.0,58.0,18.0,20.0,2.6,6.1,11.0,0.03
-3159470000120,CORN FLAKES,kellogg s produits aliment sas,False,d,376.666666666667,84.0,8.0,0.9,0.2,3.0,7.0,1.1
+3159470000120,CORN FLAKES,kelloggs,False,d,376.666666666667,84.0,8.0,0.9,0.2,3.0,7.0,1.1
 3229820769165,Muesli avoine chocolat bio,bjorg,True,a,386.0,60.0,8.2,8.8,3.3,10.0,12.0,0.1
 3168930010906,Cruesli Chocolat noir,pepsico france,False,c,455.0,57.0,16.0,19.0,4.9,10.0,8.1,0.48
 3168930009078,Flocons d'avoine complète,pepsico france,False,a,395.0,60.0,1.1,8.0,1.5,9.0,11.0,0.01
-5010477348630,Muesli 36% fruits noix & graines,the jordans ryvita company limited a division of abf grain products limited,True,c,373.0,60.7,18.9,8.4,2.8,8.5,9.3,0.03
+5010477348630,Muesli 36% fruits noix & graines,jordans,True,c,373.0,60.7,18.9,8.4,2.8,8.5,9.3,0.03
 7613035449626,NESTLE CHOCAPIC Céréales 645g,nestle,False,b,384.0,73.8,19.9,4.4,1.1,7.7,8.5,0.2
 3168930009795,Muesli Croustillant Noix de pécan & noix du Brésil,pepsico france,False,b,420.0,62.0,13.0,11.0,1.8,13.0,11.0,0.24
 5010477348395,Country Crisp - Chocolat noir 70% cacao,jordans,False,d,446.0,66.0,23.0,15.0,8.3,5.6,8.8,0.03
@@ -19,13 +19,13 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3229820797861,Croustillant 3 noix,bjorg,True,b,486.666666666667,56.0,14.0,17.0,2.1,9.9,11.0,0.02
 3229820798110,Granola Chocolat,bjorg,True,c,420.0,62.0,12.0,13.0,3.1,7.5,10.0,0.01
 5059319023762,Miel Pops,kellogs,False,c,384.0,85.0,22.0,1.5,0.1,4.6,5.2,0.4
-3421557501975,Muesli croustillant duo pépites,terres et cereales bio,True,c,434.0,67.0,25.0,13.0,3.8,7.6,9.2,0.05
+3421557501975,Muesli croustillant duo pépites,terres et cereales,True,c,434.0,67.0,25.0,13.0,3.8,7.6,9.2,0.05
 3421557501722,Muesli croustillant tradition,terres et cereales,True,c,440.0,68.0,20.0,13.0,1.7,5.9,9.1,0.05
 3229820786605,Crousti' Avoine Chocolat,bjorg,True,c,420.0,63.0,13.0,12.0,3.7,10.0,10.0,0.09
 3229820116716,Muesli aux fruits,bjorg,True,a,358.333333333333,60.0,10.0,6.0,2.5,10.0,11.0,0.02
 3168930003632,Quaker Oats,quaker,False,a,375.0,60.0,1.1,8.0,1.5,9.0,11.0,0.01
 7613032779566,chocapic,nestle,False,b,384.0,73.8,19.9,4.4,1.1,7.7,8.5,0.2
-3421557502446,T&C Muesli croustillant avoine amandes sans gluten,terres cereales bio,True,c,447.0,66.0,18.0,15.0,1.8,6.9,9.0,0.04
+3421557502446,T&C Muesli croustillant avoine amandes sans gluten,terres et cereales,True,c,447.0,66.0,18.0,15.0,1.8,6.9,9.0,0.04
 3168930010890,Quaker Cruesli Chocolat au lait,pepsico france,False,d,471.111111111111,59.0,20.0,19.0,4.8,8.7,7.7,0.51
 5010477365316,Oh my crisp ! - Noix,jordans,False,b,440.0,47.0,9.5,20.0,3.7,18.0,9.0,0.03
 20003166,FLOCONS D'AVOINE,,False,a,372.0,58.7,0.7,7.0,1.3,10.0,13.5,0.02
@@ -37,15 +37,15 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3387390326574,Céréales Cookie Crisp,nestle,False,c,393.0,78.0,22.4,5.2,0.9,6.0,6.7,0.66
 5010477348555,Country Crisp 4 Noix,jordans,False,c,465.0,58.6,18.0,20.0,2.6,6.1,11.0,0.03
 3168930010869,Cruesli Chocolat noir maxi format,quaker,False,c,455.0,57.0,16.0,19.0,4.9,10.0,8.1,0.48
-3421557910203,Flocons d'avoine complets,terres cereales,True,a,371.0,60.0,1.0,7.0,1.3,10.0,12.0,0.01
+3421557910203,Flocons d'avoine complets,terres et cereales,True,a,371.0,60.0,1.0,7.0,1.3,10.0,12.0,0.01
 3770008009882,Les Fourrées  -  Beurre de Cacahuète & Cacao,funkie,True,b,438.0,58.0,13.0,17.0,3.0,6.0,13.0,0.13
 3564706604360,Muesli Chocolat-Noisette,marque repere,False,b,446.0,59.0,8.7,17.0,3.2,11.0,9.9,0.01
-3560071407650,Muesli de quinoa y chocolate,carrefour france,True,c,424.0,67.0,16.0,12.0,4.4,6.8,9.1,0.08
+3560071407650,Muesli de quinoa y chocolate,carrefour,True,c,424.0,67.0,16.0,12.0,4.4,6.8,9.1,0.08
 3387390019995,NESTLE LION Céréales 400g,nestle,False,c,406.0,73.2,24.5,7.4,1.1,7.0,8.1,0.4
 3256228686558,Céréales Muesli croustillant au chocolat noir 500G,u,True,c,395.0,61.0,19.0,11.0,2.6,8.1,9.0,0.15
 3421557110313,Krounchy chocolat,grillon dor,True,c,442.0,65.0,18.0,15.0,2.4,7.2,9.0,0.01
 3159470005071,Céréales Extra Pépites Chocolat Noisettes,kelloggs,False,e,497.0,57.0,21.0,25.0,12.0,5.8,8.0,0.68
-3421557501630,Muesli BIO Fruits raisins pommes abricots & noix de coco Sans sucres ajoutés,tc terre et cereales,True,a,354.0,61.0,15.0,5.4,1.2,11.0,9.7,0.01
+3421557501630,Muesli BIO Fruits raisins pommes abricots & noix de coco Sans sucres ajoutés,terres et cereales,True,a,354.0,61.0,15.0,5.4,1.2,11.0,9.7,0.01
 3229820800721,muesli superfruits,bjorg,True,a,362.0,60.0,13.0,6.0,0.9,10.0,12.0,0.06
 5050083296079,Cereales special K original,kelloggs,False,c,392.0,84.0,15.0,1.3,0.3,6.0,8.0,0.84
 3229820802138,Croustillant chocolat,bjorg,True,c,431.666666666667,62.0,14.0,14.0,3.8,9.8,9.8,0.28
@@ -58,11 +58,11 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 5050083516313,Céréales Extra Kellogg's Pépites Chocolat au lait,kelloggs,False,e,484.0,62.0,25.0,22.0,12.0,4.9,7.0,0.68
 5059319030913,Coco Pops,kelloggs,False,c,386.0,84.0,17.0,1.9,0.9,3.8,6.3,0.65
 3111902100037,Muesli Bio Croustillant Amande Vanille,charles vignon,True,c,457.777777777778,62.0,16.0,18.0,1.7,5.7,9.2,0.01
-3560071407773,Croustillant graines de courge et de tournesol,carrefour bio,True,c,425.0,61.0,15.0,14.0,1.9,6.2,11.0,0.02
-3560070614202,Copos de Avena Integral,carrefour france,False,a,372.0,59.0,0.7,7.0,1.3,10.0,14.0,0.0
+3560071407773,Croustillant graines de courge et de tournesol,carrefour,True,c,425.0,61.0,15.0,14.0,1.9,6.2,11.0,0.02
+3560070614202,Copos de Avena Integral,carrefour,False,a,372.0,59.0,0.7,7.0,1.3,10.0,14.0,0.0
 3564706624467,Flocon d'avoine,marque repere,False,a,372.0,59.0,0.7,7.0,1.3,10.0,14.0,0.025
 3229820796451,Granola Fruits Rouges,bjorg,True,a,408.0,61.0,12.0,12.0,1.8,8.0,10.0,0.02
-3560071270285,Petits flocons d'avoine complète,carrefour bio,True,a,373.0,68.7,1.0,7.6,1.3,8.7,11.0,0.0
+3560071270285,Petits flocons d'avoine complète,carrefour,True,a,373.0,68.7,1.0,7.6,1.3,8.7,11.0,0.0
 4056489687337,Muesli Crunchy,crownfield,False,c,445.0,62.0,16.0,15.8,3.0,9.8,8.9,0.00013
 4056489296805,Bio Knusper Müsli Früchte,crownfield,True,c,441.0,63.0,14.0,14.8,4.2,8.4,9.9,0.2
 4056489300786,Knusper Müsli Schoko,crownfield,True,c,447.0,59.8,13.7,16.2,5.8,9.1,10.9,0.41
@@ -73,7 +73,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3229820804224,Céréales complètes au chocolat noir intense,bjorg,True,c,460.0,58.0,17.0,19.0,6.6,9.1,9.6,0.17
 40897677,Hafer Flocken Zart,,True,a,372.5,59.5,0.8,6.7,1.1,9.7,13.2,0.0
 3168930158158,Cruesli miel et noisettes,cruesli,False,b,460.0,63.0,15.0,18.0,1.9,8.4,7.7,0.06
-3159470001424,Céréales All Bran Kellogg's Fibre Plus,kellogg s produits aliment sas,False,c,334.0,48.0,18.0,3.5,0.7,27.0,14.0,0.95
+3159470001424,Céréales All Bran Kellogg's Fibre Plus,kelloggs,False,c,334.0,48.0,18.0,3.5,0.7,27.0,14.0,0.95
 5010477367112,Pop & Crisp Miel,jordans,False,b,417.0,60.0,16.0,13.0,1.2,14.0,9.0,0.01
 5050083739811,Céréales Special K Kellogg's Nature,kelloggs,False,c,393.333333333333,79.0,15.0,1.5,0.3,4.5,9.0,1.0
 3564707186315,Muesli croustillant 3 noix,bio village,True,b,446.0,64.0,17.0,15.0,1.8,7.6,11.0,0.01
@@ -86,47 +86,47 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3564707116169,Flocons d'Avoine,bio village,True,a,372.0,59.0,0.7,7.0,1.3,10.0,14.0,0.02
 5050083535079,Céréales Trésor Kellogg's Chocolat Noisettes - 1kg,kelloggs,False,e,456.666666666667,69.0,26.0,14.0,3.5,3.5,7.0,1.1
 5053827101424,Smacks,kelloggs,False,d,377.0,81.0,34.0,1.6,0.3,5.0,7.1,0.02
-3560070792368,Croustillant Nature,carrefour bio,True,b,447.0,69.0,16.0,13.0,1.4,8.1,8.9,0.01
-3560071407711,Croustillant tout chocolat,carrefour bio,True,d,447.0,62.0,20.0,16.0,6.1,8.4,9.4,0.02
-3560071407568,"Muesli 35 fruits, noix et graines",carrefour france,True,b,380.0,63.0,17.0,8.3,2.8,8.9,8.8,0.02
+3560070792368,Croustillant Nature,carrefour,True,b,447.0,69.0,16.0,13.0,1.4,8.1,8.9,0.01
+3560071407711,Croustillant tout chocolat,carrefour,True,d,447.0,62.0,20.0,16.0,6.1,8.4,9.4,0.02
+3560071407568,"Muesli 35 fruits, noix et graines",carrefour,True,b,380.0,63.0,17.0,8.3,2.8,8.9,8.8,0.02
 3229820800738,Crousti' Avoine Nature,bjorg,True,a,417.0,66.0,13.0,10.0,2.1,9.4,11.0,0.1
 5053827111027,Céréales Frosties,kelloggs,False,d,375.0,87.0,37.0,0.6,0.1,2.0,4.5,0.83
 3580281080108,Muesli Crunchy 2 Chocolats,maison patissiere,False,d,453.0,62.0,22.0,17.0,5.1,6.5,9.1,0.13
 3256220394079,Céréales Muesli croustillant aux 4 noix paquet de 500g,u,False,b,469.0,57.0,13.0,20.0,2.6,8.6,11.0,0.2
-3560071190965,Flocons d'avoine,carrefour bio,True,a,372.0,59.0,0.7,7.0,1.3,10.0,14.0,0.01
+3560071190965,Flocons d'avoine,carrefour,True,a,372.0,59.0,0.7,7.0,1.3,10.0,14.0,0.01
 20775025,Muesli croustillant Noix et Miel,crownfield,False,c,469.0,58.0,16.0,19.7,2.4,7.6,11.1,0.2
 5010477357335,Muesli bio noix & graines,jordans,True,a,427.0,50.9,6.3,16.8,2.3,8.7,13.6,0.03
-3560070800209,Céréales cœur fondant,carrefour france,True,d,419.0,65.0,29.0,12.0,2.7,7.2,9.2,0.38
+3560070800209,Céréales cœur fondant,carrefour,True,d,419.0,65.0,29.0,12.0,2.7,7.2,9.2,0.38
 3564706604339,Grainéa granola noix,marque repere,False,a,465.0,51.0,8.4,21.0,2.3,8.9,14.0,0.02
-3560071407803,Croustillant Chocolat,carrefour bio,True,c,449.0,61.0,15.0,16.0,4.4,8.7,10.0,0.0
-3421557910210,Flocons d'avoine complets,terres cereales bio,True,a,371.0,60.0,1.0,7.0,1.3,10.0,12.0,0.01
+3560071407803,Croustillant Chocolat,carrefour,True,c,449.0,61.0,15.0,16.0,4.4,8.7,10.0,0.0
+3421557910210,Flocons d'avoine complets,terres et cereales,True,a,371.0,60.0,1.0,7.0,1.3,10.0,12.0,0.01
 3564707186278,Muesli croustillant tout chocolat,marque repere,True,c,444.0,64.0,20.0,15.0,6.0,8.7,9.6,0.05
 3494690009707,Barre Chocolat Banane,break boost,False,d,406.0,72.0,30.0,9.7,5.4,3.4,5.8,0.275
 3421557501692,Muesli croustillant fruits rouges,terres et cereales,True,c,437.0,67.0,20.0,13.0,3.1,8.9,9.2,0.06
 5010477348432,Country Crisp chocolat au lait,jordans,False,d,448.888888888889,66.6666666666667,24.4444444444444,15.5555555555556,4.22222222222222,5.11111111111111,8.88888888888889,0.0444444444444444
 3229820800745,Crousti' Avoine Superfruits,bjorg,True,b,418.0,66.0,13.0,10.0,2.1,10.0,11.0,0.1
 3760336830678,Funky Veggie - Les PAF,funky veggie,True,a,366.0,73.0,19.0,2.3,0.8,8.5,9.7,0.01
-3421557502774,Muesli croustillant chocolat,terres cereales bio,True,c,437.0,65.0,21.0,13.0,4.6,8.5,9.7,0.07
-3421557501890,Muesli croustillant 7 fruits,tc terres cereales bio,True,d,436.0,64.0,24.0,15.0,4.4,6.7,8.4,0.0
+3421557502774,Muesli croustillant chocolat,terres et cereales,True,c,437.0,65.0,21.0,13.0,4.6,8.5,9.7,0.07
+3421557501890,Muesli croustillant 7 fruits,terres et cereales,True,d,436.0,64.0,24.0,15.0,4.4,6.7,8.4,0.0
 3580281080115,Muesli Crunchy 4 noix,muesly,False,c,458.0,61.0,18.0,18.0,1.8,6.1,10.0,0.06
 3229820802381,Le croustillant chocolat noir & fruits rouges,bjorg,True,c,434.0,62.0,14.0,14.0,3.1,10.0,10.0,0.5
-3421557502422,Crok'fondant chocolat noisettes,terres et cereales bio,True,d,417.0,64.0,26.0,13.0,2.3,7.5,8.4,0.81
-3421557501142,"Muesli noisettes, raisins, seigle complet, blé sans sucres ajoutés",tc bio,True,a,369.0,59.0,10.0,7.8,0.7,12.0,9.5,0.02
-3560071407681,Croustillant fruits rouges,carrefour bio,True,c,426.0,66.0,19.0,12.0,1.4,9.2,9.3,0.01
+3421557502422,Crok'fondant chocolat noisettes,terres et cereales,True,d,417.0,64.0,26.0,13.0,2.3,7.5,8.4,0.81
+3421557501142,"Muesli noisettes, raisins, seigle complet, blé sans sucres ajoutés",terres et cereales,True,a,369.0,59.0,10.0,7.8,0.7,12.0,9.5,0.02
+3560071407681,Croustillant fruits rouges,carrefour,True,c,426.0,66.0,19.0,12.0,1.4,9.2,9.3,0.01
 3664346342681,Choco crousti,poulain,False,c,430.0,61.0,16.0,14.0,2.6,11.0,11.0,0.08
 5010477350954,Country Crisp Fruits & Noix,jordans,False,c,443.0,63.0,22.0,16.0,1.9,6.1,9.6,0.05
 3111902100020,Muesli bio croustillant 3 chocolats,charles vignon,True,c,474.0,59.0,18.0,20.0,5.5,8.1,10.0,0.02
 4056489210016,Muesli crunchy 4 noix,crownfield,False,a,460.0,58.9,7.9,18.6,2.0,8.1,10.3,0.11
 3564707115926,Corn flakes,bio village,True,c,384.0822179127,83.0,1.9,0.8,0.2,3.4,7.2,0.85
 3256222976716,Céréales Corn flakes,u,True,a,388.0,86.0,0.7,0.9,0.2,3.2,7.4,0.13
-3560071267582,Corn flakes,carrefour bio,True,c,384.0,85.0,2.0,1.1,0.2,2.7,7.4,0.45
+3560071267582,Corn flakes,carrefour,True,c,384.0,85.0,2.0,1.1,0.2,2.7,7.4,0.45
 3564706739031,Grainéa,marque repere,False,c,381.0,80.0,13.0,1.6,0.5,5.5,8.5,0.76
 8445291075146,NESTLE NESQUIK Céréales 675g,nesquik,False,c,378.0,74.6,22.1,3.0,0.7,9.3,8.7,0.22
-3560071407506,Muesli fruits,carrefour france,True,a,366.0,61.0,13.0,6.9,1.0,9.9,10.0,0.02
+3560071407506,Muesli fruits,carrefour,True,a,366.0,61.0,13.0,6.9,1.0,9.9,10.0,0.02
 5059319031200,special k fibre,special k,False,c,393.333333333333,57.0,18.0,12.0,1.0,13.0,8.1,0.64
 7613037059281,LION BIO Céréales - Boite de 400g,nestle,True,c,409.0,73.1,25.0,7.7,1.2,8.0,7.9,0.48
 3111900350687,Muesli croustillant,favrichon,True,c,456.0,58.0,17.0,18.0,2.1,7.4,11.0,0.01
-3421557921148,Muesli Croustillant Chocolat Proteines,terres cereales bio,True,,419.0,58.0,14.0,12.0,2.2,9.8,15.0,
+3421557921148,Muesli Croustillant Chocolat Proteines,terres et cereales,True,,419.0,58.0,14.0,12.0,2.2,9.8,15.0,
 3256228686589,Muesli fruits secs amandes & noisettes,u,True,a,353.0,60.0,15.0,5.2,0.7,11.0,11.0,0.03
 3111900350571,Muesli croustillant - duo de chocolats,favrichon,True,d,476.0,59.0,20.0,20.0,6.1,8.2,10.0,0.02
 5053827156189,Kellogg's Tresor,kelloggs,False,e,437.0,69.0,26.0,14.0,3.5,3.5,7.0,1.1
@@ -150,17 +150,17 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 7613031508488,NESTLE LION céréales 675g,nestle,False,c,406.0,73.2,24.5,7.4,1.1,7.0,8.1,0.4
 3111900350755,Chargement…,favrichon,True,c,424.44444444444,66.666666666667,22.222222222222,12.888889312744,1.5555555290646,7.5,7.5555557674831,0.02222225
 5059319025797,Special K Chocolat au Lait,kelloggs,False,d,410.0,81.0,21.0,5.0,2.5,5.3,7.7,0.67
-3560071407742,Muesli 6 frutas,carrefour bio,True,d,444.0,62.0,24.0,17.0,4.8,6.2,7.6,0.02
+3560071407742,Muesli 6 frutas,carrefour,True,d,444.0,62.0,24.0,17.0,4.8,6.2,7.6,0.02
 5053827135542,Céréales Extra Pepites Kellogg's Chocolat au lait,kelloggs,False,e,484.0,62.0,25.0,22.0,10.0,4.9,7.0,0.68
 5050083542411,Céréales Trésor Kellogg's Chocolat Lait - 1kg,kelloggs,False,e,441.0,69.0,29.0,14.0,4.8,3.2,7.1,0.95
 3256228686572,Céréales Muesli croustillant fruits rouges sachet 350g,u,True,c,385.0,61.0,21.0,10.0,1.3,7.9,8.8,0.15
 3256229256651,Céréales Muesli croustillant chocolat noir paquet 500g,u,False,c,444.0,63.0,18.0,15.0,3.8,8.5,9.9,0.2
 3421557500848,Choco crisp chocolat,grillon dor,True,c,377.0,77.0,18.0,3.0,1.5,5.2,8.3,0.02
-3560071407537,Muesli de superfrutas sin azúcares añadidos,carrefour bio,True,a,350.0,64.0,13.0,4.5,0.7,9.0,9.4,0.02
+3560071407537,Muesli de superfrutas sin azúcares añadidos,carrefour,True,a,350.0,64.0,13.0,4.5,0.7,9.0,9.4,0.02
 3111900350793,Muesli protéiné soja & fruits,favrichon,True,a,375.555555555556,36.0,13.0,5.3,0.7,7.2,40.0,0.09
 3111900350335,Muesli Croustillant Nature,favrichon,True,c,453.0,66.0,19.0,17.0,2.4,6.9,6.8,0.16
 3564706612822,Muesli chocolat au lait,leclerc,False,c,439.0,65.0,24.0,14.0,3.9,7.5,9.6,0.13
-3421557910494,Corn flakes sans sucres ajoutés,terres et cereales bio,True,b,387.0,86.0,0.5,0.9,0.1,3.1,7.0,0.01
+3421557910494,Corn flakes sans sucres ajoutés,terres et cereales,True,b,387.0,86.0,0.5,0.9,0.1,3.1,7.0,0.01
 3256228686534,"Céréales Pétales de blé chocolat bio, sachet 375g",u,True,a,366.0,73.0,19.0,2.3,0.8,8.5,9.7,0.01
 20775018,Muesli coustillant,crownfield,False,d,451.0,62.4,21.9,16.3,6.5,7.7,9.9,0.65
 3564707179775,Muesli floconneux,bio village,True,a,359.0,62.0,14.0,5.8,1.0,9.2,9.8,0.01
@@ -172,18 +172,18 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3111900360150,Muesli croustillant avoine blé et riz,favrichon,True,b,422.0,75.0,15.0,11.0,1.1,7.6,9.7,0.01
 3564706604346,Granola baies de goji cranberries cassis,marque repere,False,a,440.0,58.0,13.0,15.0,1.9,8.5,13.0,0.03
 3596710443673,Flocons d'avoine,auchan,False,a,372.0,59.0,0.7,7.0,1.3,10.0,14.0,0.02
-3421557502576,Crok' fondant noisettes,terres cereales bio,True,c,437.0,59.0,17.0,15.0,2.2,9.3,12.0,0.12
+3421557502576,Crok' fondant noisettes,terres et cereales,True,c,437.0,59.0,17.0,15.0,2.2,9.3,12.0,0.12
 3560071016074,Corn flakes,carrefour,False,c,383.0,85.0,7.2,1.2,0.2,2.5,6.9,0.8
 3564707179812,Muesli croustillant chocolat,bio village,True,c,445.0,63.0,15.0,15.0,4.1,7.3,10.0,0.04
 3760336830685,Funky Veggie - Les POP,funky veggie,True,c,383.0,83.0,19.0,1.5,0.8,2.1,7.8,0.01
 3572420000481,Croc choc,lucien georgelin,True,e,446.0,66.0,35.0,15.0,5.7,4.8,7.9,0.44
-3421557910173,Flocons 5 céréales,terres cereales,True,a,348.0,63.0,1.3,3.4,0.6,11.0,11.0,0.01
+3421557910173,Flocons 5 céréales,terres et cereales,True,a,348.0,63.0,1.3,3.4,0.6,11.0,11.0,0.01
 3421557108150,Krounchy nature,grillon dor,True,c,439.0,68.0,20.0,13.0,1.7,5.9,9.1,0.05
 3421557108624,Krounchy sans gluten amande,grillon dor,True,c,446.0,66.0,18.0,15.0,1.8,6.2,9.0,0.04
 5010477358790,Country crisp Framboises entières,jordans,False,c,433.0,66.3,20.0,13.2,1.8,6.2,9.2,0.03
-3421557111044,Corn flakes nature,cereco sarl,True,b,387.0,86.0,0.5,0.9,0.1,3.2,7.0,0.01
+3421557111044,Corn flakes nature,cereco,True,b,387.0,86.0,0.5,0.9,0.1,3.2,7.0,0.01
 3421557501869,Crok fondant tout choco,terres et cereales,True,d,402.0,61.0,25.0,12.0,2.7,7.2,8.0,0.72
-3560071407629,Croustillant 3 noix,carrefour bio,True,b,455.0,63.0,17.0,17.0,1.9,6.6,9.8,0.03
+3560071407629,Croustillant 3 noix,carrefour,True,b,455.0,63.0,17.0,17.0,1.9,6.6,9.8,0.03
 4056489209980,Crunchy Muesli Multi Fruit,lidl,False,d,435.0,63.5,24.1,13.9,7.0,7.6,7.9,0.245
 3111902100105,Muesli bio céréales toastées 5 noix,charles vignon,True,a,433.0,50.0,1.6,17.0,4.8,13.0,13.0,0.01
 3421557502453,Muesli croustillant avoine myrtilles chia,terres et cereales,True,c,443.0,65.0,22.0,15.0,1.7,7.7,8.0,0.04
@@ -196,20 +196,20 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 5053827156219,Trésor Chocolat au lait,kellogg039s,False,e,441.0,70.0,28.0,14.0,4.0,3.1,7.2,0.95
 2006050036134,Muesli Noix,simplement bon et bio,True,,438.0,61.0,17.0,15.0,,9.5,10.0,0.3925
 5053827199469,Céréales Trésor Kellogg's Chocolat Noisettes,kelloggs,False,e,456.0,69.0,26.0,16.0,4.5,3.6,7.1,0.94
-3421557502002,Muesli croustillant tradition,terres et cereales bio,True,c,440.0,68.0,20.0,13.0,1.7,6.5,9.1,0.05
-3560071013042,Muesly croustillant cruchy chocolat noir intense,carrefour france,False,c,441.0,62.0,19.0,15.0,3.8,9.0,10.0,0.1
+3421557502002,Muesli croustillant tradition,terres et cereales,True,c,440.0,68.0,20.0,13.0,1.7,6.5,9.1,0.05
+3560071013042,Muesly croustillant cruchy chocolat noir intense,carrefour,False,c,441.0,62.0,19.0,15.0,3.8,9.0,10.0,0.1
 3256229255623,Granola fruits rouges,u,False,a,424.0,64.0,14.0,12.0,1.4,7.8,11.0,0.02
 3229820802398,Le Croustillant Chocolat noir & Noisettes,bjorg,True,c,445.0,59.0,16.0,17.0,4.1,8.0,10.0,0.01
 3596710494118,Flocons d'Avoine,auchan,True,a,369.0,59.0,1.0,6.9,1.2,10.0,12.0,0.01
 3564707186230,Muesli croustillant Chocolat & Quinoa,bio village,True,,437.0,66.0,22.0,13.0,5.6,7.3,9.4,
 3229820804255,Gros Flocons d’Avoine,bjorg,True,a,375.0,59.0,1.1,7.0,1.3,10.0,14.0,0.02
-5010477356239,Muesli bio chocolat noir,jordans bio,True,b,397.777777777778,61.0,9.0,11.0,3.1,8.9,9.1,0.03
+5010477356239,Muesli bio chocolat noir,jordans,True,b,397.777777777778,61.0,9.0,11.0,3.1,8.9,9.1,0.03
 3564707090773,Muesli floconneux fruits secs Raisins figues abricots graines,bio village,True,a,382.0,61.0,11.0,9.0,1.4,7.7,10.0,0.01
 3250392403904,Corn Flakes,chabrior,False,c,384.7,84.0,7.6,1.1,0.2,3.4,8.0,0.9
 3421557501524,Flocons d'avoine sans gluten,terres et cereales,True,a,364.0,59.0,1.2,6.7,1.4,10.0,12.0,0.01
 3421557108099,Muesli Fruits,grillon dor,True,a,354.0,61.0,15.0,5.4,1.2,11.0,9.7,0.01
-3560071013035,Crunchy Chocolat noir intense,carrefour france,False,c,441.0,62.0,19.0,15.0,3.8,9.0,10.0,0.1
-3560071015725,Fibra,carrefour france,False,c,356.0,62.0,20.0,6.1,3.6,8.9,8.7,0.41
+3560071013035,Crunchy Chocolat noir intense,carrefour,False,c,441.0,62.0,19.0,15.0,3.8,9.0,10.0,0.1
+3560071015725,Fibra,carrefour,False,c,356.0,62.0,20.0,6.1,3.6,8.9,8.7,0.41
 4335619092648,Flocons d'avoine,crownfield,True,a,371.0,59.5,0.8,6.7,1.3,9.7,13.2,0.01
 5053827199636,Tresor,kelloggs,False,e,440.0,70.0,28.0,14.0,4.0,3.1,7.2,0.95
 3421557500763,Riz complet soufflé,grillon dor,True,b,376.0,79.0,0.6,2.6,0.6,2.2,8.1,0.03
@@ -218,12 +218,12 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3596710494132,Muesli croustillant quinoa chocolat,auchan,True,d,437.0,66.0,22.0,13.0,5.3,7.2,9.4,0.06
 7613035544482,"NESTLE LION Céréales 1,05 kg",nestle,False,c,406.0,73.2,24.5,7.4,1.1,7.0,8.1,0.4
 20621452,Special Flakes Red Berries,crownfield,False,b,382.0,77.5,11.5,2.6,0.7,6.5,8.9,0.37
-3560070754588,Pétales de blé complet et riz,carrefour bio,True,c,372.0,78.0,16.0,1.5,0.2,6.0,8.4,1.0
+3560070754588,Pétales de blé complet et riz,carrefour,True,c,372.0,78.0,16.0,1.5,0.2,6.0,8.4,1.0
 3256224124887,Céréales Muesli croustillant au chocolat au lait,u,False,c,442.0,63.0,20.0,15.0,3.7,7.6,10.0,0.23
 3421557920820,KARÉ NOISETTE,grillon dor,True,c,437.0,59.0,17.0,15.0,2.2,9.3,12.0,0.12
 3250391635283,Muesli floconneux morceaux de fruits,chabrior,False,b,378.2,61.2,12.9,8.4,3.1,9.1,9.9,0.08
 3580281080122,Muesli crunchy,muesli crunchy,False,e,441.0,65.0,24.0,15.0,4.8,6.5,8.4,8.4
-3421557921155,Muesli Croustillant Noisettes,terres et cereales bio,True,a,422.0,59.0,16.0,12.0,1.4,9.0,14.0,0.05
+3421557921155,Muesli Croustillant Noisettes,terres et cereales,True,a,422.0,59.0,16.0,12.0,1.4,9.0,14.0,0.05
 3421557500985,Ka'ré chocolat noisette,grillon dor,True,d,423.0,65.0,28.0,13.0,2.4,6.4,8.4,0.63
 3760094310085,Granola amande & miel,aline olivier,True,b,447.5,44.0,13.0,26.0,2.5,8.9,12.0,0.16
 3111900350878,Surperfruits,favrichon,True,c,432.0,67.0,21.0,13.0,1.3,6.2,8.4,0.01
@@ -231,17 +231,17 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3256224060697,Céréales Muesli croustillant aux fruits secs paquet 500g,u,False,c,435.0,65.0,23.0,14.0,5.0,7.6,8.5,0.18
 3111900350694,Céréales croustillantes Chocolat & châtaigne,favrichon,True,d,458.0,75.0,23.0,14.0,2.9,3.6,5.8,0.01
 3421557921322,muesli croustillant protéine,grillon dor,True,a,422.0,59.0,16.0,12.0,1.3999999761581,9.0,14.0,0.05
-3560071417208,Croustillant avoine chocolat,carrefour france,True,c,450.0,56.0,15.0,18.0,5.4,11.0,11.0,0.04
+3560071417208,Croustillant avoine chocolat,carrefour,True,c,450.0,56.0,15.0,18.0,5.4,11.0,11.0,0.04
 3387390331523,NESTLE CHEERIOS Céréales 375g,cheerios,False,c,377.0,72.5,22.2,3.7,0.7,9.1,8.9,0.63
 3256220450140,Muesli croustillant 3 chocolats,u,False,c,440.0,62.0,20.0,15.0,3.8,8.6,10.0,0.13
-3560071407599,Muesli avoine chocolat,carrefour france,True,a,376.0,61.0,8.0,7.9,2.8,8.9,11.0,0.03
+3560071407599,Muesli avoine chocolat,carrefour,True,a,376.0,61.0,8.0,7.9,2.8,8.9,11.0,0.03
 4056489627159,Barres de céréales chocolat noir,crownfield,False,d,412.0,65.0,23.2,12.8,5.8,5.8,6.6,0.19
 3350033776432,Chocolat noir et amandes caramélisées Monoprix Bio,monoprix,True,c,455.0,60.0,13.0,19.0,3.1,7.8,11.0,0.06
 7613036076036,NESTLE LION WILD Céréales 600g,nestle,False,d,433.0,65.8,24.9,15.5,2.1,4.6,5.0,0.85
 7613287514271,NESTLE FITNESS Chocolat Noir Céréales 450g,nestle,False,c,395.0,68.1,15.1,7.5,4.1,8.9,9.0,0.45
 3421557920264,Mops chocolat,grillon dor,True,c,364.0,78.0,20.0,2.0,1.2,3.9,6.5,0.02
 5010477367099,Pop & crisp chocolat,jordans,False,c,414.0,64.0,20.0,11.0,1.6,12.0,8.5,0.01
-3560071013011,Crunchy 3 chocolates,carrefour france,False,c,452.0,63.0,21.0,16.0,4.2,8.2,10.0,0.13
+3560071013011,Crunchy 3 chocolates,carrefour,False,c,452.0,63.0,21.0,16.0,4.2,8.2,10.0,0.13
 3111900330047,Oz Miel,favrichon,True,c,381.0,82.0,20.0,1.8,0.5,4.9,6.6,0.3
 3229820792965,Porridge figue framboise,bjorg,True,a,363.0,58.0,5.4,6.5,1.2,10.0,13.0,0.02
 3564706612815,Muesli fraises,marque repere,False,c,425.0,65.0,19.0,12.0,1.9,8.5,10.0,0.15
@@ -260,7 +260,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3159470204412,Special K Chocolat Noir Pure Chocolate,special k,False,d,397.0,67.0,28.0,9.2,4.7,9.6,6.8,0.6
 3760094310092,Mon granola bio chocolat,ao,True,c,436.0,52.0,11.0,18.0,3.7,8.9,11.0,0.02
 3421557104008,Muesli Chocolat noir,grillon dor,True,c,407.0,62.0,7.9,11.0,4.6,9.3,11.0,0.15
-3560071269784,Flakes épeautre,carrefour bio,True,a,375.0,68.0,1.2,2.9,0.4,11.0,14.0,0.02
+3560071269784,Flakes épeautre,carrefour,True,a,375.0,68.0,1.2,2.9,0.4,11.0,14.0,0.02
 3229820803913,Muesli Protéines Légumineuses,bjorg,True,a,373.0,58.0,9.0,7.2,1.6,10.0,14.0,0.09
 3564706738744,Muesli - Pépites croustillantes au chocolat noir et noisettes grillées,grainea,False,c,449.0,62.0,20.0,16.0,3.7,8.4,10.0,0.13
 3421557501579,Pétales o' choc,bonneterre,True,c,374.0,72.0,20.0,3.6,1.8,7.7,9.3,0.4
@@ -273,7 +273,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3596710494248,Corn flakes bio,auchan,True,b,387.0,86.0,0.5,0.9,0.2,3.2,7.0,0.01
 3421557110214,Krounchy too chocolat,grillon dor,True,c,437.0,65.0,21.0,13.0,4.6,8.5,9.7,0.07
 3111900350595,Flakes 3 Chocolats,favrichon,True,d,412.0,78.0,22.0,7.1,4.0,3.9,7.3,0.25
-3560071267063,Céréales chocolat cœur aux noisettes,carrefour bio,True,d,426.0,59.0,28.0,15.0,2.7,10.0,9.4,0.33
+3560071267063,Céréales chocolat cœur aux noisettes,carrefour,True,d,426.0,59.0,28.0,15.0,2.7,10.0,9.4,0.33
 3256228686565,Céréales Muesli croustillant fruits secs et graines de courge - 500g,u,True,c,386.0,62.0,27.0,10.0,1.2,7.0,8.4,0.13
 3560071478643,Flocons d'avoine complète,carrefour,False,a,372.0,59.0,0.7,7.0,1.3,10.0,14.0,0.0
 3256229540514,"Céréales Corn Flakes, 500g",u,False,c,382.0,84.0,7.9,1.0,0.3,3.5,7.4,0.97
@@ -288,18 +288,18 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 20621377,Choco Shells,crownfield,False,c,377.0,74.4,22.4,2.7,1.1,8.3,9.6,0.29
 3560071013196,Stylesse Nature,carrefour,False,c,379.0,80.0,13.0,1.5,0.2,5.3,8.7,0.79
 7613031915095,NESTLE MIX Céréales 190g,nestle,False,c,393.0,78.0,22.4,5.2,0.9,6.0,6.7,0.66
-3350031937804,Muesli croustillant fruits rouges Bio Monoprix,monoprix bio,True,c,417.5,68.0,23.0,10.0,2.3,8.3,8.6,0.04
+3350031937804,Muesli croustillant fruits rouges Bio Monoprix,monoprix,True,c,417.5,68.0,23.0,10.0,2.3,8.3,8.6,0.04
 5600317479626,Eveil du Bouddha Maxi Protéines,iswari,True,a,377.0,32.5,10.98,9.5,2.2,15.3,33.0,0.2
 3572420000399,Croc' Tout Choc à la pâte à tartiner,lucien georgelin,False,d,456.0,67.0,32.0,16.0,5.0,7.0,7.5,0.5
 7613287514219,NESTLE FITNESS Chocolat au Lait Céréales 450g,nestle,False,c,397.0,69.7,17.5,7.3,4.0,9.1,8.8,0.5
-5053827105590,Extra Noisettes Caramelisées,kelloggs extra,False,e,482.222222222222,61.0,22.0,23.0,9.0,4.5,7.5,0.84
+5053827105590,Extra Noisettes Caramelisées,kelloggs,False,e,482.222222222222,61.0,22.0,23.0,9.0,4.5,7.5,0.84
 3111900330092,Crush pâte à tartiner,favrichon,True,c,434.0,60.0,24.0,15.0,2.5,10.0,9.8,0.16
 5059319032221,Coco pops chocos,kellogs,False,c,380.0,77.0,22.0,2.2,1.0,6.0,10.0,0.67
-3596710446605,Muesli CroustillantNoix,auchan retail services,False,c,453.0,64.0,18.0,17.0,1.9,5.9,9.7,0.03
+3596710446605,Muesli CroustillantNoix,auchan,False,c,453.0,64.0,18.0,17.0,1.9,5.9,9.7,0.03
 3421557111198,Krounchy muesli croustillant,grillon dor,True,c,437.0,67.0,20.0,13.0,3.1,7.1,9.2,0.06
 3229820800486,Flocons d'Epeautre,bjorg,True,a,347.0,63.0,1.7,2.5,0.2,8.2,14.0,0.01
 3421557108631,Krounchy Chia Myrtilles,grillon dor,True,c,442.0,65.0,22.0,15.0,1.7,7.3,8.0,0.04
-3560071267032,Pétales au chocolat blé complet,carrefour france,True,c,379.0,74.0,25.0,3.4,1.6,7.6,9.3,0.22
+3560071267032,Pétales au chocolat blé complet,carrefour,True,c,379.0,74.0,25.0,3.4,1.6,7.6,9.3,0.22
 3256228686602,Céréales Muesli floconneux chocolat noir et graines de courge 375g,u,True,a,388.0,50.0,3.9,12.0,4.2,12.0,14.0,0.03
 0643435449626,Chocapic,nestle,False,c,389.0,73.6,22.4,4.8,1.3,7.7,8.9,0.22
 3421557108136,Krounchy épeautre chocolat noir,grillon dor,True,c,446.0,69.0,24.0,13.0,3.4,7.4,10.0,0.06
@@ -312,7 +312,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3760286460406,Crousti'Fourrées Cacao Noisettes & Spiruline,hoope,True,c,426.0,63.0,16.0,14.0,1.7,5.3,9.2,0.11
 3256228285898,Flocons d'avoine petits,u,True,a,380.0,59.0,1.3,9.1,1.7,10.0,10.0,0.01
 3329483601205,Flocons d'avoine petits,markal,True,a,364.0,56.0,1.2,6.9,0.6,11.0,14.0,0.0
-3560071013097,Crunchy 4 noix,carrefour france,False,b,466.0,58.0,14.0,19.0,2.5,9.6,11.0,0.1
+3560071013097,Crunchy 4 noix,carrefour,False,b,466.0,58.0,14.0,19.0,2.5,9.6,11.0,0.1
 3421557701023,Flocons d'avoine gros,biocoop,True,a,376.0,61.0,0.9,7.1,1.3,10.0,12.0,0.01
 3596710494156,"Muesli croustillant fruits secsRaisins, Figues, Noix de coco, Bananes, Amandes, Abricots, Noisettes",auchan,True,d,436.0,64.0,24.0,15.0,4.4,6.7,8.4,0.05
 3229820801643,les p'tits curieux crack au choc,bjorg,True,c,379.0,76.0,20.0,2.7,0.8,6.6,9.4,0.33
@@ -334,24 +334,24 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3596710494200,Fourrés chocolat noisette,auchan,True,d,435.0,68.0,24.0,14.0,2.5,3.6,8.3,0.4
 4335619020337,Pillows goût chocolat noisette,crownfield,False,d,445.0,71.3,22.8,14.3,2.6,2.9,6.3,0.4725
 20621445,Special Flakes Chocolate Noir,,False,c,401.0,74.3,13.7,5.9,2.9,8.4,8.5,0.45
-5400101057685,Carrefour Bio Granola avec Quinoa,carrefour bio,True,c,425.0,64.0,19.0,12.0,1.4,7.5,11.0,0.15
+5400101057685,Carrefour Bio Granola avec Quinoa,carrefour,True,c,425.0,64.0,19.0,12.0,1.4,7.5,11.0,0.15
 3256225428434,Céréales Pétales de riz et blé orge avec fruits rouges boîte de,u,False,d,374.0,80.0,19.0,1.3,0.2,5.1,7.9,0.93
 3256229255661,"Céréales Müesli cranberry, 400g",u,False,a,434.0,62.0,8.0,14.0,1.7,8.2,11.0,0.01
 3421557920677,Petits flocons d'avoine sans gluten,grillon dor,True,a,364.0,59.0,1.2,6.7,1.4,10.0,12.0,0.009
 5600872804307,Super petit dejeuner,iswari,True,c,407.0,38.0,7.0,15.0,2.3,12.0,24.0,0.43
 3421557922626,Le croustillant chocolat noir & noix de pécan,terres et cereales,True,c,456.0,61.0,20.0,18.0,4.4,8.2,9.5,0.31
 3580281080184,Granola bio 2 chocolats amandes,agidra,True,d,442.0,60.0,20.0,16.0,8.7,7.7,10.0,0.02
-3560070520381,Son d'avoine Bio,carrefour bio,True,a,365.0,53.0,1.3,7.5,1.3,13.0,15.0,0.01
+3560070520381,Son d'avoine Bio,carrefour,True,a,365.0,53.0,1.3,7.5,1.3,13.0,15.0,0.01
 3560070737710,CROCKS Goût CHOCO-NOISETTE,carrefour,False,d,456.0,75.0,26.0,13.0,2.0,6.3,6.6,0.62
 3329480013612,Flocons d'avoine gros,ofal,True,a,364.1,56.0,1.33,6.9,1.17,11.0,14.0,0.0
 4056489671435,Special flakes nature,crownfield,False,b,373.0,76.0,11.6,2.1,0.5,7.5,8.7,0.5
 4056489671442,Flakes fruits rouges,crownfield,False,b,370.0,74.9,13.4,2.2,0.5,8.0,8.7,0.48
 3564706738706,Pétales de céréales chocolat noir,marque repere,False,d,402.0,72.0,19.0,7.7,4.0,7.0,7.7,0.73
-3421557922435,Muesli Croustillant Pommes Noisette,tc terres et cereales bio,True,c,429.0,67.0,20.0,12.0,1.4,7.7,10.0,0.04
+3421557922435,Muesli Croustillant Pommes Noisette,terres et cereales,True,c,429.0,67.0,20.0,12.0,1.4,7.7,10.0,0.04
 5053827199759,TRÉSOR Choco Roulette,kelloggs,False,e,443.0,69.0,27.0,13.0,3.7,3.3,7.6,1.2
 3273120027166,Muesli Floconneux Fruits Rouges & Chia,happy bio,True,a,362.0,61.0,15.0,5.8,0.7,10.0,10.0,0.02
 3256228686541,"Céréales fourrées chocolat noisettes bio, sachet 375g",u,True,d,424.0,64.0,26.0,13.0,2.5,7.0,9.0,0.25
-3560071417130,Croustillant 3 chocolats,carrefour france,True,d,457.0,62.0,19.0,17.0,6.2,7.3,9.7,0.07
+3560071417130,Croustillant 3 chocolats,carrefour,True,d,457.0,62.0,19.0,17.0,6.2,7.3,9.7,0.07
 3250392383862,Crica Choc' chocolat noisette,chabrior,False,d,423.0,61.0,29.0,14.0,2.5,8.8,8.9,0.43
 3421557112089,Muesli Sarrasin,grillon dor,True,c,389.0,77.0,22.0,2.7,0.5,5.4,11.0,0.07
 3760286460079,Muesli croustillant 3 noix et spiruline,hoope,True,a,440.0,52.0,14.0,18.0,2.0,8.3,13.0,0.08
@@ -359,15 +359,15 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3421557111105,Flakes de sarrasin,grillon dor,True,a,395.0,74.0,0.7,3.4,0.6,6.3,14.0,0.11
 3250392415129,Muesli CRISP chocolat au lait 500g,chabrior,False,c,450.6,59.3,18.6,17.2,4.7,10.9,9.2,0.29
 3564706614772,Céréales fourrées goût choco noisette,ptit deli,False,d,463.333333333333,66.9,28.3,17.4,1.6,5.1,6.9,0.6
-3421557923012,muesli croustillant chocolat amande,terre et cereales,True,c,450.0,62.0,19.0,16.0,3.7,8.1,10.0,0.01
+3421557923012,muesli croustillant chocolat amande,terres et cereales,True,c,450.0,62.0,19.0,16.0,3.7,8.1,10.0,0.01
 7613036668910,NESTLE NESQUIK BIO Céréales 375g,nesquik,True,c,374.0,75.2,22.3,2.1,0.7,8.7,9.1,0.45
 3421557501074,Karé sans gluten,grillon dor,True,d,432.0,70.0,25.0,13.0,4.0,3.5,6.8,0.51
 3273120011165,Petits flocons avoine,celnat,True,a,377.0,66.3,1.0,7.0,1.0,11.5,11.1,0.01
 3111900390034,Pétales de sarrasin chataigne,biocoop,True,a,374.0,69.0,5.4,3.2,0.7,7.5,14.0,0.03
-3421557502750,Flakes céréales & légumineuses,terres et cereales bio,True,a,468.0,42.0,2.7,22.0,1.9,12.0,19.0,0.01
-3421557922237,Muesli croustillant cacahuète chocolat,tc terres cereales bio,True,d,451.0,65.0,22.0,16.0,3.1,6.9,9.3,0.4
+3421557502750,Flakes céréales & légumineuses,terres et cereales,True,a,468.0,42.0,2.7,22.0,1.9,12.0,19.0,0.01
+3421557922237,Muesli croustillant cacahuète chocolat,terres et cereales,True,d,451.0,65.0,22.0,16.0,3.1,6.9,9.3,0.4
 3760286460413,Crousti' Fourrées - Tout Chocolat & Spiruline,hoope,True,c,426.0,63.0,16.0,14.0,1.8,5.2,8.9,0.1
-5400101057692,Carrefour Bio Granola au Miel,carrefour bio,True,c,458.0,56.0,14.0,19.0,4.3,7.9,13.0,0.14
+5400101057692,Carrefour Bio Granola au Miel,carrefour,True,c,458.0,56.0,14.0,19.0,4.3,7.9,13.0,0.14
 3273120027241,Gros flocons d'avoine,happy bio,True,a,377.0,62.0,1.0,7.1,1.3,12.0,11.0,0.01
 3350033776449,Granola noisettes & noix de cajou,monoprix,True,c,477.0,57.0,15.0,21.0,2.2,8.2,11.0,0.06
 3111900350854,Muesli Croustillant Chocolat noir 70%,favrichon,True,c,463.0,63.0,20.0,19.0,4.5,7.3,6.9,0.16
@@ -376,7 +376,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 4047247752824,Choco Rice,aldi,False,a,394.0,75.0,17.0,3.6,1.0,9.1,11.0,0.295
 3229820805429,Flocons 5 céréales,bjorg,True,a,348.333333333333,64.0,1.1,3.8,0.7,10.0,10.0,0.11
 3421557110016,Krounchy granola miel & noix de pécan,grillon dor,True,c,447.0,65.0,20.0,15.0,3.3,6.6,9.1,0.07
-3421557921131,Muesli croustillant pommes cassis,tc,True,a,400.0,62.0,7.2,8.9,1.7,12.0,13.0,0.1
+3421557921131,Muesli croustillant pommes cassis,terres et cereales,True,a,400.0,62.0,7.2,8.9,1.7,12.0,13.0,0.1
 3111900410022,Muesli croustillant chocolat & framboise,favrichon,True,c,470.0,59.0,18.0,19.0,5.2,8.6,10.0,0.01
 3111900350861,"Muesli croustillant au caramel, chocolat & amande",favrichon,True,d,459.0,63.0,16.0,18.0,4.8,5.6,9.2,0.5
 4047247771375,Special Flakes Red Fruits,golden bridge,False,b,369.0,75.0,13.0,2.2,0.4,7.1,8.7,0.48
@@ -394,15 +394,15 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3564706514249,Muesli croustillant avoine et fruits secs bio sans gluten,chaque jour sans gluten,True,d,429.0,63.0,25.0,13.0,2.2,5.5,8.2,0.0
 3560071013004,Crunchy 5 fruits secs,carrefour,False,d,444.0,62.0,21.0,16.0,7.2,8.2,8.8,0.08
 3421557601033,Flocons d'avoine petits,biocoop,True,a,376.0,61.0,0.9,7.1,1.3,10.0,12.0,0.01
-3421557502743,Flakes céréales & légumineuses - nature,tc,True,a,354.0,58.0,1.4,1.7,0.2,15.0,19.0,0.03
+3421557502743,Flakes céréales & légumineuses - nature,terres et cereales,True,a,354.0,58.0,1.4,1.7,0.2,15.0,19.0,0.03
 3229820802367,Muesli céréales ancienne,bjorg,True,a,405.714285714286,54.0,3.2,13.0,1.8,7.9,14.0,0.01
 3770016639095,Granola Pépites de chocolat,joody,True,a,398.0,54.6,10.9,12.3,3.9,8.9,12.9,0.02
 5600872802662,Super Petit Dejeuner,iswari,True,a,428.0,47.0,7.9,18.0,2.2,11.0,14.0,0.0
-3560071482732,Crunchy Chocolat noir Noisette,carrefour france,False,d,450.0,54.0,18.0,19.0,5.8,14.0,9.3,0.47
+3560071482732,Crunchy Chocolat noir Noisette,carrefour,False,d,450.0,54.0,18.0,19.0,5.8,14.0,9.3,0.47
 3229820805405,Croustillant Macadamia Raisins,bjorg,True,b,420.0,63.3333333333333,15.0,13.0,1.5,7.83333333333333,8.33333333333333,0.0
 3229820801650,Les p’tits curieux Croc Fourrés tout choco,bjorg,True,d,436.0,65.0,22.0,14.0,3.8,6.0,9.4,0.51
 5010477361639,Bio country crisp,jordans,True,c,447.0,62.9,19.0,16.0,1.9,6.0,9.8,0.03
-3421557921124,Muesli croustillant -Raisins figues noix du Brésil,terres cereales bio,True,b,404.0,56.0,13.0,13.0,2.4,9.9,12.0,0.03
+3421557921124,Muesli croustillant -Raisins figues noix du Brésil,terres et cereales,True,b,404.0,56.0,13.0,13.0,2.4,9.9,12.0,0.03
 3250391727414,Crica'choc chocolat noisette Maxi Pack,chabrior,False,d,426.0,61.0,29.0,14.0,2.5,8.8,8.9,0.43
 3250390146063,Muesli crisp 3 chocolats,chabrior,False,c,453.0,62.7,18.2,16.3,4.3,9.5,9.0,0.29
 3421557108068,Muesli fruits secs graines,biocoop,True,a,359.0,61.0,14.0,5.4,0.8,10.0,11.0,0.02
@@ -415,7 +415,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3421557502477,Krounchy chocolat avoine sans gluten,grillon dor,True,c,456.0,65.0,22.0,17.0,4.0,6.8,8.7,0.05
 3421557501616,Flocons de sarrasin,terres et cereales,True,a,351.0,60.0,1.5,3.9,0.9,8.5,16.0,0.01
 3396411241901,Céréales extra croustillantes chocolat noir & noisettes,bonneterre,True,d,446.0,59.0,24.0,18.0,4.7,7.4,8.4,0.35
-3421557922312,Muesli Croustillant noix de pecan miel,terres et cereales bio,True,c,454.0,63.0,19.0,17.0,3.1,7.0,9.2,0.06
+3421557922312,Muesli Croustillant noix de pecan miel,terres et cereales,True,c,454.0,63.0,19.0,17.0,3.1,7.0,9.2,0.06
 5600961112566,Protein Granola Chocolate & Hazelnuts,prozis,False,,445.0,39.0,0.7,20.0,1.1,4.8,22.0,0.17
 3596710548859,Muesli croustillant 3 chocolats,auchan,False,c,436.0,67.0,22.0,13.0,2.8,6.8,10.0,0.17
 3596710548835,Müesli croustillant fruits rouges,auchan,False,c,425.0,67.0,20.0,11.0,1.5,7.5,10.0,0.18
@@ -490,7 +490,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3250392784669,Flocons d'avoine complète - 500g,netto,False,a,376.4,61.0,0.9,6.8,1.3,9.6,13.0,0.08
 3564706614802,Corn flakes sucrés,ptit deli,False,d,387.0,88.0,22.0,0.8,0.3,2.3,6.4,0.75
 3770016639125,Le Granola Très Très Sain Chocolat Noisette,joody,True,a,418.0,50.8,10.0,16.0,3.9,8.9,13.5,0.02
-3560071090821,Choco Bollz,carrefour france,False,c,380.0,77.0,22.0,2.4,1.0,7.5,8.7,0.42
+3560071090821,Choco Bollz,carrefour,False,c,380.0,77.0,22.0,2.4,1.0,7.5,8.7,0.42
 3608390890125,Cereals bars,decathlon,False,d,364.0,73.0,27.0,4.5,0.5,5.2,5.3,0.46
 3456300018929,petits flocons d'avoine,jardin bio etic,True,,347.0,58.0,1.0,5.7,1.0,10.0,11.0,
 3421557922602,Muesli protéines,grillon dor,True,a,379.0,58.0,9.1,8.5,3.0,11.0,13.0,0.03
@@ -517,7 +517,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3273120027142,Muesli Floconneux Fruits & Noix,happy bio,True,b,376.0,58.0,18.0,9.1,1.1,9.4,11.0,0.02
 3560070330836,Pétales de Blé Goût Chocolat,carrefour,False,d,382.0,80.0,30.0,1.9,0.7,5.2,8.6,0.35
 3111900350731,Cranberry & gingembre,favrichon,True,c,422.0,71.0,19.0,10.0,1.3,5.5,8.4,0.12
-3560070800230,Choco Curlz,carrefour france,False,c,378.0,75.0,22.0,2.9,1.2,7.3,9.3,0.22
+3560070800230,Choco Curlz,carrefour,False,c,378.0,75.0,22.0,2.9,1.2,7.3,9.3,0.22
 3770007543011,Granolas chocolat noir & pépites,catherine kluger,True,d,466.0,49.0,19.8,23.7,7.2,7.9,11.2,0.5
 3250392747015,Crica tout chocolat,chabrior,False,d,432.6,62.0,28.0,15.0,2.7,8.2,8.3,0.51
 3760121217868,Muesli croustillant chocolat coco,biocoop,True,d,469.0,60.0,22.0,20.0,7.0,7.0,8.2,0.01
@@ -529,7 +529,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3760294961339,Muesli Croquant Fruits (Pommes-Raisin-Amandes),,True,a,355.0,55.1,12.8,8.5,1.1,7.7,10.7,0.02
 7613034626844,Céréales Chocapic,nestle,False,c,388.0,73.6,22.4,4.8,2.0,7.5,8.8,0.22
 5430000992114,Bamboo,bamboo,False,a,452.0,43.0,5.8,25.0,2.6,7.6,12.0,0.11
-3350031628900,Muesli bio,monoprix bio,True,a,366.0,62.0,14.0,6.5,1.5,10.0,9.9,0.02
+3350031628900,Muesli bio,monoprix,True,a,366.0,62.0,14.0,6.5,1.5,10.0,9.9,0.02
 3256220118460,Céréales chocolatées et fourrées au chocolat - 600g,u,False,d,448.0,73.0,29.0,13.0,3.1,7.1,6.3,0.6
 3560070737628,Cr'ocks coeur fondant lait,carrefour,False,d,438.0,70.0,25.0,13.0,1.6,5.7,7.4,0.65
 3560071168674,Pétales de maïs,carrefour,False,d,380.0,83.0,5.4,1.1,0.3,3.4,8.1,1.6
@@ -539,7 +539,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3760294960448,Céréales Choco'crok,elibio,True,d,427.0,63.1,28.4,14.0,5.45,7.3,8.4,0.48
 3770007543509,Granola bio le chocolaté,essentiels,True,d,430.0,51.0,17.3,20.3,6.0,7.1,10.7,0.5
 3770016639132,Granola Graines de courge - Pavot,joody,True,a,413.0,48.8,11.2,15.7,2.6,8.4,15.1,0.01
-3770007543516,Granola noisettes & sarrasin,supernature,True,a,450.0,46.4,7.8,22.1,2.3,7.5,12.6,0.01
+3770007543516,Granola noisettes & sarrasin,super nature,True,a,450.0,46.4,7.8,22.1,2.3,7.5,12.6,0.01
 3421557921704,Muesli cranberries cassis,grillon dor,True,a,372.0,62.0,14.0,7.0,1.1,8.7,11.0,0.01
 3421557922565,Muesli banane chocolat cacahuètes,,True,a,379.0,58.0,13.0,8.5,3.0,11.0,13.0,0.3
 3111902100242,Muesli bio croustillant nature,charles vignon,True,b,422.0,75.0,15.0,11.0,1.1,7.6,9.7,0.01
@@ -555,8 +555,8 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 4260196681032,Alcamatin,jentschura,True,a,381.0,62.5,12.82,7.3,0.95,6.8,12.9,0.05
 5600244397857,Eveil du Bouddha Framboise,iswari,True,a,402.0,45.8,11.5,15.0,1.8,11.4,15.2,0.04
 3266191081168,Muesli avoine dattes et graines de lin,la vie claire,True,a,379.0,61.0,10.0,8.3,2.1,10.0,11.0,0.02
-3421557922244,Crispy o'noisette,tc,True,b,390.0,66.0,20.0,7.4,0.7,11.0,9.3,0.38
-3596710494187,"Muesli Fruits et NoixRaisins, Noisettes, Noix de coco",auchan bio,True,b,372.0,62.0,16.0,7.3,1.9,11.0,9.4,0.02
+3421557922244,Crispy o'noisette,terres et cereales,True,b,390.0,66.0,20.0,7.4,0.7,11.0,9.3,0.38
+3596710494187,"Muesli Fruits et NoixRaisins, Noisettes, Noix de coco",auchan,True,b,372.0,62.0,16.0,7.3,1.9,11.0,9.4,0.02
 3596710475490,Pétales au chocolat,auchan,False,c,387.0,75.0,25.0,3.7,1.6,7.4,9.7,0.22
 3770012915209,Granola Chocolat noir Noisettes,110 graines,True,c,407.0,58.03,17.55,14.58,2.98,9.91,10.07,0.22
 3380390410601,Quinoa soufflé,primeal,True,a,372.0,62.099998474121,3.9000000953674,6.5,0.69999998807907,7.1,12.800000190735,0.15
@@ -569,7 +569,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3266191080901,Pétales de quinoa au cacao,la vie claire,True,c,352.0,71.7,23.9,2.5,0.8,5.1,8.0,0.1
 5902884465249,Muesli caramel,one day more,False,c,381.0,67.1,21.3,6.1,1.6,8.5,9.3,0.81
 3564706614758,Cereales fourrées au lait,marque repere,False,d,436.0,70.0,25.0,13.0,1.6,5.7,7.4,0.65
-3421557502781,CROK’FONDANT,tc terres cereales bio,True,d,427.085,65.0,27.0,13.0,2.7,8.5,8.9,0.64
+3421557502781,CROK’FONDANT,terres et cereales,True,d,427.085,65.0,27.0,13.0,2.7,8.5,8.9,0.64
 5010477344878,Country crisp délice - Pépites croustillantes - 3 chocolats & noix grillées,jordans,False,d,484.0,55.1,23.0,23.5,6.1,7.0,9.7,0.0254
 3596710497065,Granola Nature,auchan,False,a,488.0,69.0,6.3,17.0,1.8,8.6,10.0,0.03
 3254560889392,Boules chocolat,auchan,False,c,373.0,72.0,18.0,2.9,1.2,9.5,10.0,0.23
@@ -582,8 +582,8 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 4068262038533,Muesli crunchy chocolat au lait,aldi,False,d,455.0,64.0,24.0,16.0,5.4,6.6,9.2,0.1
 3250393444425,Billes O' Cacao,chabrior,False,b,369.7,71.0,19.0,2.9,0.7,11.0,9.4,0.01
 3760031831406,Flakes Sarrasin,atelier sarrasin,True,a,379.0,69.0,1.5,3.0,0.8,7.2,15.0,0.2
-3421557922619,"Le Croustillant framboises, chocolat blanc & amandes",tc,True,c,447.0,60.0,21.0,17.0,2.8,11.0,9.4,0.04
-3421557501500,Le croustillant super fruits,terres et cereales bio,True,d,451.0,63.0,26.0,17.0,3.2,7.1,9.0,0.05
+3421557922619,"Le Croustillant framboises, chocolat blanc & amandes",terres et cereales,True,c,447.0,60.0,21.0,17.0,2.8,11.0,9.4,0.04
+3421557501500,Le croustillant super fruits,terres et cereales,True,d,451.0,63.0,26.0,17.0,3.2,7.1,9.0,0.05
 3263851320711,Muesli 3chocolats,leader price,False,d,446.0,65.0,25.0,16.0,5.0,5.0,8.1,0.8
 3421557108594,Krounchy Nature,grillon dor,True,c,440.0,68.0,20.0,13.0,1.7,7.0,9.1,0.05
 3329483101200,Flocons 5 Céréales,markal,True,a,341.0,61.0,2.0,3.0,1.0,11.0,12.0,0.025
@@ -624,10 +624,10 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3041091821393,Mini matin céréales complètes au miel,bledina,False,a,375.0,75.0,5.4,2.1,0.3,6.6,11.0,0.0
 3760286460215,Mueslis bio croustillant 4 fruits,hoope,True,a,377.0,42.5,9.2,16.2,1.72,8.1,11.5,0.08
 3250392144432,Crousti' cookie 375g,netto,False,c,390.6,77.0,21.0,4.4,0.6,6.1,7.7,0.52
-3596710494194,Muesli fruits et baies,auchan bio,True,a,365.0,63.0,11.0,5.5,1.1,9.6,11.0,0.02
+3596710494194,Muesli fruits et baies,auchan,True,a,365.0,63.0,11.0,5.5,1.1,9.6,11.0,0.02
 4033634300020,Pain croustillant Cranberries & Coco,dr kargs,False,c,461.0,53.0,13.0,20.0,4.2,8.5,13.0,0.47
 3760294961322,Müesli croquant nature,elibio,True,a,374.0,55.7,9.8,9.59,1.32,8.5,12.1,0.01
-3421557922558,Muselière bio cassis et amandes,terres et cereales bio,True,a,374.0,60.0,9.3,8.0,1.1,10.0,10.0,0.0
+3421557922558,Muselière bio cassis et amandes,terres et cereales,True,a,374.0,60.0,9.3,8.0,1.1,10.0,10.0,0.0
 2006050096282,Choco hazelnut pillows,golden bridge,False,d,459.0,74.0,28.0,14.0,2.2,5.9,6.2,0.6
 3700036908659,Croustillant aux noix,naturalia,True,c,467.0,59.0,18.0,19.0,3.6,7.8,11.0,0.19
 3273120033990,Muesli protéiné fruits rouges,happy bio,True,a,386.0,41.0,11.0,11.4,1.7,11.7,24.0,0.01
@@ -650,7 +650,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3560071531096,Crocks Choco-Noisette,carrefour,False,d,456.0,75.0,26.0,13.0,2.0,6.3,6.6,0.62
 5059319038186,Extra granola chocolat au lait,,False,e,472.0,60.0,26.0,21.0,9.8,5.5,8.1,0.76
 3229820799445,Crousti étoiles choco,bjorg,True,c,416.0,65.0,18.0,12.0,2.5,5.6,9.2,0.2
-3421557501647,Flakes 5 céréales,terres cereales bio,True,a,364.0,69.0,1.3,2.3,0.4,12.0,11.0,0.03
+3421557501647,Flakes 5 céréales,terres et cereales,True,a,364.0,69.0,1.3,2.3,0.4,12.0,11.0,0.03
 3256220450003,Céréales chocolatées fourrées chocolat,u,False,d,451.0,73.0,26.0,13.0,2.3,6.6,7.1,0.65
 3273120027531,Petits flocons d'Avoine,happy bio,True,a,377.0,62.0,1.0,7.1,1.3,12.0,11.0,0.01
 3421557500756,Blé soufflé,grillon dor,True,a,350.0,64.0,1.1,2.1,0.4,10.0,13.0,0.01
@@ -665,7 +665,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3560071016579,Tartine craquantes au maïs et riz,carrefour,False,c,379.0,85.0,2.6,0.9,0.2,0.7,7.7,0.86
 3258561040189,Muesli 5 fruits,belle france,False,d,432.0,69.0,33.0,13.2,5.98,6.8,6.5,0.123
 3250392232382,Céréales crica lait,chabrior,False,d,450.0,63.6,26.3,16.0,3.8,4.7,10.5,0.5
-3421557502644,Muesli croustillant 4 noix,terres cereales bio,True,c,481.0,57.0,18.0,22.0,3.8,7.4,9.6,0.05
+3421557502644,Muesli croustillant 4 noix,terres et cereales,True,c,481.0,57.0,18.0,22.0,3.8,7.4,9.6,0.05
 3266191250564,Crunchy intense,la vie claire,True,d,445.0,55.0,20.0,19.0,8.7,8.9,8.9,0.04
 8002816806304,Corn flakes,piu cereali bio,True,d,369.0,80.0,5.0,1.0,0.2,4.0,8.0,1.5
 3260191011460,Muesli Exquis chocolat noir noisettes,la vie claire,True,c,423.0,54.0,5.9,15.0,5.5,9.3,12.0,0.01
@@ -682,7 +682,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3421557923456,Krounchy muesli croustillant Framboise chocolat,grillon dor,True,c,451.0,62.0,17.0,17.0,4.3,9.3,8.5,0.01
 20621391,Karamell Crunch,crownfield,False,d,389.0,76.6,25.9,3.9,1.5,5.9,9.0,0.46
 3111900350366,Muesli 30% de fruits,favrichon,True,c,362.0,63.0,19.0,6.0,3.0,8.3,10.0,0.0
-3560071403775,Blé soufflé Caramélisé,carrefour bio,True,c,378.0,78.0,29.0,1.5,0.2,5.7,11.0,0.0
+3560071403775,Blé soufflé Caramélisé,carrefour,True,c,378.0,78.0,29.0,1.5,0.2,5.7,11.0,0.0
 3596710413638,Coeur lait,auchan,False,d,438.0,70.0,25.0,13.0,1.6,5.7,7.4,0.65
 3273120011141,Flocons 5 Cereales,celnat,True,a,356.0,68.599998474121,1.3999999761581,2.9000000953674,0.80000001192093,8.6,9.6000003814697,0.0099999997764826
 3258561040202,Muesli 4 Noix,belle france,False,c,473.0,62.0,21.9,19.7,3.26,6.9,9.5,0.0
@@ -715,7 +715,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 5059319022314,Mega Kellogg's Frosties,kelloggs,False,d,376.666666666667,87.0,37.0,0.6,0.1,2.0,4.5,0.83
 4068706687730,Muesli Honey Nuts XXL,golden bridge,False,c,475.0,59.0,17.0,20.0,2.3,7.4,11.0,0.16
 3421557923401,Muesli Chocolat au Lait & Noisettes,grillon dor,True,,399.0,58.0,5.2,12.0,3.5,9.0,11.0,
-20101268,Nougat Bits,crownfields,False,d,443.0,65.6,26.6,16.3,3.5,4.9,6.1,0.38
+20101268,Nougat Bits,crownfield,False,d,443.0,65.6,26.6,16.3,3.5,4.9,6.1,0.38
 7613036501378,céréales Chocapic,nestle,False,c,388.0,73.6,22.4,4.8,2.0,7.5,8.8,0.22
 3560070581849,Crunchy Muesli Chocolat Noisettes,carrefour,False,a,446.0,55.0,2.8,19.0,3.9,13.0,11.0,0.09
 3760151013805,Pépites aux éclats de chocolat,dukan,False,a,406.0,47.2,2.3,15.7,3.1,19.5,12.7,0.17
@@ -723,7 +723,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3350031573125,Pétales riz et blé complet aux fruits rouges Monoprix,monoprix,False,c,383.0,81.0,17.0,1.6,0.3,6.1,8.2,0.9
 20621322,Choco Rings,crownfield,False,c,379.0,71.8,23.5,3.9,1.3,9.2,9.5,0.6
 3465511316359,Supermix - Cacao Noisettes,germline,True,a,360.0,53.0,7.5,5.4,1.2,8.5,21.0,0.02
-3421557910456,Muesli croustillant châtaigne,terres et cereales bio,True,d,466.0,64.0,21.0,18.0,1.9,2.9,8.9,0.04
+3421557910456,Muesli croustillant châtaigne,terres et cereales,True,d,466.0,64.0,21.0,18.0,1.9,2.9,8.9,0.04
 3572420000795,Croc'Choco Blanc,lucien georgelin,False,d,435.0,68.0,33.0,14.0,1.8,3.6,8.1,0.64
 3596710496990,Muesli croustillantchocolat lait,auchan,False,d,445.0,65.0,21.0,15.0,4.5,6.3,9.2,0.04
 3258561040462,Musli croustillant au chocolat bio,belle france,True,d,461.0,61.3,21.1,18.4,6.3,8.5,8.4,0.0
@@ -751,7 +751,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 4068706619540,Premium Muesli Fruits & Nuts,aldi,False,c,404.0,56.0,20.0,14.0,6.8,8.8,9.2,0.000125
 5010477370174,Granola chocolat noir,jordans,False,a,384.0,49.2,4.5,12.2,2.9,16.7,10.9,0.03
 5010477369819,Country crisp,jordans,False,c,463.636363636364,59.0,18.0,20.0,2.6,6.1,11.0,0.03
-5902884463405,Musli OneDayMore,onedaymore,True,c,392.0,54.9,14.5,14.0,6.6,10.9,10.4,0.02
+5902884463405,Musli OneDayMore,one day more,True,c,392.0,54.9,14.5,14.0,6.6,10.9,10.4,0.02
 3229820794846,Muesli chocolat sans gluten et bio,bjorg,True,a,385.0,60.0,6.3000001907349,8.8000001907349,3.0,8.8,12.0,0.13
 3560070826186,MUESLI & Co 2 CHOCOLATS & NOISETTES,carrefour,False,d,428.0,62.0,24.0,14.0,5.0,7.2,9.7,0.26
 3229820794839,Muesli sans gluten fruits tournesol lin doré,bjorg,True,a,369.0,59.0,12.0,7.4,1.1,9.3,12.0,0.1
@@ -759,7 +759,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 20702762,8 mini packs céréales,crownfield,False,d,397.0,76.48,26.58,5.3,1.51,5.53,7.97,0.45
 3258561040196,Muesli chocolat noir,belle france,False,d,457.0,66.4,26.4,16.2,5.45,7.6,8.3,0.18
 3596710408160,Coeur chocolat au lait,auchan,False,d,425.0,70.0,28.0,12.0,2.8,6.3,6.0,0.6
-3329483323756,Muesli croustillant chocolat,markal bio,True,c,433.0,65.2,19.7,13.3,2.4,6.9,9.7,0.02
+3329483323756,Muesli croustillant chocolat,markal,True,c,433.0,65.2,19.7,13.3,2.4,6.9,9.7,0.02
 3450970104272,Pétales de céréales goût Chocolat,eco,False,d,388.0,77.0,28.0,3.4,1.3,6.1,9.0,0.23
 3256226763862,Céréales fourrées chocolat noisettes bio,u,True,d,426.0,71.0,26.0,11.0,2.2,3.4,7.7,0.41
 3347431910254,Flocons D'avoine,naturaline,True,a,372.0,59.099998474121,1.1000000238419,7.0,1.2999999523163,13.0,13.0,0.10000000149012
@@ -797,7 +797,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 8710100126402,Quaker Cruesli Frutta Secca,pepsico nederland bv,False,b,462.0,57.0,12.0,19.0,2.0,10.0,8.5,0.01
 5059321003745,Tresor Stix,kelloggs,False,e,480.0,69.0,36.0,19.0,4.0,2.3,7.0,0.23
 3380380054136,Corn flakes glacés bio,ma vie sans gluten,True,e,367.0,84.0,34.0,0.5,0.2,3.0,5.0,1.3
-3560070800353,Honey ballz,carrefour kids,False,d,384.0,87.0,25.0,0.8,0.0,1.5,6.2,0.52
+3560070800353,Honey ballz,carrefour,False,d,384.0,87.0,25.0,0.8,0.0,1.5,6.2,0.52
 7616100005079,BTE 400G CERELAC BLE NESTLE,nestle,False,,426.0,67.3,34.1,10.0,4.1,2.2,15.5,0.3
 3266191080994,Muesli fruits rouges,la vie claire,True,a,348.0,67.0,5.9,3.0,0.5,9.1,9.1,0.0
 5601001228100,Mel,nestle,False,c,380.0,80.0,28.0,1.0,0.2,5.4,10.0,0.02
@@ -836,7 +836,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3273120019963,Flocons de Millet (J),celnat,True,a,355.0,64.5,1.5,4.2,0.7,7.6,11.0,0.0
 3273120026923,Muesli Super Fruits et Graines de Chia,celnat,True,a,371.0,62.0,18.0,7.1,0.9,11.0,10.0,0.02
 3421557502460,Crock'fondant sans gluten,terres et cereales,True,d,426.0,69.0,28.0,13.0,2.4,3.1,6.6,0.65
-3760094310108,MON GRANOLA BIO LIN ET COURGE,alineolivier,True,a,462.0,39.5,5.0,28.2,3.9,8.5,12.5,0.02
+3760094310108,MON GRANOLA BIO LIN ET COURGE,aline olivier,True,a,462.0,39.5,5.0,28.2,3.9,8.5,12.5,0.02
 3380380037344,Flakes D'épeautre Complet Bio - 200G - Priméal,primeal,True,d,360.0,68.0,10.8,2.3,0.2,8.0,13.0,1.9
 3111900350786,60% fruits & graines,favrichon,True,d,423.0,51.0,23.0,18.0,6.3,9.5,9.5,0.14
 3329483211206,Flocons d'épeautre,markal,True,a,355.0,64.0,2.0,3.0,1.0,8.0,14.0,0.003
@@ -878,23 +878,23 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3256228719447,Muesli chocolat,u,True,a,394.0,66.0,5.4,7.3,2.8,10.0,11.0,0.02
 8279820797946,"Muesli sans sucre ajouté, Raisin, figue, datte abricot",,True,,352.0,59.0,14.0,5.8,0.9,10.0,11.0,
 3760336840066,Le porridge chocolat-noisette,funkie,True,c,424.0,51.0,12.0,17.0,3.6,12.0,14.0,0.23
-7613034947611,NESTLE CHOCAPIC Céréales 750g,societe des produits nestle sa,False,c,388.0,73.6,22.4,4.8,2.0,7.5,8.8,0.22
+7613034947611,NESTLE CHOCAPIC Céréales 750g,nestle,False,c,388.0,73.6,22.4,4.8,2.0,7.5,8.8,0.22
 3760020503833,Muesli chocolat noir et graines de lin,jardin bio etic,True,b,397.0,58.0,11.0,11.0,3.3,11.0,11.0,0.03
 5902884465874,Granola aux fruits,one day more,False,a,395.0,62.9,15.4,8.4,1.3,10.3,11.3,0.13
 20507343,Pain complet de seigle aux graines de tournesol biologique,grafschafter,True,c,198.0,30.4,30.4,4.0,0.6,10.5,10.5,0.935
-3222475651298,Flocons d'avoine,casino bio,True,a,377.0,60.0,0.9,7.2,1.3,9.9,13.0,0.0
+3222475651298,Flocons d'avoine,casino,True,a,377.0,60.0,0.9,7.2,1.3,9.9,13.0,0.0
 3596710446544,Crousty 5 Fruits,auchan,False,d,428.0,64.0,25.0,15.0,6.0,5.3,7.0,0.03
 3560070582884,Stylesse CHOCOLAT AU LAIT,carrefour,False,d,398.0,77.0,19.0,5.1,2.5,5.3,8.2,0.71
 3273120021041,Müesli petit épeautre framboises,celnat,True,a,387.0,72.0,13.0,4.3,0.6,8.0,12.0,0.03
 3760151012914,DUKAN,dukan,False,a,409.0,46.6,2.4,15.4,2.6,19.7,13.3,0.19
-3560071267056,Riz soufflé au chocolat,carrefour bio,True,c,393.0,77.0,20.0,4.4,2.2,5.1,9.2,0.21
+3560071267056,Riz soufflé au chocolat,carrefour,True,c,393.0,77.0,20.0,4.4,2.2,5.1,9.2,0.21
 7054683739811,Spécial K,,False,d,375.0,79.0,15.0,1.5,0.3,,9.0,1.0
 4104420017764,Alnatura Waldbeere Hafer Crunchy 4104420017764 Bio  Hafer-Knusper-Müsli,alnatura,True,b,469.0,63.0,17.0,18.0,1.9,7.9,9.7,0.16
 4104420017849,Schoko Müsli,alnatura,True,c,395.0,61.0,12.0,10.0,5.0,8.4,11.0,0.15
 4104420018709,Dinkel gepufft-mit Honig,alnatura,True,b,391.0,78.0,23.0,3.0,0.4,6.7,9.7,0.01
 3250391073610,Pétales & form' chocolat noir 300g,netto,False,d,404.0,76.0,18.0,6.1,3.7,6.2,8.3,0.72
 3465511313358,Supermix poudre instantanée,germline,True,a,405.0,55.0,12.0,12.0,1.5,12.0,12.0,0.05
-3560071267049,Boules de maïs au miel,carrefour bio,True,d,389.0,88.0,25.0,1.1,0.2,2.2,5.4,0.9
+3560071267049,Boules de maïs au miel,carrefour,True,d,389.0,88.0,25.0,1.1,0.2,2.2,5.4,0.9
 3273120024486,Crunchy chocolat noir,celnat,True,d,469.0,59.0,21.0,20.0,6.1,9.3,9.5,0.2
 3258561040387,Fruits & fibres au blé complet,belle france,False,d,378.0,67.1,24.1,6.4,3.8,8.7,8.6,1.1
 5411788047616,Porridge express OMEGA 3,lima,True,a,392.0,52.0,1.1,12.0,2.0,10.0,13.0,0.0
@@ -910,7 +910,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 8480000095473,Cereales rellenos de crema de cacao y avellana sin gluten,mercadona,False,d,461.0,69.0,24.4,17.3,2.8,2.0,6.0,0.49
 3347430021159,Flocons d'avoine baby,moulin des moines,True,a,372.0,59.0,0.7,7.0,1.3,10.0,14.0,0.02
 3256229273368,"Céréales riz soufflé chocolat, 375g",super u,False,d,393.0,86.0,25.0,2.3,1.2,1.9,6.0,0.4
-3421557922305,Rye Flakes,terres cereales bio,True,a,366.0,69.0,1.8,2.1,0.3,16.0,10.0,0.0
+3421557922305,Rye Flakes,terres et cereales,True,a,366.0,69.0,1.8,2.1,0.3,16.0,10.0,0.0
 3263820004505,Flocons d'avoine,le bon semeur,False,a,367.0,58.0,1.0,6.5,1.1,10.0,14.0,0.01
 3760295170990,Muesli aux fruits,satoriz,True,a,358.0,64.0,13.0,5.2,0.9,9.3,9.0,0.03
 8480000094926,Muesli 50% frutas y frutos secos,mercadona,False,c,367.0,60.0,26.0,9.3,5.1,7.8,6.8,0.11
@@ -926,7 +926,7 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 3421557922251,Crousty noisette,grillon dor,True,b,390.0,66.0,20.0,7.4,0.7,11.0,9.3,0.38
 3700496301410,CORNE FLAKES,country farm,False,d,382.0,83.5,6.8,1.0,0.4,3.4,8.1,1.6
 5607780010080,Instant Oats Classic Flavor,prozis,False,a,391.0,68.0,1.0,7.0,1.4,4.0,12.0,0.0
-3560071483036,Crocks mix,carrefour france,False,d,424.0,69.0,27.0,12.0,2.7,5.5,6.5,0.61
+3560071483036,Crocks mix,carrefour,False,d,424.0,69.0,27.0,12.0,2.7,5.5,6.5,0.61
 3760287220481,Morning Crush,numorning,True,d,362.0,44.0,13.0,17.0,5.0,0.0,8.0,0.0
 5701073028933,Crunchy muesli,,False,c,429.0,59.0,16.0,14.0,1.6,13.0,10.0,0.4
 3700036909014,Muesli aux pepites de chocolat noir,naturalia,True,c,399.0,57.0,9.4,12.0,4.9,10.0,12.0,0.02
@@ -949,6 +949,6 @@ code,nom,marque,bio,nutriscore,energie_kcal,glucides,sucres,lipides,ags,fibres,p
 5600317471613,Avoine cacao noisettes,shine,True,,417.0,48.0,11.0,17.0,3.9,10.0,13.0,
 5059319016542,Pépites d'avoine croustillantes - copeaux de chocolat noir,kelloggs,False,c,469.0,65.0,13.0,17.0,4.0,9.5,9.3,0.01
 3421557107504,Muesli 4 céréales et fruits,grillon dor,True,a,377.0,58.0,10.0,9.1,1.0,10.0,11.0,0.0
-3350033310766,Céréales fourrées chocolat noisettes,monoprix bio,True,d,433.0,73.0,25.0,12.0,3.5,3.1,6.8,0.7
+3350033310766,Céréales fourrées chocolat noisettes,monoprix,True,d,433.0,73.0,25.0,12.0,3.5,3.1,6.8,0.7
 7613287521361,NESTLE LION WILD Céréales 360g,nestle,False,d,433.0,65.8,24.9,15.5,2.1,4.6,5.0,0.85
 3396411219184,MUESLI pomme noisette amande sans gluten,evernat,True,a,372.0,63.2,12.7,7.65,1.1,7.66,8.81,0.13

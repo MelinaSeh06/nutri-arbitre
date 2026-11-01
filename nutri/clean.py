@@ -53,6 +53,60 @@ def normaliser_marque(brut) -> str | None:
     return propre
 
 
+# Marques que la règle de regroupement ne peut pas trouver seule (vérifiées à la main, 01/11/2026) :
+# la marque est au milieu du nom, ou écrite avec une abréviation / une faute.
+ALIAS_MARQUES = {
+    "societe des produits nestle sa": "nestle",
+    "the jordans ryvita company limited a division of abf grain products limited": "jordans",
+    "crownfields": "crownfield",
+    "tc": "terres et cereales",                     # TC = abréviation de Terres & Céréales
+    "tc bio": "terres et cereales",
+    "tc terre et cereales": "terres et cereales",
+    "tc terres cereales bio": "terres et cereales",
+    "tc terres et cereales bio": "terres et cereales",
+    "terre et cereales": "terres et cereales",
+    "terres cereales": "terres et cereales",
+    "terres cereales bio": "terres et cereales",
+}
+
+
+def regrouper_marques(marques: pd.Series) -> tuple[pd.Series, list[str]]:
+    """Regroupe les écritures d'une même marque. Renvoie (marques regroupées, liste des fusions).
+    Règle : si une marque COMMENCE par les mots entiers d'une autre marque présente, c'est la même
+    (« carrefour bio » -> « carrefour »). On compare sans les espaces (« kellogg s » = « kelloggs »).
+    Mots entiers seulement : « lucien georgelin » n'est pas rangé chez « lu »."""
+    originales = marques
+    marques = marques.replace(ALIAS_MARQUES)
+
+    # forme sans espaces -> écriture la plus fréquente (« aline olivier » plutôt que « alineolivier »)
+    ecriture = {}
+    for nom in marques.value_counts().index:          # du plus fréquent au moins fréquent
+        cle = nom.replace(" ", "")
+        if cle not in ecriture:
+            ecriture[cle] = nom
+
+    correspondance = {}
+    for nom in marques.dropna().unique():
+        mots = nom.split()
+        cible = ecriture[nom.replace(" ", "")]
+        # on essaie les débuts du nom : 1 mot, puis 2 mots collés, etc.
+        for k in range(1, len(mots)):
+            debut = "".join(mots[:k])
+            if debut in ecriture:
+                cible = ecriture[debut]
+                break
+        correspondance[nom] = cible
+
+    regroupees = marques.map(correspondance)
+
+    # liste de toutes les fusions (table à la main + règle), pour le journal
+    fusions = []
+    for nom, cible in sorted(set(zip(originales.dropna(), regroupees.dropna()))):
+        if nom != cible:
+            fusions.append(f"{nom} -> {cible}")
+    return regroupees, fusions
+
+
 def est_bio(tags: list) -> bool:
     """Vrai si au moins un des labels du produit est un label bio."""
     for tag in tags:
@@ -158,6 +212,11 @@ def nettoyer(produits: list[dict]) -> tuple[pd.DataFrame, list[str]]:
     df["marque"] = df["marque_brute"].map(normaliser_marque)
     journal.append(f"Marques normalisées : {df['marque_brute'].nunique()} libellés bruts "
                    f"-> {df['marque'].nunique()} marques.")
+    df["marque"], fusions = regrouper_marques(df["marque"])
+    journal.append(f"Marques regroupées (même début de nom, ou table écrite à la main) : "
+                   f"{len(fusions)} fusions -> {df['marque'].nunique()} marques.")
+    for f in fusions:
+        journal.append(f"  fusion : {f}")
     df["bio"] = df["labels"].map(est_bio)   # applique est_bio à la liste de labels de chaque produit
     journal.append(f"Produits bio (label AB ou bio UE) : {int(df['bio'].sum())}.")
 
