@@ -22,6 +22,18 @@ def test_regle_inco_energie_calculee(df):
     assert df.loc[df["code"] == "1", "energie_kcal"].item() == 341
 
 
+def test_fiche_incoherente_retiree():
+    # vrai cas des données : « Muesli croustillant chocolat » déclare 437 kcal,
+    # mais 4*33 + 4*4,7 + 9*6,6 + 2*3,9 = 218 kcal : écart de 100 %, on ne sait pas qui est faux
+    from tests.conftest import produit
+    nutr = {"carbohydrates_100g": 33, "proteins_100g": 4.7, "fat_100g": 6.6, "fiber_100g": 3.9}
+    incoherent = produit("10", **nutr, **{"energy-kcal_100g": 437})
+    coherent = produit("11", **nutr, **{"energy-kcal_100g": 230})        # écart de 5 % : gardé
+    df, journal = nettoyer([incoherent, coherent])
+    assert list(df["code"]) == ["11"]
+    assert any("fiche incohérente), produits retirés : 1." in l for l in journal)
+
+
 def test_valeurs_impossibles_mises_a_vide(df):
     p5 = df[df["code"] == "5"].iloc[0]
     assert pd.isna(p5["sucres"])       # sucres (90) > glucides (50)

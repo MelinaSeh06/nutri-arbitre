@@ -138,10 +138,15 @@ def nettoyer(produits: list[dict]) -> tuple[pd.DataFrame, list[str]]:
     df.loc[a_completer, "energie_kcal"] = calcul[a_completer].round(0)
     journal.append(f"Énergie calculée depuis les macronutriments (règlement INCO) : "
                    f"{a_completer.sum()} produits.")
+    # contrôle : si l'énergie déclarée s'écarte de plus de 20 % du calcul, les valeurs de la fiche se
+    # contredisent et on ne peut pas savoir laquelle est fausse (énergie ? glucides ? lipides ?).
+    # Toute la fiche est donc douteuse : on retire le produit.
     ecart = (df["energie_kcal"] - calcul).abs() / calcul.where(calcul > 0)   # pas de division par 0
-    df["energie_suspecte"] = (ecart > 0.20).fillna(False)
-    journal.append(f"Énergie déclarée à plus de 20 % du calcul INCO, marquée suspecte "
-                   f"(gardée) : {int(df['energie_suspecte'].sum())} produits.")
+    suspect = (ecart > 0.20).fillna(False)
+    avant = len(df)
+    df = df[~suspect]                                    # ~ = « non » : on garde les non suspects
+    journal.append(f"Énergie déclarée à plus de 20 % du calcul INCO (fiche incohérente), "
+                   f"produits retirés : {avant - len(df)}.")
 
     # 8. Nutri-Score : on ne garde que a à e
     df["nutriscore"] = df["nutriscore_brut"].astype("string").str.lower().str.strip()
@@ -163,7 +168,7 @@ def nettoyer(produits: list[dict]) -> tuple[pd.DataFrame, list[str]]:
     journal.append(f"Produits sans aucune valeur nutritionnelle retirés : {avant - len(df)}.")
 
     journal.append(f"Arrivée : {len(df)} produits.")
-    df = df[["code", "nom", "marque", "bio", "nutriscore", *colonnes_nutr, "energie_suspecte"]]
+    df = df[["code", "nom", "marque", "bio", "nutriscore", *colonnes_nutr]]
     return df.reset_index(drop=True), journal
 
 

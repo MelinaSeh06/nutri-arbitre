@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Nutri-Arbitre — 2. clean.py expliqué</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 10.5pt;
+         line-height: 1.5; color: #1d1d1f; }
+  h1 { font-size: 20pt; margin: 0 0 2mm; color: #0b3d2e; }
+  .sous-titre { color: #666; margin: 0 0 6mm; }
+  h2 { font-size: 13pt; color: #0b3d2e; border-bottom: 1.5px solid #cfe3d8; padding-bottom: 1mm;
+       margin-top: 7mm; page-break-after: avoid; }
+  h3 { font-size: 11pt; color: #2e7d5b; margin: 5mm 0 1mm; page-break-after: avoid; }
+  pre { background: #f5f7f6; border-left: 3px solid #2e7d5b; padding: 3mm 4mm; font-size: 8.6pt;
+        line-height: 1.4; overflow: hidden; white-space: pre-wrap; page-break-inside: avoid; }
+  code { font-family: Menlo, Consolas, monospace; font-size: 9pt; background: #eef2f0;
+         padding: 0 1mm; border-radius: 2px; }
+  pre code { background: none; padding: 0; }
+  .ln { color: #999; }
+  .resume { background: #e8f4ee; border-radius: 4px; padding: 3mm 5mm; }
+  .cle { background: #f3eefa; border-left: 3px solid #7a4fb5; padding: 3mm 5mm; page-break-inside: avoid; }
+  .reel { background: #fff6e0; border-left: 3px solid #e0a100; padding: 3mm 5mm; page-break-inside: avoid; }
+  .q { background: #eef1fa; border-left: 3px solid #4a62b0; padding: 3mm 5mm; page-break-inside: avoid; }
+  .corrige { page-break-before: always; }
+  table { border-collapse: collapse; font-size: 9.5pt; margin: 2mm 0; }
+  td, th { border: 1px solid #cfd8d3; padding: 1mm 3mm; text-align: left; }
+  th { background: #eef2f0; }
+  li { margin-bottom: 1.2mm; }
+</style>
+</head>
+<body>
+
+<h1>2. <code>clean.py</code> expliqué</h1>
+<p class="sous-titre">Nutri-Arbitre — fiche de révision · étape 2 sur 5 du trajet des données
+(download → <b>clean</b> → tools → garde_fou → agent) · <b>brique 6</b></p>
+
+<div class="resume">
+<b>En une phrase :</b> ce fichier lit les données brutes téléchargées (<code>data/raw_cereales.json</code>),
+corrige ou retire ce qui est faux, et écrit un tableau propre (<code>data/cereales_propres.csv</code>)
+avec un <b>journal</b> qui explique chaque décision (<code>data/journal_nettoyage.md</code>).
+<br><b>Lancer :</b> <code>python -m nutri.clean</code>
+<br><b>Pourquoi c'est important :</b> la brique 6 demande de vraies données sales, un journal de nettoyage,
+et au moins une règle que le fichier ne dit pas, tirée d'un document. Ici : le règlement européen INCO.
+</div>
+
+<h2>La notion clé : le tableau pandas et les « masques »</h2>
+<div class="cle">
+<p><b>pandas</b> est une bibliothèque qui manipule des tableaux, comme Excel mais en code. Un tableau
+s'appelle un <b>DataFrame</b> (ici <code>df</code>) : une ligne par produit, une colonne par information.
+Une case vide vaut <b>NaN</b> (« Not a Number », valeur manquante).</p>
+<p>Presque tout le fichier utilise la même technique en deux temps :</p>
+<pre><code>hors = (df["sucres"] &lt; 0) | (df["sucres"] &gt; 100)   # 1. masque
+df.loc[hors, "sucres"] = None                        # 2. action</code></pre>
+<ol>
+  <li><b>Le masque</b> : on pose une question à <i>toute la colonne d'un coup</i>. La réponse est une
+      colonne de <code>True</code>/<code>False</code>, une par produit. <code>|</code> veut dire « ou »,
+      <code>&amp;</code> veut dire « et ».</li>
+  <li><b><code>df.loc[masque, colonne] = …</code></b> : « dans les lignes où le masque vaut True, et dans
+      cette colonne, mets … ». Mettre <code>None</code> vide la case.</li>
+</ol>
+<table>
+<tr><th>produit</th><th>sucres</th><th>masque <code>hors</code></th><th>après</th></tr>
+<tr><td>A</td><td>12</td><td>False</td><td>12</td></tr>
+<tr><td>B</td><td>150</td><td>True</td><td>vide</td></tr>
+<tr><td>C</td><td>-3</td><td>True</td><td>vide</td></tr>
+</table>
+<p><code>masque.sum()</code> compte les <code>True</code> (True vaut 1, False vaut 0) : c'est comme ça
+qu'on obtient les nombres écrits dans le journal.</p>
+</div>
+
+<h2>Lignes 18 à 35 : les réglages</h2>
+<ul>
+  <li><code>ENTREE</code>, <code>SORTIE</code>, <code>JOURNAL</code> : les trois fichiers (lu, écrit, écrit).</li>
+  <li><code>NUTRIMENTS</code> : un dictionnaire « nom dans Open Food Facts → notre nom en français ».
+      Par exemple <code>"sugars_100g"</code> devient <code>"sucres"</code>.</li>
+  <li><code>EN_GRAMMES</code> : les colonnes exprimées en grammes pour 100 g (toutes sauf l'énergie,
+      qui est en kcal).</li>
+  <li><code>LABELS_BIO</code> : les étiquettes qui veulent dire « bio » (label européen, label AB français).
+      Les accolades <code>{ }</code> forment un <b>ensemble</b> (<i>set</i>) : une liste sans ordre et sans
+      doublons.</li>
+</ul>
+
+<h2>Trois petites fonctions d'aide</h2>
+
+<h3><code>normaliser_marque</code> (lignes 38 à 53)</h3>
+<p>La même marque est écrite de plusieurs façons. Exemple réel tiré de nos données :
+<code>"Kellogg's"</code>, <code>"Kellogg's, KELLOGG S PRODUITS ALIMENT SAS"</code>. Pour pouvoir les
+regrouper, on les écrit toutes de la même manière :</p>
+<ol>
+  <li>si ce n'est pas du texte, ou si c'est vide → <code>None</code> (pas de marque) ;</li>
+  <li>on garde la première marque avant la virgule : <code>split(",")[0]</code> ;</li>
+  <li>on enlève les accents (<code>unicodedata</code> sépare « é » en « e » + accent, puis on jette l'accent) ;</li>
+  <li>on passe en minuscules et on garde seulement les lettres, chiffres et espaces : l'apostrophe disparaît ;</li>
+  <li>on remplace les espaces multiples par un seul.</li>
+</ol>
+<p>Résultat : <code>"Kellogg's"</code> → <code>"kelloggs"</code> ; <code>"Nestlé, Nestle France"</code> →
+<code>"nestle"</code>.</p>
+
+<h3><code>est_bio</code> (lignes 56 à 61)</h3>
+<p>Elle reçoit la liste des labels d'un produit et renvoie <code>True</code> dès qu'elle trouve un label bio.
+Si elle a tout parcouru sans en trouver, elle renvoie <code>False</code>.</p>
+
+<h3><code>aplatir</code> (lignes 64 à 80)</h3>
+<p>Les données brutes sont « emboîtées » : chaque produit contient un sous-dictionnaire
+<code>nutriments</code>. Un tableau a besoin d'une seule ligne plate par produit. La fonction parcourt les
+produits, recopie le code, le nom, la marque, les labels et le Nutri-Score, puis va chercher chaque
+nutriment dans le sous-dictionnaire. <code>p.get("code")</code> renvoie <code>None</code> au lieu de
+planter si l'information manque.</p>
+
+<h2>La fonction principale : <code>nettoyer</code> (lignes 83 à 172)</h2>
+<p>Elle applique 10 étapes dans l'ordre. Après chacune, elle ajoute une phrase au <code>journal</code>
+(une liste de textes). On peut les ranger en 5 familles :</p>
+
+<h3>A. Retirer des lignes entières (étapes 1, 2, 10)</h3>
+<pre><code><span class="ln">90</span>     avant = len(df)
+<span class="ln">91</span>     df = df.drop_duplicates(subset="code")
+<span class="ln">92</span>     journal.append(f"Doublons de code-barres retirés : {avant - len(df)}.")</code></pre>
+<p>Toujours la même méthode : on compte les lignes <i>avant</i>, on retire, et la différence donne le nombre
+de lignes retirées.</p>
+<ul>
+  <li><b>1. Doublons</b> : deux fois le même code-barres = le même produit.</li>
+  <li><b>2. Sans nom</b> : <code>fillna("")</code> remplace les vides par du texte vide,
+      <code>str.strip()</code> enlève les espaces ; on garde les lignes où il reste quelque chose.</li>
+  <li><b>10. Sans aucune valeur nutritionnelle</b> : <code>dropna(how="all")</code> retire les lignes où
+      <i>toutes</i> les colonnes nutritionnelles sont vides. Un produit sans chiffres ne sert à rien.</li>
+</ul>
+
+<h3>B. Convertir le texte en nombres (étape 3)</h3>
+<p><code>pd.to_numeric(..., errors="coerce")</code> transforme <code>"12.5"</code> en 12.5. Si c'est
+impossible (<code>"traces"</code>, par exemple), la case devient vide au lieu de planter. On compte les
+valeurs remplies avant et après pour savoir combien ont été perdues.</p>
+
+<h3>C. Vider les valeurs impossibles (étapes 4 et 5)</h3>
+<ul>
+  <li><b>4. Bornes physiques</b> : pour 100 g de produit, aucun nutriment ne peut peser moins de 0 g ni plus
+      de 100 g. Et l'énergie ne peut pas dépasser 900 kcal pour 100 g, car c'est la valeur de la graisse pure.</li>
+  <li><b>5. Cohérence</b> : les sucres font partie des glucides, donc sucres &gt; glucides est impossible.
+      De même, les acides gras saturés font partie des lipides.</li>
+</ul>
+<p><b>Choix important :</b> on vide la <i>case</i> fausse, pas toute la ligne. Le produit garde ses autres
+valeurs, qui sont peut-être justes.</p>
+
+<h3>D. Les règles du règlement INCO, absentes du fichier (étapes 6 et 7)</h3>
+<p>Le règlement européen n° 1169/2011 (« INCO », annexe XIV) fixe comment calculer les valeurs
+affichées sur les emballages. Le fichier ne le dit nulle part : c'est la « règle obtenue dans un
+document » que demande la brique 6.</p>
+<pre><code><span class="ln">127</span>     a_completer = df["sel"].isna() &amp; df["sodium"].notna()
+<span class="ln">128</span>     df.loc[a_completer, "sel"] = df.loc[a_completer, "sodium"] * 2.5</code></pre>
+<ul>
+  <li><b>6. Sel = sodium × 2,5</b> : si le sel manque mais que le sodium est connu, on calcule le sel.
+      Le masque se lit : « sel vide <b>et</b> sodium rempli ».</li>
+  <li><b>7. Énergie = 4 × glucides + 4 × protéines + 9 × lipides + 2 × fibres</b> (en kcal).
+      La règle sert deux fois :
+      <ul>
+        <li>pour <b>compléter</b> : si l'énergie manque et que les trois macronutriments sont connus, on la
+            calcule (arrondie à l'unité) ;</li>
+        <li>pour <b>contrôler</b> : si l'énergie déclarée s'écarte de plus de 20 % du calcul, les valeurs
+            de la fiche se contredisent. <code>calcul.where(calcul &gt; 0)</code> évite une division par zéro.</li>
+      </ul></li>
+</ul>
+<pre><code><span class="ln">139</span>     ecart = (df["energie_kcal"] - calcul).abs() / calcul.where(calcul &gt; 0)
+<span class="ln">140</span>     suspect = (ecart &gt; 0.20).fillna(False)
+<span class="ln">141</span>     avant = len(df)
+<span class="ln">142</span>     df = df[~suspect]          # ~ = « non » : on garde les non suspects</code></pre>
+<p><b>Pourquoi retirer la ligne entière ici, alors qu'ailleurs on vide seulement la case ?</b>
+Quand une valeur est impossible (150 g de sel), on sait <i>laquelle</i> est fausse : on la vide et on garde
+le reste. Mais quand l'énergie ne colle pas avec les macronutriments, <b>on ne peut pas savoir laquelle est
+fausse</b> : l'énergie, les glucides, les lipides ? Les données ont été mal remplies ou remplies en partie,
+donc toute la fiche est douteuse. Exemple réel : « Muesli croustillant chocolat » déclare 437 kcal, ce qui
+est normal pour un muesli, mais ses macronutriments ne donnent que 218 kcal. Ses 33 g de glucides sont
+probablement faux, et donc peut-être ses sucres aussi. Ces fiches ne coûtent que 4 produits sur 957 : on
+les retire. <i>(Décision prise le 1er novembre 2026.)</i></p>
+
+<h3>E. Mettre les libellés au propre (étapes 8 et 9)</h3>
+<ul>
+  <li><b>8. Nutri-Score</b> : on passe en minuscules, puis tout ce qui n'est pas a, b, c, d ou e
+      (« unknown », « not-applicable ») devient vide. Le <code>~</code> veut dire « non » :
+      <code>~df["nutriscore"].isin(...)</code> = « n'est pas dans la liste ».</li>
+  <li><b>9. Marques et bio</b> : <code>.map(fonction)</code> applique une fonction à chaque case d'une
+      colonne. On l'utilise avec <code>normaliser_marque</code> et <code>est_bio</code>.</li>
+</ul>
+
+<p>À la fin (lignes 170 à 172), on écrit le nombre de produits à l'arrivée, on ne garde que les colonnes utiles
+dans un ordre fixe, et <code>reset_index(drop=True)</code> renumérote les lignes de 0 à n−1.</p>
+
+<h2><code>main</code> (lignes 175 à 182)</h2>
+<p>Elle lit le JSON brut, appelle <code>nettoyer</code>, écrit le tableau en CSV
+(<code>index=False</code> : sans la colonne des numéros de ligne) et le journal en Markdown, avec un tiret
+devant chaque phrase.</p>
+
+<div class="reel">
+<b>Ce qui s'est vraiment passé sur nos données (téléchargées le 30 octobre 2026) :</b>
+<table>
+<tr><th>Étape</th><th>Effet</th></tr>
+<tr><td>Départ</td><td>1 000 produits</td></tr>
+<tr><td>Doublons</td><td>0</td></tr>
+<tr><td>Sans nom</td><td>28 retirés</td></tr>
+<tr><td>Énergie impossible</td><td>1 valeur vidée</td></tr>
+<tr><td>Sucres &gt; glucides, AGS &gt; lipides</td><td>0</td></tr>
+<tr><td>Sel calculé depuis le sodium</td><td>0 produit</td></tr>
+<tr><td>Énergie calculée (INCO)</td><td>1 produit</td></tr>
+<tr><td>Énergie incohérente (fiche douteuse)</td><td>4 retirés</td></tr>
+<tr><td>Nutri-Score invalide</td><td>30 vidés (unknown, not-applicable)</td></tr>
+<tr><td>Marques</td><td>294 libellés bruts → 177 marques</td></tr>
+<tr><td>Sans aucune valeur</td><td>15 retirés</td></tr>
+<tr><td><b>Arrivée</b></td><td><b>953 produits</b> (543 bio, 410 non bio)</td></tr>
+</table>
+<p><b>À savoir dire honnêtement :</b></p>
+<ul>
+  <li>La règle du sel n'a servi pour aucun produit : Open Food Facts calcule déjà le sel lui-même. On la
+      garde quand même, car elle protège contre de futures données où le sel manquerait. La règle de
+      l'énergie, elle, a servi deux fois : 1 valeur complétée et 4 fiches incohérentes repérées et retirées.</li>
+  <li>La normalisation des marques a une limite : « KELLOGG S PRODUITS ALIMENT SAS » ne devient pas
+      « kelloggs ». Un même fabricant peut donc apparaître sous deux noms.</li>
+</ul>
+</div>
+
+<h2>Questions d'examinateur</h2>
+<div class="q">
+<ol>
+  <li>Que fait la ligne <code>df.loc[hors, col] = None</code> ?</li>
+  <li>Pourquoi vide-t-on la case fausse au lieu de retirer tout le produit ?</li>
+  <li>Quelle est la « règle absente du fichier » demandée par la brique 6, et d'où vient-elle ?</li>
+  <li>Pourquoi est-il impossible d'avoir plus de sucres que de glucides ?</li>
+  <li>Comment le journal obtient-il le nombre de lignes retirées ?</li>
+  <li>Que se passe-t-il si on appelle <code>nettoyer([])</code>, avec une liste vide ?</li>
+  <li>Pourquoi retire-t-on toute la fiche quand l'énergie ne colle pas, alors qu'ailleurs on vide seulement la case ?</li>
+  <li>La règle du sel n'a servi pour aucun produit. Est-ce qu'elle est inutile ?</li>
+</ol>
+<p>Essaie d'y répondre avec tes mots avant de lire le corrigé à la page suivante.</p>
+</div>
+
+<div class="corrige">
+<h2>Corrigé</h2>
+<ol>
+  <li><b><code>df.loc[hors, col] = None</code></b> : dans toutes les lignes où le masque <code>hors</code> vaut
+      True, et seulement dans la colonne <code>col</code>, on vide la case. Les autres lignes et les autres
+      colonnes ne changent pas.</li>
+  <li><b>Vider la case plutôt que la ligne</b> : une seule valeur est fausse, les autres sont peut-être justes.
+      Si un produit a un sel impossible (150 g), son sucre et ses lipides restent utilisables. Retirer la
+      ligne ferait perdre des informations pour rien.</li>
+  <li><b>La règle absente du fichier</b> : le règlement européen n° 1169/2011, dit « INCO », annexe XIV.
+      Il donne sel = sodium × 2,5 et énergie = 4 × glucides + 4 × protéines + 9 × lipides + 2 × fibres.
+      Le fichier Open Food Facts ne contient pas ces règles : on les a prises dans le texte du règlement.</li>
+  <li><b>Sucres et glucides</b> : les sucres sont une <i>partie</i> des glucides (les glucides = sucres +
+      amidon…). Une partie ne peut pas être plus grande que le tout : si c'est le cas, une des deux valeurs
+      est une erreur de saisie.</li>
+  <li><b>Le nombre de lignes retirées</b> : on enregistre <code>avant = len(df)</code>, on retire les lignes,
+      puis on écrit <code>avant - len(df)</code>. Pour les cases vidées, on utilise <code>masque.sum()</code>,
+      qui compte les True.</li>
+  <li><b>Liste vide</b> : <code>aplatir</code> crée un tableau vide mais avec les bonnes colonnes. Chaque étape
+      trouve 0 ligne à traiter, et le journal finit par « Arrivée : 0 produits. ». Rien ne plante, et c'est
+      vérifié par le test <code>test_liste_vide</code>.</li>
+  <li><b>La règle du sel</b> : elle n'a rien changé <i>sur ces données-là</i>, parce qu'Open Food Facts
+      fournit déjà le sel. Mais si on retélécharge un jour des produits où seul le sodium est indiqué, elle
+      complétera le sel. Et le test <code>test_regle_inco_sel_depuis_sodium</code> prouve qu'elle fonctionne.
+      Le dire honnêtement montre qu'on a regardé le journal.</li>
+  <li><b>Toute la fiche plutôt que la case</b> : quand une valeur est impossible, on sait laquelle est fausse,
+      donc on vide seulement celle-là. Quand l'énergie déclarée et la formule INCO ne collent pas, deux
+      valeurs se contredisent et on ne peut pas savoir laquelle est fausse : la fiche a été mal remplie ou
+      remplie en partie, et toute la ligne devient douteuse. Comme ça ne concerne que 4 produits sur 957,
+      les retirer ne fait presque rien perdre et rend les calculs plus sûrs.</li>
+</ol>
+</div>
+
+</body>
+</html>

@@ -8,9 +8,9 @@
 - Acides gras saturés > lipides : 0 valeurs mises à vide.
 - Sel calculé depuis le sodium (sel = sodium x 2,5, règlement INCO) : 0 produits.
 - Énergie calculée depuis les macronutriments (règlement INCO) : 1 produits.
-- Énergie déclarée à plus de 20 % du calcul INCO, marquée suspecte (gardée) : 4 produits.
+- Énergie déclarée à plus de 20 % du calcul INCO (fiche incohérente), produits retirés : 4.
 - Nutri-Score non valide (unknown, not-applicable…) mis à vide : 30.
-- Marques normalisées : 296 libellés bruts -> 177 marques.
-- Produits bio (label AB ou bio UE) : 551.
+- Marques normalisées : 294 libellés bruts -> 177 marques.
+- Produits bio (label AB ou bio UE) : 547.
 - Produits sans aucune valeur nutritionnelle retirés : 15.
-- Arrivée : 957 produits.
+- Arrivée : 953 produits.
