@@ -1,0 +1,36 @@
+{
+  "question": "Combien de calories apporte une portion de 30 g de céréales, en moyenne ?",
+  "modele": "qwen3.5:4b-q4_K_M",
+  "avec_outils": true,
+  "appels": [
+    {
+      "outil": "decrire",
+      "arguments": {
+        "nutriment": "energie_kcal"
+      },
+      "resultat": {
+        "nutriment": "energie_kcal",
+        "filtres": {
+          "bio": null,
+          "nutriscore": null
+        },
+        "n": 953,
+        "moyenne": 409.45,
+        "marge_95": 2.54,
+        "intervalle_95": [
+          406.91,
+          411.99
+        ],
+        "mediane": 406.0,
+        "min": 120.0,
+        "max": 541.0
+      }
+    }
+  ],
+  "tokens_entree": 2267,
+  "tokens_sortie": 89,
+  "reponse_brute": "La moyenne est de 409,45 kcal pour 100 g, avec une marge d'erreur à 95 % de 2,54 kcal. Cela correspond approximativement à 123 kcal pour une portion de 30 g.",
+  "reponse": "Réponse bloquée : elle contenait des chiffres qui n'ont pas été calculés par les outils (123). Reformulez la question pour que le calcul soit fait par le code.",
+  "bloquee": true,
+  "duree_s": 7.0
+}

@@ -1,0 +1,37 @@
+{
+  "question": "Combien de grammes de sucre y a-t-il dans un bol de 40 g de céréales bio, en moyenne ?",
+  "modele": "qwen3.5:4b-q4_K_M",
+  "avec_outils": true,
+  "appels": [
+    {
+      "outil": "decrire",
+      "arguments": {
+        "nutriment": "sucres",
+        "bio": true
+      },
+      "resultat": {
+        "nutriment": "sucres",
+        "filtres": {
+          "bio": true,
+          "nutriscore": null
+        },
+        "n": 543,
+        "moyenne": 13.17,
+        "marge_95": 0.69,
+        "intervalle_95": [
+          12.47,
+          13.86
+        ],
+        "mediane": 14.0,
+        "min": 0.5,
+        "max": 37.7
+      }
+    }
+  ],
+  "tokens_entree": 2284,
+  "tokens_sortie": 124,
+  "reponse_brute": "En moyenne, 100 g de céréales bio contiennent 13,2 ± 0,7 g de sucre. Pour un bol de 40 g, cela correspond donc à environ 5,3 g de sucre.\n\nLa médiane indique une valeur légèrement plus élevée (14,0 g), mais la moyenne reste le meilleur indicateur pour estimer votre apport moyen.",
+  "reponse": "Réponse bloquée : elle contenait des chiffres qui n'ont pas été calculés par les outils (5,3). Reformulez la question pour que le calcul soit fait par le code.",
+  "bloquee": true,
+  "duree_s": 26.3
+}

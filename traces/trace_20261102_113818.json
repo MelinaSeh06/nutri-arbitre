@@ -1,0 +1,89 @@
+{
+  "question": "Combien de calories apporte une portion de 30 g de céréales, en moyenne ?",
+  "modele": "qwen3.5:4b-q4_K_M",
+  "avec_outils": true,
+  "appels": [
+    {
+      "outil": "comparer",
+      "arguments": {
+        "nutriment": "energie_kcal",
+        "groupe": "bio"
+      },
+      "resultat": {
+        "nutriment": "energie_kcal",
+        "groupe": "bio",
+        "groupes": [
+          {
+            "groupe": "False",
+            "n": 410,
+            "moyenne": 416.04,
+            "marge_95": 3.87
+          },
+          {
+            "groupe": "True",
+            "n": 543,
+            "moyenne": 404.47,
+            "marge_95": 3.3
+          }
+        ],
+        "ecart_bio_moins_non_bio": -11.57,
+        "marge_95_ecart": 5.09,
+        "intervalle_95_ecart": [
+          -16.66,
+          -6.48
+        ],
+        "difference_nette": true
+      }
+    },
+    {
+      "outil": "comparer",
+      "arguments": {
+        "nutriment": "energie_kcal",
+        "groupe": "nutriscore"
+      },
+      "resultat": {
+        "nutriment": "energie_kcal",
+        "groupe": "nutriscore",
+        "groupes": [
+          {
+            "groupe": "a",
+            "n": 270,
+            "moyenne": 380.2,
+            "marge_95": 3.61
+          },
+          {
+            "groupe": "b",
+            "n": 82,
+            "moyenne": 410.66,
+            "marge_95": 7.52
+          },
+          {
+            "groupe": "c",
+            "n": 322,
+            "moyenne": 417.37,
+            "marge_95": 4.29
+          },
+          {
+            "groupe": "d",
+            "n": 225,
+            "moyenne": 427.9,
+            "marge_95": 4.08
+          },
+          {
+            "groupe": "e",
+            "n": 29,
+            "moyenne": 458.03,
+            "marge_95": 13.28
+          }
+        ],
+        "sans_nutriscore": 25
+      }
+    }
+  ],
+  "tokens_entree": 2612,
+  "tokens_sortie": 153,
+  "reponse_brute": "La moyenne est d'environ 416 kcal/100g pour les produits non bio et 404 kcal/100g pour les bio. Une portion de 30 g apporte donc respectivement environ 125 calories (non bio) et 121 calorie (bio).",
+  "reponse": "Réponse bloquée : elle contenait des chiffres qui n'ont pas été calculés par les outils (125, 121). Reformulez la question pour que le calcul soit fait par le code.",
+  "bloquee": true,
+  "duree_s": 29.8
+}

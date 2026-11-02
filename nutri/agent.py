@@ -34,11 +34,15 @@ def charger_donnees() -> pd.DataFrame:
     return pd.read_csv(DONNEES, dtype={"code": str})
 
 
-def executer_outil(df, nom: str, arguments: dict) -> dict:
+def executer_outil(df, nom: str, arguments: dict, question: str = "") -> dict:
     """Appelle la fonction Python demandée par le modèle. Une erreur est renvoyée au modèle,
     au lieu de faire planter le programme, pour qu'il puisse corriger son appel."""
     if nom not in tools.FONCTIONS:
         return {"erreur": f"outil inconnu : {nom}"}
+    # garde-fou n° 2 : pas de filtre bio / Nutri-Score si la question n'en parle pas
+    probleme = garde_fou.verifier_filtres(question, arguments)
+    if probleme is not None:
+        return {"erreur": probleme}
     fonction = tools.FONCTIONS[nom]          # ex. "decrire" -> la fonction tools.decrire
     try:
         # **arguments « déballe » le dictionnaire : avec {"nutriment": "sucres", "bio": True},
@@ -81,7 +85,7 @@ def repondre(question: str, df: pd.DataFrame, avec_outils: bool = True) -> dict:
         for appel in r.message.tool_calls:
             nom = appel.function.name
             args = dict(appel.function.arguments or {})
-            resultat = executer_outil(df, nom, args)
+            resultat = executer_outil(df, nom, args, question)
             resultats.append(resultat)
             trace["appels"].append({"outil": nom, "arguments": args, "resultat": resultat})
             messages.append({"role": "tool", "tool_name": nom,

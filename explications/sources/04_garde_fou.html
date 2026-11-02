@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Nutri-Arbitre — 4. garde_fou.py expliqué</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 10.5pt;
+         line-height: 1.5; color: #1d1d1f; }
+  h1 { font-size: 20pt; margin: 0 0 2mm; color: #0b3d2e; }
+  .sous-titre { color: #666; margin: 0 0 6mm; }
+  h2 { font-size: 13pt; color: #0b3d2e; border-bottom: 1.5px solid #cfe3d8; padding-bottom: 1mm;
+       margin-top: 7mm; page-break-after: avoid; }
+  h3 { font-size: 11pt; color: #2e7d5b; margin: 5mm 0 1mm; page-break-after: avoid; }
+  pre { background: #f5f7f6; border-left: 3px solid #2e7d5b; padding: 3mm 4mm; font-size: 8.6pt;
+        line-height: 1.4; overflow: hidden; white-space: pre-wrap; page-break-inside: avoid; }
+  code { font-family: Menlo, Consolas, monospace; font-size: 9pt; background: #eef2f0;
+         padding: 0 1mm; border-radius: 2px; }
+  pre code { background: none; padding: 0; }
+  .ln { color: #999; }
+  .resume { background: #e8f4ee; border-radius: 4px; padding: 3mm 5mm; }
+  .cle { background: #f3eefa; border-left: 3px solid #7a4fb5; padding: 3mm 5mm; page-break-inside: avoid; }
+  .reel { background: #fff6e0; border-left: 3px solid #e0a100; padding: 3mm 5mm; page-break-inside: avoid; }
+  .q { background: #eef1fa; border-left: 3px solid #4a62b0; padding: 3mm 5mm; page-break-inside: avoid; }
+  .corrige { page-break-before: always; }
+  table { border-collapse: collapse; font-size: 9.5pt; margin: 2mm 0; }
+  td, th { border: 1px solid #cfd8d3; padding: 1mm 3mm; text-align: left; vertical-align: top; }
+  th { background: #eef2f0; }
+  li { margin-bottom: 1.2mm; }
+</style>
+</head>
+<body>
+
+<h1>4. <code>garde_fou.py</code> expliqué</h1>
+<p class="sous-titre">Nutri-Arbitre — fiche de révision · étape 4 sur 5 du trajet des données
+(download → clean → tools → <b>garde_fou</b> → agent) · <b>brique 3</b></p>
+
+<div class="resume">
+<b>En une phrase :</b> avant d'afficher la réponse de Qwen, ce fichier vérifie que <b>chaque nombre</b> qu'elle
+contient vient d'un résultat d'outil (ou de la question). Si un seul nombre n'a pas d'origine, la réponse est
+<b>bloquée</b> et remplacée par un message de refus.
+<br><b>Brique 3</b> (une règle imposée par le code) : la règle « aucun chiffre non calculé » est appliquée par le
+<i>code</i>, pas seulement demandée dans le <i>prompt</i>. Un test essaie de l'enfreindre et se fait bloquer.
+<br><b>Deuxième règle</b> (ajoutée le 2 novembre) : un outil n'a pas le droit de filtrer ou de découper en
+groupes selon le bio ou le Nutri-Score si la question n'en parle pas.
+<br><b>Où elles sont appliquées :</b> dans <code>agent.py</code>. La règle des chiffres sur la réponse finale
+(fonction <code>repondre</code>), la règle des filtres au moment de chaque appel d'outil
+(fonction <code>executer_outil</code>).
+</div>
+
+<h2>Pourquoi le code et pas seulement le prompt ?</h2>
+<div class="cle">
+<p>Le prompt de <code>agent.py</code> dit déjà à Qwen : « n'écris jamais un nombre que tu n'as pas reçu d'un
+outil ». Mais <b>un prompt est une demande, pas une obligation</b> : le modèle peut l'ignorer, surtout un petit
+modèle. On l'a vu le 2 novembre : Qwen a calculé lui-même un chiffre malgré la consigne.</p>
+<p>Le garde-fou, lui, est du code Python : il s'exécute à chaque fois, et le modèle ne peut pas le contourner.
+<b>Le prompt dit la règle, le code la fait respecter.</b></p>
+</div>
+
+<h2>La méthode en 3 étapes</h2>
+<ol>
+  <li><b>Trouver les nombres de la réponse</b> (<code>extraire_nombres</code>).</li>
+  <li><b>Faire la liste des nombres autorisés</b> : ceux des résultats d'outils, ceux de la question, et les
+      constantes 100 et 95 (<code>nombres_autorises</code>).</li>
+  <li><b>Vérifier chaque nombre de la réponse</b> : est-il un arrondi correct d'un nombre autorisé ?
+      (<code>nombre_justifie</code>). Si un seul ne l'est pas, on bloque (<code>verifier</code>,
+      <code>filtrer_reponse</code>).</li>
+</ol>
+
+<h2>Étape 1 : trouver les nombres (lignes 16 à 34)</h2>
+<pre><code><span class="ln">21</span> MOTIF_NOMBRE = re.compile(r"-?\d+(?:[.,]\d+)?")</code></pre>
+<p>C'est une <b>expression régulière</b> : un « modèle » de texte à rechercher. On la lit morceau par morceau :</p>
+<table>
+<tr><th>Morceau</th><th>Veut dire</th><th>Exemple</th></tr>
+<tr><td><code>-?</code></td><td>un signe moins, facultatif (le <code>?</code> = « 0 ou 1 fois »)</td><td><code>-</code> dans « -5,42 »</td></tr>
+<tr><td><code>\d+</code></td><td>un ou plusieurs chiffres (<code>\d</code> = un chiffre, <code>+</code> = « au moins une fois »)</td><td>« 13 »</td></tr>
+<tr><td><code>(?:[.,]\d+)?</code></td><td>facultatif : un point ou une virgule, puis des chiffres</td><td>« ,2 » dans « 13,2 »</td></tr>
+</table>
+<p><code>findall</code> renvoie tous les morceaux de texte qui correspondent. Exemple réel :
+« 100 g contiennent 13,2 ± 0,7 g… un bol de 40 g… 5,3 g… 14,0 g » →
+<code>['100', '13,2', '0,7', '40', '5,3', '14,0']</code>. <code>en_float</code> transforme ensuite
+« 13,2 » en 13.2, car Python ne comprend que le point.</p>
+
+<h2>Étape 2 : les nombres autorisés (lignes 23 à 48)</h2>
+<pre><code><span class="ln">47</span>     texte = json.dumps(objet, ensure_ascii=False, default=str)
+<span class="ln">48</span>     return [en_float(n) for n in extraire_nombres(texte)]</code></pre>
+<p>Les résultats d'outils sont des dictionnaires, parfois avec des listes dedans. <b>L'astuce :</b> on les
+transforme en texte JSON avec <code>json.dumps</code>, puis on y cherche les nombres avec <i>la même</i>
+expression régulière qu'à l'étape 1. Exemple : <code>{"n": 543, "moyenne": 13.17}</code> devient le texte
+<code>'{"n": 543, "moyenne": 13.17}'</code>, qui donne <code>[543.0, 13.17]</code>.</p>
+<ul>
+  <li>On ajoute les nombres de <b>la question</b> : si l'utilisateur parle d'un bol de 40 g, Qwen a le droit de
+      répéter « 40 g ».</li>
+  <li>On ajoute les <b>constantes</b> 100 (« pour 100 g ») et 95 (« marge à 95 % »).</li>
+  <li>Ligne 79 : on ajoute aussi chaque nombre <b>sans son signe</b> (<code>abs</code>). Un écart de −5,42 peut
+      s'écrire « 5,42 g de moins ».</li>
+</ul>
+
+<h2>Étape 3 : chaque nombre est-il justifié ? (lignes 51 à 71)</h2>
+<p>Qwen arrondit : il écrit « 13,2 » pour 13,17. Il faut accepter un arrondi <i>correct</i>, mais refuser un
+arrondi trop large. La règle : <b>l'écart permis est une demi-unité du dernier chiffre écrit</b>.</p>
+<pre><code><span class="ln">65</span>     tolerance = 0.5 * 10 ** (-decimales)</code></pre>
+<table>
+<tr><th>Qwen écrit</th><th>Décimales</th><th>Écart permis</th><th>Avec 18,37 calculé</th></tr>
+<tr><td>18</td><td>0</td><td>0,5</td><td>écart 0,37 → ✅ accepté</td></tr>
+<tr><td>18,4</td><td>1</td><td>0,05</td><td>écart 0,03 → ✅ accepté</td></tr>
+<tr><td>19</td><td>0</td><td>0,5</td><td>écart 0,63 → ❌ bloqué</td></tr>
+<tr><td>18,5</td><td>1</td><td>0,05</td><td>écart 0,13 → ❌ bloqué</td></tr>
+</table>
+<p>C'est exactement la règle de l'arrondi qu'on apprend à l'école : 18,37 s'arrondit à 18 ou à 18,4, jamais à 19.
+Ligne 66, on ajoute une marge minuscule (0,000000001), car un ordinateur calcule parfois
+0,1 + 0,2 = 0,30000000000000004 : sans elle, un arrondi juste pourrait être refusé par erreur.</p>
+<p>La boucle des lignes 68 à 71 compare le nombre écrit à <i>chaque</i> nombre autorisé : dès qu'un nombre colle,
+<code>return True</code>. Si aucun ne colle, <code>return False</code>.</p>
+
+<h2>Le verdict : <code>verifier</code> et <code>filtrer_reponse</code> (lignes 74 à 91)</h2>
+<ul>
+  <li><b><code>verifier</code></b> fait les étapes 2 et 3, et renvoie deux choses : la réponse est-elle autorisée
+      (<code>True</code>/<code>False</code>), et la liste des nombres fautifs. Par exemple <code>(False, ['5,3'])</code>.</li>
+  <li><b><code>filtrer_reponse</code></b> est la barrière : si tout est justifié, elle renvoie la réponse telle
+      quelle ; sinon, elle renvoie le message « Réponse bloquée… » avec les nombres fautifs.</li>
+  <li>Une réponse <b>sans aucun chiffre</b> est toujours acceptée (« Je ne peux pas répondre » est honnête).</li>
+</ul>
+
+<div class="reel">
+<b>Ce qui s'est vraiment passé (2 novembre 2026)</b> : deux questions qui poussent Qwen à calculer lui-même.
+<table>
+<tr><th>Question</th><th>Ce qu'a fait Qwen</th><th>Garde-fou</th></tr>
+<tr><td>« Combien de sucre dans un bol de 40 g de céréales bio ? »</td>
+    <td>Appelle <code>decrire</code> → 13,17 g pour 100 g. Calcule lui-même 13,17 × 0,4 = <b>5,3 g</b>.
+        Le calcul est <b>juste</b>.</td>
+    <td>❌ bloqué : « 5,3 » <br><code>traces/trace_20261102_113046.json</code></td></tr>
+<tr><td>« Combien de calories dans une portion de 30 g de céréales ? »</td>
+    <td>Filtre à tort les seules céréales <b>non bio</b>, puis calcule lui-même 416,04 × 0,3 et écrit
+        « 124,9 kcal exactement, calculé à partir des données » (le bon résultat est 124,8).</td>
+    <td>❌ bloqué : « 125, 124,9 » <br><code>traces/trace_20261102_113111.json</code></td></tr>
+</table>
+<p><b>Pourquoi bloquer un calcul juste ?</b> Le garde-fou ne sait pas vérifier un calcul fait par le modèle. La
+question 2 montre que le même modèle peut se tromper en affirmant que c'est « exact ». Il vaut mieux bloquer un
+calcul juste que laisser passer un calcul faux. La solution propre serait d'ajouter un outil « pour une
+portion » : le calcul serait alors fait par le code.</p>
+</div>
+
+<h2>Deuxième règle : pas de filtre dont la question ne parle pas (lignes 94 à 112)</h2>
+<p><b>Le problème :</b> à la question « combien de calories dans une portion de 30 g de céréales ? », Qwen a
+filtré les seules céréales <i>non bio</i>. Un nouvel essai, il a découpé bio / non bio. La question portait sur
+<i>toutes</i> les céréales : sa réponse était fausse, et la règle des chiffres ne pouvait pas le voir, car
+ce n'est pas un chiffre.</p>
+<pre><code><span class="ln">97</span>  PARLE_DE_BIO = re.compile(r"\b(bio|bios|biologique|biologiques|organic|ab)\b", re.IGNORECASE)
+<span class="ln">104</span>     utilise_bio = arguments.get("bio") is not None or arguments.get("groupe") == "bio"
+<span class="ln">105</span>     if utilise_bio and not PARLE_DE_BIO.search(question):
+<span class="ln">106</span>         return ("la question ne parle pas de bio : ne filtre pas ...")</code></pre>
+<ul>
+  <li><b><code>PARLE_DE_BIO</code></b> est une expression régulière qui cherche les mots bio, biologique, organic,
+      AB… <code>\b</code> veut dire « début ou fin de mot » : « bio » est trouvé dans « céréales bio », mais pas
+      dans « biologie ». <code>re.IGNORECASE</code> : majuscules et minuscules sont traitées pareil.</li>
+  <li><b><code>utilise_bio</code></b> vaut True si l'appel filtre sur le bio (<code>bio=True</code> ou
+      <code>False</code>) <b>ou</b> découpe en groupes bio / non bio (<code>groupe="bio"</code>).</li>
+  <li>Si l'appel utilise le bio <b>et</b> que la question n'en parle pas, la fonction renvoie un message
+      d'erreur. Même chose pour le Nutri-Score.</li>
+</ul>
+<p><b>Appliquée au moment de l'appel, pas à la fin.</b> Dans <code>agent.py</code>, <code>executer_outil</code>
+appelle <code>verifier_filtres</code> <i>avant</i> de lancer le calcul (lignes 43 à 45). Si l'appel est refusé,
+le calcul n'est jamais fait, et Qwen reçoit le message d'erreur au lieu d'un résultat. Il peut alors
+<b>corriger son appel</b> et réessayer, au lieu que l'utilisateur reçoive seulement un refus.</p>
+<div class="reel">
+<b>Vrai essai après l'ajout de la règle (2 novembre 2026)</b>, même question sur les calories :
+<ol>
+  <li>Qwen appelle <code>decrire(energie_kcal, bio=False)</code> → refusé : « la question ne parle pas de bio… ».</li>
+  <li>Qwen <b>corrige</b> et appelle <code>decrire(energie_kcal)</code> sur toutes les céréales → 409,45 kcal, n = 953.</li>
+  <li>Il calcule ensuite lui-même la portion de 30 g → la règle des chiffres bloque « 122,84 ».</li>
+</ol>
+<p>Les deux règles ont fonctionné l'une après l'autre. <code>traces/trace_20261102_113921.json</code></p>
+</div>
+
+<h2>Les limites (à dire soi-même)</h2>
+<ul>
+  <li><b>Il vérifie l'origine des chiffres, pas le sens de la phrase.</b> Le 30 octobre, Qwen a répondu « Non »
+      avec des chiffres qui disaient « Oui » : la réponse est passée.</li>
+  <li><b>Il ne vérifie qu'une partie du choix de l'outil.</b> La deuxième règle empêche un filtre bio ou
+      Nutri-Score <i>en trop</i>. Mais elle ne voit pas un mauvais nutriment (glucides au lieu de sucres), ni un
+      filtre qui <i>manque</i>. Et elle se fie à une liste de mots : une question tournée autrement (« les céréales
+      labellisées… ») serait mal comprise.</li>
+  <li><b>Qwen ne répond pas deux fois pareil.</b> À la même question, il a d'abord filtré les non bio, puis
+      comparé bio / non bio, puis pris toutes les céréales. C'est pour ça que la brique 9 lance chaque question
+      plusieurs fois.</li>
+  <li><b>Une coïncidence peut passer.</b> Un chiffre inventé qui se trouve être égal à un nombre autorisé (un
+      <code>n</code>, un minimum…) est accepté.</li>
+  <li><b>Les nombres écrits en lettres</b> (« cinq grammes ») ne sont pas reconnus par l'expression régulière.</li>
+  <li><b>Les noms de champs sont lus aussi</b> : « marge_95 » ajoute 95 aux nombres autorisés. On l'a rendu
+      explicite en mettant 95 dans les constantes.</li>
+</ul>
+
+<h2>Les tests qui essaient d'enfreindre la règle</h2>
+<p><code>tests/test_garde_fou.py</code> simule des réponses du modèle, sans appeler Qwen : un chiffre inventé
+(« 12,5 g ») est bloqué ; une réponse de mémoire, sans outil, est bloquée ; un arrondi trop large (« 19 » pour
+18,37) est bloqué ; le vrai calcul de Qwen (« 5,3 ») est bloqué ; un arrondi correct, une réponse sans chiffre et
+un nombre de la question sont acceptés. <b>Lancer :</b> <code>python -m pytest tests/test_garde_fou.py -v</code></p>
+
+<h2>Questions d'examinateur</h2>
+<div class="q">
+<ol>
+  <li>Le prompt demande déjà de ne pas inventer de chiffres. Pourquoi ajouter un garde-fou en code ?</li>
+  <li>Que fait l'expression régulière <code>-?\d+(?:[.,]\d+)?</code> ? Donne un exemple.</li>
+  <li>D'où viennent les nombres autorisés ?</li>
+  <li>Qwen écrit « 18 » alors que l'outil a calculé 18,37. Est-ce accepté ? Et « 19 » ? Pourquoi ?</li>
+  <li>Pourquoi transforme-t-on les résultats d'outils en texte JSON ?</li>
+  <li>Le calcul de Qwen pour le bol de 40 g était juste. Pourquoi la réponse a-t-elle été bloquée quand même ?</li>
+  <li>Cite une erreur que le garde-fou ne peut pas détecter.</li>
+  <li>Pourquoi autorise-t-on la valeur sans signe (<code>abs</code>) ?</li>
+  <li>Que vérifie la deuxième règle, et pourquoi est-elle appliquée au moment de l'appel d'outil plutôt
+      qu'à la fin ?</li>
+</ol>
+<p>Essaie d'y répondre avec tes mots avant de lire le corrigé à la page suivante.</p>
+</div>
+
+<div class="corrige">
+<h2>Corrigé</h2>
+<ol>
+  <li><b>Le code plutôt que le prompt</b> : un prompt est une demande que le modèle peut ignorer, surtout un petit
+      modèle. Le garde-fou est du code qui s'exécute à chaque réponse : le modèle ne peut pas le contourner. On l'a
+      vu le 2 novembre : malgré le prompt, Qwen a calculé lui-même « 5,3 g », et c'est le code qui l'a bloqué.</li>
+  <li><b>L'expression régulière</b> reconnaît un nombre dans un texte : un signe moins facultatif, des chiffres, puis
+      éventuellement une virgule ou un point suivi de chiffres. Dans « 13,2 ± 0,7 g », elle trouve « 13,2 » et « 0,7 ».</li>
+  <li><b>Les nombres autorisés</b> : tous les nombres des résultats d'outils, ceux de la question de l'utilisateur,
+      les constantes 100 et 95, et chacun de ces nombres sans son signe.</li>
+  <li><b>« 18 » oui, « 19 » non</b> : écrit sans décimale, un nombre peut s'écarter d'au plus 0,5. 18,37 est à 0,37
+      de 18 (accepté) et à 0,63 de 19 (bloqué). C'est la règle de l'arrondi : 18,37 s'arrondit à 18, pas à 19.</li>
+  <li><b>Le texte JSON</b> : les résultats sont des dictionnaires et des listes emboîtés. En les transformant en texte,
+      on peut y chercher les nombres avec la même expression régulière que pour la réponse, sans parcourir la
+      structure à la main.</li>
+  <li><b>Un calcul juste bloqué</b> : le garde-fou ne sait pas si un calcul du modèle est juste. Il ne vérifie qu'une
+      chose : ce nombre vient-il d'un outil ? 5,3 n'en vient pas, donc bloqué. Et la question 2 montre que le
+      modèle peut se tromper en affirmant que c'est « exact » : on ne peut pas lui faire confiance au cas par cas.</li>
+  <li><b>Une erreur non détectée</b> : au choix, une phrase qui contredit ses propres chiffres (« Non » au lieu de
+      « Oui ») ; un mauvais filtre (non bio au lieu de toutes les céréales) ; un chiffre inventé qui tombe par hasard
+      sur un nombre autorisé ; un nombre écrit en lettres.</li>
+  <li><b>La valeur sans signe</b> : les outils renvoient un écart bio − non bio négatif (−5,42) quand les bio en ont
+      moins. En français, on écrit « 5,42 g de moins », sans le signe moins. Sans <code>abs</code>, cette phrase
+      correcte serait bloquée.</li>
+  <li><b>La deuxième règle</b> vérifie qu'un outil ne filtre pas, et ne découpe pas en groupes, selon le bio ou le
+      Nutri-Score quand la question n'en parle pas. On l'applique au moment de l'appel : le calcul filtré n'est
+      jamais fait, et Qwen reçoit un message d'erreur qui lui permet de corriger son appel. C'est ce qui s'est
+      passé le 2 novembre : il a refait l'appel sur toutes les céréales.</li>
+</ol>
+</div>
+
+</body>
+</html>

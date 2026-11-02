@@ -1,0 +1,37 @@
+{
+  "question": "Quelle est la teneur moyenne en sel des céréales bio ?",
+  "modele": "qwen3.5:4b-q4_K_M",
+  "avec_outils": true,
+  "appels": [
+    {
+      "outil": "decrire",
+      "arguments": {
+        "nutriment": "sel",
+        "bio": true
+      },
+      "resultat": {
+        "nutriment": "sel",
+        "filtres": {
+          "bio": true,
+          "nutriscore": null
+        },
+        "n": 531,
+        "moyenne": 0.13,
+        "marge_95": 0.02,
+        "intervalle_95": [
+          0.11,
+          0.15
+        ],
+        "mediane": 0.03,
+        "min": 0.0,
+        "max": 1.9
+      }
+    }
+  ],
+  "tokens_entree": 2250,
+  "tokens_sortie": 101,
+  "reponse_brute": "La teneur moyenne en sel des céréales bio est de 0,13 g pour 100 g, avec une marge d'erreur de ± 0,02 g. Cela représente une fourchette comprise entre 0,11 et 0,15 g.",
+  "reponse": "La teneur moyenne en sel des céréales bio est de 0,13 g pour 100 g, avec une marge d'erreur de ± 0,02 g. Cela représente une fourchette comprise entre 0,11 et 0,15 g.",
+  "bloquee": false,
+  "duree_s": 12.1
+}
