@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Nutri-Arbitre — 5. agent.py expliqué</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 10.5pt;
+         line-height: 1.5; color: #1d1d1f; }
+  h1 { font-size: 20pt; margin: 0 0 2mm; color: #0b3d2e; }
+  .sous-titre { color: #666; margin: 0 0 6mm; }
+  h2 { font-size: 13pt; color: #0b3d2e; border-bottom: 1.5px solid #cfe3d8; padding-bottom: 1mm;
+       margin-top: 7mm; page-break-after: avoid; }
+  h3 { font-size: 11pt; color: #2e7d5b; margin: 5mm 0 1mm; page-break-after: avoid; }
+  pre { background: #f5f7f6; border-left: 3px solid #2e7d5b; padding: 3mm 4mm; font-size: 8.6pt;
+        line-height: 1.4; overflow: hidden; white-space: pre-wrap; page-break-inside: avoid; }
+  code { font-family: Menlo, Consolas, monospace; font-size: 9pt; background: #eef2f0;
+         padding: 0 1mm; border-radius: 2px; }
+  pre code { background: none; padding: 0; }
+  .ln { color: #999; }
+  .resume { background: #e8f4ee; border-radius: 4px; padding: 3mm 5mm; }
+  .cle { background: #f3eefa; border-left: 3px solid #7a4fb5; padding: 3mm 5mm; page-break-inside: avoid; }
+  .reel { background: #fff6e0; border-left: 3px solid #e0a100; padding: 3mm 5mm; page-break-inside: avoid; }
+  .q { background: #eef1fa; border-left: 3px solid #4a62b0; padding: 3mm 5mm; page-break-inside: avoid; }
+  .corrige { page-break-before: always; }
+  table { border-collapse: collapse; font-size: 9.5pt; margin: 2mm 0; }
+  td, th { border: 1px solid #cfd8d3; padding: 1mm 3mm; text-align: left; vertical-align: top; }
+  th { background: #eef2f0; }
+  li { margin-bottom: 1.2mm; }
+</style>
+</head>
+<body>
+
+<h1>5. <code>agent.py</code> expliqué</h1>
+<p class="sous-titre">Nutri-Arbitre — fiche de révision · étape 5 sur 5 du trajet des données
+(download → clean → tools → garde_fou → <b>agent</b>) · <b>brique 1</b> (appel d'outils)</p>
+
+<div class="resume">
+<b>En une phrase :</b> ce fichier est le <b>chef d'orchestre</b>. Il envoie la question à Qwen, exécute les outils
+que Qwen demande, lui renvoie les résultats, recommence jusqu'à ce que Qwen donne sa réponse finale, puis fait
+passer cette réponse par le garde-fou avant de l'afficher.
+<br><b>Brique 1</b> (appel d'outils) : Qwen ne calcule rien lui-même. Il <i>demande</i> un outil (« decrire les
+sucres des bio »), et c'est le code Python de <code>tools.py</code> qui fait le calcul.
+<br><b>Qwen ne lance rien lui-même.</b> Il écrit seulement une demande : le nom d'un outil et ses arguments. C'est
+<code>agent.py</code> qui décide de l'exécuter ou non.
+</div>
+
+<h2>Le trajet d'une question</h2>
+<pre><code>question ──► Qwen ──► « appelle decrire(sucres, bio=True) »
+                           │
+              agent.py vérifie les filtres (garde-fou n° 2), puis exécute tools.decrire
+                           │
+             résultat {"n": 543, "moyenne": 13.17, ...} ──► renvoyé à Qwen
+                           │
+              Qwen écrit sa réponse en français (plus aucun outil demandé)
+                           │
+              garde-fou n° 1 : chaque nombre vient-il d'un outil ? ──► réponse affichée ou bloquée</code></pre>
+
+<h2>Les réglages (lignes 8 à 23)</h2>
+<pre><code><span class="ln">19</span> MODELE = os.environ.get("NUTRI_MODELE", "qwen3.5:4b-q4_K_M")
+<span class="ln">20</span> OPTIONS = {"num_ctx": 8192}
+<span class="ln">21</span> MAX_TOURS = 6
+<span class="ln">22</span> DONNEES = Path("data/cereales_propres.csv")
+<span class="ln">23</span> DOSSIER_TRACES = Path("traces")</code></pre>
+<ul>
+  <li><b>MODELE</b> : <code>os.environ.get("NUTRI_MODELE", ...)</code> lit une variable d'environnement. Si elle
+      n'existe pas, on prend la valeur par défaut, le modèle imposé par la consigne. On peut ainsi tester un autre
+      modèle sans changer le code.</li>
+  <li><b>num_ctx = 8192</b> : la <b>longueur de contexte</b>, c'est-à-dire combien de tokens (morceaux de mots)
+      le modèle peut lire en une fois. La consigne demande de la fixer. Toute la conversation (prompt, question,
+      résultats d'outils) doit tenir dedans.</li>
+  <li><b>MAX_TOURS = 6</b> : une sécurité. Si Qwen demande des outils sans jamais conclure, on arrête au bout de
+      6 tours au lieu de tourner à l'infini.</li>
+  <li><b>Path</b> : un chemin de fichier. <code>DOSSIER_TRACES / "trace.json"</code> colle les morceaux du chemin.</li>
+</ul>
+
+<h2>Le prompt système (lignes 25 à 30)</h2>
+<p>C'est le texte qui explique à Qwen son rôle, envoyé avant chaque question. Il fixe :</p>
+<ul>
+  <li>le <b>rôle</b> (analyste nutrition) et le <b>sujet</b> (céréales vendues en France, pour 100 g) ;</li>
+  <li>la <b>règle</b> : tout chiffre vient d'un outil, et on recopie les nombres tels quels ;</li>
+  <li>la <b>forme</b> : 2 à 4 phrases, la marge d'erreur écrite « 13,2 g ± 0,9 g » (brique 8) ;</li>
+  <li>la <b>prudence</b> : si <code>difference_nette</code> vaut false, dire qu'on ne peut pas conclure.</li>
+</ul>
+<div class="cle">Le prompt <b>demande</b>, le garde-fou <b>impose</b>. Qwen ne respecte pas toujours le prompt
+(il oublie parfois la marge, ou calcule une portion lui-même). C'est pour ça que la règle des chiffres est aussi
+vérifiée par le code.</div>
+
+<h2>Charger les données (lignes 33 et 34)</h2>
+<pre><code><span class="ln">34</span>     return pd.read_csv(DONNEES, dtype={"code": str})</code></pre>
+<p><code>dtype={"code": str}</code> : la colonne <code>code</code> (code-barres) est lue comme du <b>texte</b>.
+Sinon pandas la lirait comme un nombre et supprimerait les zéros du début (« 0012345 » deviendrait 12345).</p>
+
+<h2><code>executer_outil</code> : exécuter la demande de Qwen (lignes 37 à 52)</h2>
+<pre><code><span class="ln">40</span>     if nom not in tools.FONCTIONS:
+<span class="ln">41</span>         return {"erreur": f"outil inconnu : {nom}"}
+<span class="ln">43</span>     probleme = garde_fou.verifier_filtres(question, arguments)
+<span class="ln">44</span>     if probleme is not None:
+<span class="ln">45</span>         return {"erreur": probleme}
+<span class="ln">46</span>     fonction = tools.FONCTIONS[nom]
+<span class="ln">47</span>     try:
+<span class="ln">50</span>         return fonction(df, **arguments)
+<span class="ln">51</span>     except (ValueError, TypeError) as e:
+<span class="ln">52</span>         return {"erreur": str(e)}</code></pre>
+<p>Trois contrôles, dans l'ordre :</p>
+<ol>
+  <li><b>L'outil existe-t-il ?</b> (lignes 40–41). <code>tools.FONCTIONS</code> est un dictionnaire
+      nom → fonction (<code>"decrire"</code> → <code>tools.decrire</code>). Si Qwen invente un outil, on refuse.
+      Seules nos 4 fonctions peuvent être lancées : Qwen ne peut pas exécuter n'importe quel code.</li>
+  <li><b>Les filtres sont-ils permis ?</b> (lignes 43–45). C'est la deuxième règle du garde-fou : pas de
+      filtre bio ou Nutri-Score si la question n'en parle pas.</li>
+  <li><b>Les arguments sont-ils corrects ?</b> (lignes 47–52). Si Qwen demande un nutriment qui n'existe pas
+      (« vitamine_c »), <code>tools.py</code> lève une <code>ValueError</code>. Un argument inconnu donne une
+      <code>TypeError</code>. On <b>attrape</b> l'erreur avec <code>try / except</code>.</li>
+</ol>
+<h3>Le <code>**arguments</code></h3>
+<p>Qwen envoie ses arguments sous forme de dictionnaire : <code>{"nutriment": "sucres", "bio": True}</code>.
+Les deux étoiles « déballent » le dictionnaire : la ligne 50 revient à écrire
+<code>tools.decrire(df, nutriment="sucres", bio=True)</code>. Ainsi, une seule ligne marche pour les 4 outils.</p>
+<h3>Pourquoi renvoyer l'erreur au lieu de planter ?</h3>
+<p>L'erreur est renvoyée <b>à Qwen</b>, comme un résultat d'outil. Il la lit au tour suivant et peut corriger son
+appel. Si le programme plantait, l'utilisateur n'aurait aucune réponse.</p>
+
+<h2><code>repondre</code> : la boucle d'agent (lignes 55 à 105)</h2>
+<h3>La conversation (lignes 58–59)</h3>
+<pre><code><span class="ln">58</span>     messages = [{"role": "system", "content": PROMPT_SYSTEME},
+<span class="ln">59</span>                 {"role": "user", "content": question}]</code></pre>
+<p>Un modèle de langage n'a <b>pas de mémoire</b> d'un appel à l'autre. À chaque tour, on lui renvoie <b>toute</b>
+la conversation, sous forme d'une liste de messages. Chaque message a un <b>rôle</b> :</p>
+<table>
+<tr><th>Rôle</th><th>Qui parle</th><th>Contenu</th></tr>
+<tr><td><code>system</code></td><td>nous, une fois au début</td><td>le prompt système (les règles)</td></tr>
+<tr><td><code>user</code></td><td>l'utilisateur</td><td>la question</td></tr>
+<tr><td><code>assistant</code></td><td>Qwen</td><td>une demande d'outil, ou sa réponse finale</td></tr>
+<tr><td><code>tool</code></td><td>nos outils Python</td><td>le résultat du calcul, en texte JSON</td></tr>
+</table>
+
+<h3>La trace (lignes 61–63)</h3>
+<p><code>trace</code> est un dictionnaire qui garde tout ce qui se passe : la question, chaque appel d'outil avec
+ses arguments et son résultat, la réponse, les tokens, la durée. Il sera enregistré dans <code>traces/</code> :
+ce sont nos <b>preuves</b> (EVIDENCE.md, brique 9). <code>resultats</code> garde tous les résultats d'outils pour
+le garde-fou de la fin.</p>
+
+<h3>Avec ou sans outils (lignes 65–68)</h3>
+<p>Si <code>avec_outils</code> est faux, on ne propose aucun outil à Qwen : il doit répondre de mémoire. C'est le
+« modèle seul », qu'on compare au système complet dans la brique 9.</p>
+
+<h3>La boucle : 3 étapes par tour (lignes 70–93)</h3>
+<pre><code><span class="ln">70</span>     reponse_brute = None
+<span class="ln">71</span>     for tour in range(MAX_TOURS):
+<span class="ln">73</span>         r = chat(model=MODELE, messages=messages, tools=outils_proposes,
+<span class="ln">74</span>                  options=OPTIONS, think=False)
+<span class="ln">75</span>         trace["tokens_entree"] += r.prompt_eval_count or 0
+<span class="ln">76</span>         trace["tokens_sortie"] += r.eval_count or 0
+<span class="ln">77</span>         messages.append(r.message)
+<span class="ln">80</span>         if not r.message.tool_calls:
+<span class="ln">81</span>             reponse_brute = r.message.content or ""
+<span class="ln">82</span>             break
+<span class="ln">85</span>         for appel in r.message.tool_calls:
+<span class="ln">86</span>             nom = appel.function.name
+<span class="ln">87</span>             args = dict(appel.function.arguments or {})
+<span class="ln">88</span>             resultat = executer_outil(df, nom, args, question)
+<span class="ln">89</span>             resultats.append(resultat)
+<span class="ln">90</span>             trace["appels"].append({"outil": nom, "arguments": args, "resultat": resultat})
+<span class="ln">91</span>             messages.append({"role": "tool", "tool_name": nom,
+<span class="ln">92</span>                              "content": json.dumps(resultat, ensure_ascii=False)})</code></pre>
+<ol>
+  <li><b>On envoie la conversation à Qwen</b> (lignes 73–77) avec la liste des outils (<code>tools.SCHEMAS</code>,
+      qui décrit chaque outil : son nom, à quoi il sert, ses arguments et leurs valeurs permises).
+      <code>think=False</code> coupe la « réflexion » cachée de Qwen : plus rapide. On compte les tokens
+      (<code>or 0</code> : si Ollama ne donne pas le nombre, on ajoute 0 au lieu de planter). La réponse de Qwen
+      est ajoutée à la conversation.</li>
+  <li><b>Pas d'outil demandé ? C'est la réponse finale</b> (lignes 80–82). <code>break</code> sort de la boucle.</li>
+  <li><b>Sinon, on exécute chaque outil demandé</b> (lignes 85–92) et on ajoute le résultat à la conversation, avec
+      le rôle <code>tool</code>. <code>json.dumps</code> transforme le dictionnaire en texte, car un message est
+      toujours du texte. <code>or {}</code> : un outil sans argument (<code>compter</code>) peut arriver avec
+      <code>None</code>. Puis la boucle recommence : Qwen lit les résultats et continue.</li>
+</ol>
+
+<h3>La fin (lignes 95–105)</h3>
+<pre><code><span class="ln">95</span>     if reponse_brute is None:
+<span class="ln">96</span>         reponse_brute = "Je n'ai pas réussi à répondre en un nombre raisonnable d'étapes."
+<span class="ln">99</span>     if avec_outils:
+<span class="ln">100</span>        trace["reponse"] = garde_fou.filtrer_reponse(reponse_brute, resultats, question)
+<span class="ln">101</span>    else:
+<span class="ln">102</span>        trace["reponse"] = reponse_brute
+<span class="ln">103</span>    trace["bloquee"] = trace["reponse"] != reponse_brute</code></pre>
+<ul>
+  <li><code>reponse_brute</code> vaut encore <code>None</code> seulement si les 6 tours sont passés sans réponse
+      finale : on met un message d'échec.</li>
+  <li><b>Le garde-fou n° 1</b> (ligne 100) s'applique au système complet. On garde les deux versions dans la
+      trace : <code>reponse_brute</code> (ce que Qwen a écrit) et <code>reponse</code> (ce qui est affiché).</li>
+  <li><code>bloquee</code> vaut <code>True</code> si les deux sont différentes : le garde-fou a remplacé la
+      réponse. On peut ainsi compter les réponses bloquées dans la brique 9.</li>
+</ul>
+
+<div class="reel">
+<b>Exemple réel, trace du 2 novembre (<code>trace_20261102_113921.json</code>)</b> : « Combien de calories apporte
+une portion de 30 g de céréales, en moyenne ? »
+<table>
+<tr><th>Tour</th><th>Ce qui se passe</th></tr>
+<tr><td>1</td><td>Qwen demande <code>decrire(energie_kcal, bio=False)</code>. <code>executer_outil</code> refuse :
+« la question ne parle pas de bio… ». Ce refus est renvoyé à Qwen (rôle <code>tool</code>).</td></tr>
+<tr><td>2</td><td>Qwen corrige : <code>decrire(energie_kcal)</code> → n = 953, moyenne 409,45 kcal,
+marge 2,54.</td></tr>
+<tr><td>3</td><td>Pas d'outil demandé : réponse finale. Elle contient « 122,84 kcal (409,45 × 0,30) », un
+calcul fait par Qwen.</td></tr>
+<tr><td>fin</td><td>Le garde-fou bloque : 122,84 et 0,30 ne viennent pas d'un outil. <code>bloquee = True</code>.
+3 497 tokens lus en tout, 17,8 s.</td></tr>
+</table>
+On voit la boucle en action : 3 appels à Qwen, une erreur qu'il corrige seul, puis la barrière finale.
+</div>
+
+<h2>Enregistrer la trace (lignes 108 à 112)</h2>
+<pre><code><span class="ln">109</span>     DOSSIER_TRACES.mkdir(exist_ok=True)
+<span class="ln">110</span>     chemin = DOSSIER_TRACES / f"trace_{time.strftime('%Y%m%d_%H%M%S')}.json"</code></pre>
+<p><code>mkdir(exist_ok=True)</code> crée le dossier <code>traces/</code> s'il n'existe pas (et ne fait rien s'il
+existe). Le nom du fichier contient la date et l'heure (<code>20261102_113921</code> = 2 novembre 2026, 11 h 39 min
+21 s) : chaque trace a un nom différent, aucune n'en écrase une autre.</p>
+
+<h2>Le lancement dans le terminal (lignes 115 à 124)</h2>
+<pre><code>python -m nutri.agent "Les céréales bio contiennent-elles moins de sucre ?"
+python -m nutri.agent --modele-seul "Les céréales bio contiennent-elles moins de sucre ?"</code></pre>
+<ul>
+  <li><code>if __name__ == "__main__":</code> : ce bloc ne tourne que si on lance le fichier directement, pas
+      quand un autre fichier l'importe (les tests importent <code>executer_outil</code>).</li>
+  <li><code>argparse</code> lit ce qu'on tape après la commande : la question, et l'option
+      <code>--modele-seul</code>. <code>action="store_true"</code> : l'option vaut <code>True</code> si on
+      l'écrit, <code>False</code> sinon.</li>
+  <li><code>avec_outils=not args.modele_seul</code> : avec l'option, pas d'outils ni de garde-fou.</li>
+  <li>On affiche chaque appel d'outil, la réponse, et le chemin de la trace.</li>
+</ul>
+
+<h2>Les limites (à dire soi-même)</h2>
+<ul>
+  <li><b>Qwen ne répond pas deux fois pareil</b> : à la même question, il a choisi trois filtres différents en
+      10 minutes. C'est pour ça que la brique 9 lance chaque question au moins 3 fois.</li>
+  <li><b>Le choix de l'outil reste celui de Qwen</b> : s'il demande le mauvais nutriment, aucun contrôle ne le voit.</li>
+  <li><b>Le coût grandit à chaque tour</b> : toute la conversation est renvoyée, donc les tokens lus augmentent
+      (environ 2 300 avec un outil, 3 500 avec deux tours d'outils).</li>
+  <li><b>Les questions de portion</b> sont toujours bloquées : aucun outil ne fait ce calcul.</li>
+</ul>
+
+<h2>Questions d'examinateur</h2>
+<div class="q">
+<ol>
+  <li>Qui fait le calcul de la moyenne : Qwen ou Python ? Comment Qwen obtient-il le résultat ?</li>
+  <li>Pourquoi renvoie-t-on toute la liste <code>messages</code> à chaque tour ?</li>
+  <li>À quoi sert <code>MAX_TOURS</code> ? Que se passe-t-il si on l'atteint ?</li>
+  <li>Comment la boucle sait-elle que Qwen a fini ?</li>
+  <li>Expliquez <code>fonction(df, **arguments)</code> avec un exemple.</li>
+  <li>Pourquoi <code>executer_outil</code> renvoie-t-il <code>{"erreur": ...}</code> au lieu de laisser le programme
+      planter ?</li>
+  <li>Qwen peut-il exécuter n'importe quel code sur votre ordinateur ?</li>
+  <li>Quelle est la différence entre <code>reponse_brute</code> et <code>reponse</code> dans la trace ?</li>
+  <li>À quoi sert l'option <code>--modele-seul</code> ?</li>
+  <li>Racontez une vraie trace où la boucle a fait plusieurs tours.</li>
+</ol>
+</div>
+
+<div class="corrige">
+<h2>Corrigé</h2>
+<ol>
+  <li><b>Python.</b> Qwen écrit seulement une demande (nom d'outil + arguments). <code>agent.py</code> exécute la
+      fonction de <code>tools.py</code> et ajoute le résultat à la conversation avec le rôle <code>tool</code> ;
+      Qwen le lit au tour suivant.</li>
+  <li><b>Le modèle n'a pas de mémoire</b> d'un appel à l'autre. Pour qu'il sache la question, ses demandes
+      précédentes et les résultats, il faut tout lui renvoyer à chaque fois.</li>
+  <li><b>Une sécurité contre une boucle sans fin</b> : au bout de 6 tours sans réponse finale, on s'arrête et on
+      répond « Je n'ai pas réussi à répondre en un nombre raisonnable d'étapes ».</li>
+  <li>Quand la réponse de Qwen <b>ne contient aucune demande d'outil</b> (<code>tool_calls</code> vide) : c'est
+      sa réponse finale, et <code>break</code> sort de la boucle.</li>
+  <li>Les deux étoiles déballent le dictionnaire en arguments nommés. Avec
+      <code>{"nutriment": "sucres", "bio": True}</code>, la ligne revient à
+      <code>tools.decrire(df, nutriment="sucres", bio=True)</code>. Une seule ligne sert pour les 4 outils.</li>
+  <li>Pour que <b>Qwen lise l'erreur et corrige son appel</b>. Le 2 novembre, il a demandé un filtre non bio, a
+      reçu l'erreur, et a refait l'appel sur toutes les céréales.</li>
+  <li><b>Non.</b> Il ne peut demander que les 4 outils de <code>tools.FONCTIONS</code>. Un autre nom est refusé
+      (« outil inconnu »), et le test <code>test_outil_inconnu_ne_plante_pas</code> le vérifie.</li>
+  <li><code>reponse_brute</code> est ce que Qwen a écrit ; <code>reponse</code> est ce qui est affiché après le
+      garde-fou. Si elles diffèrent, la réponse a été bloquée (<code>bloquee = True</code>).</li>
+  <li>À lancer Qwen <b>sans outils ni garde-fou</b>, pour comparer avec le système complet dans la brique 9 :
+      on mesure ce qu'apportent les outils et la règle.</li>
+  <li>La trace <code>113921</code> : 1er tour, filtre non bio refusé ; 2e tour, <code>decrire(energie_kcal)</code>
+      sur les 953 céréales ; 3e tour, réponse avec « 122,84 kcal » calculé par Qwen ; le garde-fou la bloque.</li>
+</ol>
+</div>
+
+</body>
+</html>
