@@ -116,7 +116,7 @@ Modèle : `qwen3.5:4b-q4_K_M` (Ollama), `num_ctx` = 8192, `think=False`.
   garde-fou), souvent avec une fausse marge (« 13,2 g ± 0,9 g ») et en prétendant avoir consulté un outil.
 - **Une première évaluation**, sur les 12 questions simples seulement, avait donné 100 % ± 0 % pour le système
   complet et 3 % ± 5 % pour le modèle seul. J'ai décidé d'ajouter les 4 pièges, parce qu'un score de 100 % sur des
-  questions faciles ne montrait pas les limites du système. Elle est dans l'historique git (commit `b66aa42`).
+  questions faciles ne montrait pas les limites du système. Elle est dans l'historique git (commit `9168bd2`).
 
 ### Un échec expliqué à partir de sa trace
 - **Trace :** `resultats/evaluation.json`, lancement 1, question 11, système complet : « Quelle marque (au moins
