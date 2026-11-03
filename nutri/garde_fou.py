@@ -73,7 +73,7 @@ def nombre_justifie(ecrit: str, autorises: list[float]) -> bool:
 
 def verifier(reponse: str, resultats_outils: list, question: str = "") -> tuple[bool, list[str]]:
     """Renvoie (autorisée ?, liste des nombres non justifiés)."""
-    # les nombres qu'on a le droit d'écrire : ceux des outils, ceux de la question, et 100
+    # les nombres qu'on a le droit d'écrire : ceux des outils, ceux de la question, et les constantes 100 et 95
     autorises = nombres_autorises(resultats_outils) + nombres_autorises(question) + CONSTANTES_AUTORISEES
     # un écart de -20 peut s'écrire « 20 g de moins » : on autorise aussi la valeur sans signe
     autorises += [abs(a) for a in autorises]

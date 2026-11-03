@@ -260,7 +260,7 @@ Code de `nutri/garde_fou.py`, lignes 74 à 91 (le numéro de ligne est à gauche
 ```python
  74 | def verifier(reponse: str, resultats_outils: list, question: str = "") -> tuple[bool, list[str]]:
  75 |     """Renvoie (autorisée ?, liste des nombres non justifiés)."""
- 76 |     # les nombres qu'on a le droit d'écrire : ceux des outils, ceux de la question, et 100
+ 76 |     # les nombres qu'on a le droit d'écrire : ceux des outils, ceux de la question, et les constantes 100 et 95
  77 |     autorises = nombres_autorises(resultats_outils) + nombres_autorises(question) + CONSTANTES_AUTORISEES
  78 |     # un écart de -20 peut s'écrire « 20 g de moins » : on autorise aussi la valeur sans signe
  79 |     autorises += [abs(a) for a in autorises]
