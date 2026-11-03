@@ -8,3 +8,6 @@ __pycache__/
 data/raw_*.json
 # Fichiers cachés de macOS
 .DS_Store
+
+# consigne du projet (document du cours, pas à publier)
+Projet_Final_Coding_for_AI_2026-27.pdf

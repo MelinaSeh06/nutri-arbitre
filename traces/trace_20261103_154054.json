@@ -1,0 +1,45 @@
+{
+  "question": "Les céréales bio contiennent-elles plus de lipides que les non bio ?",
+  "modele": "qwen3.5:4b-q4_K_M",
+  "avec_outils": true,
+  "appels": [
+    {
+      "outil": "comparer",
+      "arguments": {
+        "nutriment": "lipides",
+        "groupe": "bio"
+      },
+      "resultat": {
+        "nutriment": "lipides",
+        "groupe": "bio",
+        "groupes": [
+          {
+            "groupe": "False",
+            "n": 410,
+            "moyenne": 10.48,
+            "marge_95": 0.67
+          },
+          {
+            "groupe": "True",
+            "n": 543,
+            "moyenne": 10.69,
+            "marge_95": 0.5
+          }
+        ],
+        "ecart_bio_moins_non_bio": 0.21,
+        "marge_95_ecart": 0.84,
+        "intervalle_95_ecart": [
+          -0.63,
+          1.05
+        ],
+        "difference_nette": false
+      }
+    }
+  ],
+  "tokens_entree": 2314,
+  "tokens_sortie": 134,
+  "reponse_brute": "La moyenne de lipides est légèrement plus élevée dans les céréales bio (10,69 g) que dans les non bio (10,48 g), mais l'écart net est de 0,21 g avec une marge d'erreur de ±0,84 g. Comme la différence nette est fausse, cet écart peut venir du hasard et on ne peut pas conclure à une différence significative entre les deux groupes.",
+  "reponse": "La moyenne de lipides est légèrement plus élevée dans les céréales bio (10,69 g) que dans les non bio (10,48 g), mais l'écart net est de 0,21 g avec une marge d'erreur de ±0,84 g. Comme la différence nette est fausse, cet écart peut venir du hasard et on ne peut pas conclure à une différence significative entre les deux groupes.",
+  "bloquee": false,
+  "duree_s": 16.1
+}

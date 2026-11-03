@@ -10,7 +10,7 @@ réponse contenant un chiffre qui ne vient pas de ces fonctions.
 ## Installation (clone neuf)
 
 ```bash
-git clone <URL_DU_DEPOT> nutri-arbitre && cd nutri-arbitre
+git clone https://github.com/MelinaSeh06/nutri-arbitre.git && cd nutri-arbitre
 python -m venv .venv && source .venv/bin/activate   # Windows : .venv\Scripts\activate
 pip install -r requirements.txt
 ollama pull qwen3.5:4b-q4_K_M

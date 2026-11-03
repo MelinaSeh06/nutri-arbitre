@@ -1,0 +1,45 @@
+{
+  "question": "Les céréales bio contiennent-elles moins de sucre ?",
+  "modele": "qwen3.5:4b-q4_K_M",
+  "avec_outils": true,
+  "appels": [
+    {
+      "outil": "comparer",
+      "arguments": {
+        "nutriment": "sucres",
+        "groupe": "bio"
+      },
+      "resultat": {
+        "nutriment": "sucres",
+        "groupe": "bio",
+        "groupes": [
+          {
+            "groupe": "False",
+            "n": 410,
+            "moyenne": 18.59,
+            "marge_95": 0.82
+          },
+          {
+            "groupe": "True",
+            "n": 543,
+            "moyenne": 13.17,
+            "marge_95": 0.69
+          }
+        ],
+        "ecart_bio_moins_non_bio": -5.42,
+        "marge_95_ecart": 1.07,
+        "intervalle_95_ecart": [
+          -6.49,
+          -4.35
+        ],
+        "difference_nette": true
+      }
+    }
+  ],
+  "tokens_entree": 2305,
+  "tokens_sortie": 147,
+  "reponse_brute": "Les céréales bio contiennent en moyenne 13,17 g de sucre contre 18,59 g pour les non bio (données sur 543 et 410 produits respectivement), soit une différence d'environ -5,42 g ± 1,07 g par 100 g. L'écart est significatif car la différence nette de sucre entre bio et non bio est vraie, confirmant ainsi que les céréales bio contiennent moins de sucre.",
+  "reponse": "Les céréales bio contiennent en moyenne 13,17 g de sucre contre 18,59 g pour les non bio (données sur 543 et 410 produits respectivement), soit une différence d'environ -5,42 g ± 1,07 g par 100 g. L'écart est significatif car la différence nette de sucre entre bio et non bio est vraie, confirmant ainsi que les céréales bio contiennent moins de sucre.",
+  "bloquee": false,
+  "duree_s": 18.1
+}

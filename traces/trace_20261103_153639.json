@@ -1,0 +1,12 @@
+{
+  "question": "Quelle est la teneur moyenne en sucres des céréales bio, pour 100 g ?",
+  "modele": "qwen3.5:4b-q4_K_M",
+  "avec_outils": false,
+  "appels": [],
+  "tokens_entree": 196,
+  "tokens_sortie": 82,
+  "reponse_brute": "La teneur moyenne en sucres de 100 g de céréales bio vendues en France est de **13,2 g** avec une marge d'erreur de ± 0,9 g. Cette valeur reflète la composition nutritive typique de ce type de produit au petit-déjeuner. L'analyse se base sur les données ouvertes disponibles pour ce groupe alimentaire spécifique.",
+  "reponse": "La teneur moyenne en sucres de 100 g de céréales bio vendues en France est de **13,2 g** avec une marge d'erreur de ± 0,9 g. Cette valeur reflète la composition nutritive typique de ce type de produit au petit-déjeuner. L'analyse se base sur les données ouvertes disponibles pour ce groupe alimentaire spécifique.",
+  "bloquee": false,
+  "duree_s": 6.3
+}

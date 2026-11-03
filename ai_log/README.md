@@ -127,3 +127,20 @@ Les exports des conversations sont dans ce dossier (`conversation_*.md` ou `.pdf
   demandé le classement en ordre décroissant et a lu la marque la plus sucrée comme la moins sucrée. Le garde-fou
   l'a laissée passer, car le chiffre venait bien d'un outil. La même question était juste 3 fois sur 3 lors de la
   première évaluation : 3 lancements ne suffisent pas à voir toute l'irrégularité de Qwen.
+- **Fin de la séance 4 (après-midi) :**
+  - j'ai demandé des documents pour faire des vidéos NotebookLM sur chaque fichier de code
+    (`explications/notebooklm/`, un document Markdown par fichier : le code complet, expliqué morceau par morceau,
+    avec de vrais exemples). Choix du Markdown plutôt que du PDF ou du Word, pour que NotebookLM lise bien le code ;
+  - questions de compréhension : le type « prudence », pourquoi l'écart entre Nutri-Score A et E n'est pas calculé
+    par un outil (`comparer` ne calcule l'écart que pour bio / non bio), la différence entre une réponse bloquée et
+    une réponse fausse, sur quoi portent les tests, les faux positifs des lipides ;
+  - simulation de la démo de l'oral. **Ce que j'ai trouvé :** sans outils, le modèle seul a répondu « 13,2 g ± 0,9 g »,
+    c'est-à-dire l'exemple écrit dans le prompt, recopié tel quel. Je ne change pas le prompt (les résultats de la
+    brique 9 doivent rester ceux du prompt évalué) : c'est noté comme limite dans EVIDENCE.md ;
+  - **la vraie raison de ma décision sur les faux positifs**, que j'ajoute ici par honnêteté : je ne voulais pas
+    compliquer un code que je dois savoir expliquer, après déjà environ 7 heures passées à le comprendre ; et je ne
+    voulais pas corriger la mesure après avoir vu ses résultats ;
+  - dépôt GitHub public créé (`nutri-arbitre`), avec l'adresse e-mail anonyme de GitHub dans l'historique au lieu de
+    mon adresse personnelle.
+- **Corrigé à la main :** rien. **Gardé tel quel :** un commentaire périmé corrigé dans `garde_fou.py` (ligne 76, les
+  constantes 100 et 95), les documents NotebookLM.

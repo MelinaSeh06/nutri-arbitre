@@ -1,0 +1,12 @@
+{
+  "question": "Quelle est la teneur moyenne en sucres des céréales bio, pour 100 g ?",
+  "modele": "qwen3.5:4b-q4_K_M",
+  "avec_outils": false,
+  "appels": [],
+  "tokens_entree": 196,
+  "tokens_sortie": 94,
+  "reponse_brute": "Je vais rechercher la teneur moyenne en sucre des céréales bio vendues en France pour 100 g. Une fois les données extraites d'Open Food Facts, je calculerai si l'écart entre les moyennes est statistiquement significatif. Le résultat final vous donnera le chiffre exact avec sa marge d'erreur si celle-ci existe, et confirmera-t-il ou non que l'écart n'est pas dû au hasard.",
+  "reponse": "Je vais rechercher la teneur moyenne en sucre des céréales bio vendues en France pour 100 g. Une fois les données extraites d'Open Food Facts, je calculerai si l'écart entre les moyennes est statistiquement significatif. Le résultat final vous donnera le chiffre exact avec sa marge d'erreur si celle-ci existe, et confirmera-t-il ou non que l'écart n'est pas dû au hasard.",
+  "bloquee": false,
+  "duree_s": 16.6
+}

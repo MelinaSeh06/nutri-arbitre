@@ -72,6 +72,8 @@ Modèle : `qwen3.5:4b-q4_K_M` (Ollama), `num_ctx` = 8192, `think=False`.
   - lipides : bio 10,69 g, non bio 10,48 g ; écart 0,21 g ± 0,84 g, fourchette [−0,63 ; 1,05] qui contient 0
     → **pas net** : l'écart peut venir du hasard ;
   - trace `traces/trace_20261102_113831.json` : sel des céréales bio, « 0,13 g ± 0,02 g ».
+- **Reproduire :** `python -m pytest tests/test_tools.py -v` (marges calculées à la main) et
+  `python -m nutri.agent "Les céréales bio contiennent-elles plus de lipides que les non bio ?"` (écart pas net).
 - **Ce que ces données ne permettent pas de conclure :**
   - l'échantillon n'est pas représentatif du marché : ce sont les premières pages d'Open Food Facts, avec 57 %
     de bio, alors que le bio est minoritaire en rayon. Les moyennes décrivent ces 953 fiches, pas toutes les
@@ -148,13 +150,21 @@ Modèle : `qwen3.5:4b-q4_K_M` (Ollama), `num_ctx` = 8192, `think=False`.
   moyenne, 14,04 g ; l'une des valeurs inventées, 13,2 g, tombe à 2 % de la bonne réponse (13,17 g). Juste par
   chance.
 - **Ma décision :** j'aurais pu corriger le jugement et rejuger les traces (le modèle seul serait descendu vers 6 %).
-  J'ai choisi de **garder ces faux positifs** et de les montrer. Malgré les outils, le garde-fou et le prompt,
-  le système se trompe, et la mesure elle-même a des erreurs : c'est ce que je veux faire voir, plutôt qu'un
-  chiffre corrigé après avoir vu les résultats.
+  J'ai choisi de **garder ces faux positifs** et de les montrer, pour deux raisons. D'abord, ne pas compliquer
+  un code que je dois savoir expliquer ligne par ligne. Ensuite, ne pas corriger une mesure après avoir vu ses
+  résultats. Malgré les outils, le garde-fou et le prompt, le système se trompe, et la mesure elle-même a des
+  erreurs : je préfère le montrer.
 
 ### Limites de cette mesure
 - 16 questions et 3 lancements, c'est peu ; la question 11 montre que le score change d'un passage à l'autre.
 - Le jugement par nombres et par mots-clés ne lit pas le sens (faux positifs ci-dessus).
 - Le modèle seul garde le même prompt, qui lui parle d'outils qu'il n'a pas : il répond souvent « j'ai besoin d'un
   outil ».
+- **L'exemple du prompt fuit dans les réponses** (trouvé en préparant l'oral, le 3 novembre). Le prompt donne
+  l'exemple « 13,2 g ± 0,9 g » pour montrer comment écrire une marge. Sans outils, le modèle seul le recopie tel
+  quel (`traces/trace_20261103_153639.json`) : « La teneur moyenne en sucres… est de 13,2 g avec une marge d’erreur de ± 0,9 g », sans aucun appel
+  d'outil (et dans l'évaluation, question 16, pour la moyenne de toutes les céréales, qui est 15,5 g). La
+  moyenne tombe juste par coïncidence (13,17 g), mais la vraie marge est 0,69 g. Amélioration possible : un
+  exemple neutre dans le prompt (« X g ± Y g »). Je ne l'ai pas changé, pour que les résultats ci-dessus
+  restent ceux du prompt évalué.
 - Les questions sont écrites par moi : un utilisateur réel poserait des questions plus variées.
