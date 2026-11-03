@@ -68,3 +68,33 @@ Les exports des conversations sont dans ce dossier (`conversation_*.md` ou `.pdf
   écrire la marge. Le prompt ne suffit donc pas toujours, et ce sera à mesurer dans la brique 9.
 - **Ce que j'ai appris :** je pensais qu'avec 4 fois plus de produits la marge serait plus grande. C'est
   l'inverse : l'erreur type diminue, et 1,96 × une erreur type plus petite donne une marge plus petite.
+
+## Séance 3 : lundi 2 novembre 2026
+- **Outil et export :** Claude Code (extension VS Code) : `conversation_3_claude_code_2026-11-02.md`.
+- **Demandé :** expliquer `garde_fou.py` et `agent.py`, avec une fiche PDF pour chacun
+  (`explications/04_garde_fou.pdf`, `05_agent.pdf`) ; obtenir de vraies réponses bloquées par le garde-fou
+  pour la brique 3 ; mieux comprendre la tolérance d'arrondi (« 18 » accepté pour 18,37, « 19 » refusé).
+- **Mes décisions :**
+  - avant d'écrire la fiche du garde-fou, j'ai demandé s'il laissait passer des **filtres faux**. C'était le
+    cas : pour « les calories d'une portion de céréales », Qwen avait filtré les seules céréales non bio. J'ai
+    choisi d'ajouter une **deuxième règle** (`verifier_filtres`) : un outil ne peut pas filtrer ni comparer
+    selon le bio ou le Nutri-Score si la question n'en parle pas. Elle est vérifiée au moment de l'appel
+    d'outil, et l'erreur est renvoyée à Qwen pour qu'il se corrige ;
+  - garder les questions de portion (« un bol de 40 g ») bloquées, sans ajouter d'outil de portion : le
+    blocage montre bien la règle à l'oral.
+- **Gardé tel quel :**
+  - la deuxième règle, testée avec le vrai Qwen : il a demandé `bio=False`, a reçu l'erreur, a refait le calcul
+    sur les 953 céréales, puis le garde-fou a bloqué son propre calcul de portion
+    (`traces/trace_20261102_113921.json`) ;
+  - l'ajout de 95 aux constantes autorisées (« marge à 95 % ») : on a remarqué qu'il passait déjà, par
+    accident, parce que le nom de champ `marge_95` est lu comme un nombre ; on l'a rendu voulu ;
+  - 5 nouveaux tests à partir des vraies traces bloquées. En tout, 36 tests passent.
+- **Corrigé à la main (quoi ?) :** rien dans le code.
+- **Prompt ou pseudo-code réécrit (quelle ligne, pourquoi) :** aucun. Les vraies traces montrent que le prompt
+  ne suffit pas : malgré « n'écris jamais un nombre que tu n'as pas reçu d'un outil », Qwen a calculé
+  lui-même « 5,3 g » pour un bol de 40 g (juste, mais bloqué) et « 124,9 kcal exactement » (faux, bloqué).
+  À la même question, il a choisi trois filtres différents en 10 minutes.
+- **Ce que j'ai appris :** j'ai demandé si ces limites étaient une faute de ma part. Non : un petit modèle se
+  trompe, et la consigne demande justement de montrer et d'expliquer un échec (brique 9). Le garde-fou ne
+  vérifie pas le sens d'une phrase, ni le choix du nutriment : ce sont des limites connues, écrites dans
+  les fiches.
