@@ -98,3 +98,32 @@ Les exports des conversations sont dans ce dossier (`conversation_*.md` ou `.pdf
   trompe, et la consigne demande justement de montrer et d'expliquer un échec (brique 9). Le garde-fou ne
   vérifie pas le sens d'une phrase, ni le choix du nutriment : ce sont des limites connues, écrites dans
   les fiches.
+
+## Séance 4 : mardi 3 novembre 2026
+- **Outil et export :** Claude Code (extension VS Code) : `conversation_4_claude_code_2026-11-03.md`.
+- **Demandé :** coder la brique 9 (`nutri/evaluation.py`) et la lancer ; remplir EVIDENCE.md ; écrire les
+  fiches `explications/06_evaluation.pdf` et `07_tests.pdf` ; tester un clone neuf du projet ; mettre à jour le
+  README et le plan de présentation ; ce qu'il restait à faire pour finir.
+- **Mes décisions :**
+  - la première évaluation (12 questions simples) donnait **100 %** au système complet. J'ai décidé d'ajouter
+    **4 questions pièges** (portion de 30 g, écart entre Nutri-Score A et E, vitamine C absente des données,
+    question sans bio où Qwen est tenté de filtrer), parce que le but du devoir est de montrer les failles du
+    modèle, pas d'avoir un score parfait. Résultat : 73 % ± 4 % pour le système complet, 12 % ± 6 % pour le
+    modèle seul ;
+  - en lisant les traces, on a vu que mon jugement comptait **juste** des réponses du modèle seul qui inventaient
+    des chiffres (les lipides : « pas significatif » avec des moyennes fausses). Claude Code proposait de corriger
+    le jugement et de rejuger les traces. **J'ai refusé** : je garde ces faux positifs et je les montre dans
+    EVIDENCE.md. Malgré les outils, le garde-fou et le prompt, le système se trompe, et la mesure aussi ; je
+    préfère le montrer que corriger un chiffre après avoir vu les résultats.
+- **Gardé tel quel :**
+  - `nutri/evaluation.py` : bonnes réponses calculées directement avec pandas (vérification indépendante des
+    outils), jugement à 2 % près (au moins 0,01, à cause des arrondis), 3 lancements, moyenne et écart type ;
+  - deux passages simplifiés en boucles pour que je puisse les expliquer (pas de compréhension de liste imbriquée) ;
+  - 6 tests du jugement, sans appeler le modèle. En tout, 42 tests passent, et un clone neuf s'installe et passe
+    les tests.
+- **Corrigé à la main (quoi ?) :** rien dans le code.
+- **Prompt ou pseudo-code réécrit (quelle ligne, pourquoi) :** aucun.
+- **Ce que j'ai appris :** l'échec expliqué de la brique 9 : à « quelle marque est la moins sucrée ? », Qwen a
+  demandé le classement en ordre décroissant et a lu la marque la plus sucrée comme la moins sucrée. Le garde-fou
+  l'a laissée passer, car le chiffre venait bien d'un outil. La même question était juste 3 fois sur 3 lors de la
+  première évaluation : 3 lancements ne suffisent pas à voir toute l'irrégularité de Qwen.
