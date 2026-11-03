@@ -24,10 +24,13 @@ python -m nutri.download --pages 20    # facultatif : re-télécharger Open Food
 python -m nutri.clean                  # facultatif : refaire le nettoyage et son journal
 python -m nutri.agent "Les céréales bio contiennent-elles moins de sucre ?"
 python -m nutri.agent --modele-seul "Les céréales bio contiennent-elles moins de sucre ?"
+python -m nutri.evaluation --rapide    # brique 9 : essai de 1 minute (2 questions)
+python -m nutri.evaluation             # brique 9 : 16 questions x 3 lancements x 2 systèmes (~35 min)
 ```
 
 Le fichier nettoyé `data/cereales_propres.csv` est inclus dans le dépôt : Open Food Facts change
-chaque jour, et les réponses connues des tests de la brique 9 doivent rester fixes.
+chaque jour, et les réponses connues des tests de la brique 9 doivent rester fixes. Re-télécharger
+puis re-nettoyer remplace ce fichier : les chiffres d'EVIDENCE.md ne seraient plus les mêmes.
 
 ## Structure
 
@@ -36,10 +39,12 @@ chaque jour, et les réponses connues des tests de la brique 9 doivent rester fi
 | `nutri/download.py` | télécharge les données brutes (API Open Food Facts) |
 | `nutri/clean.py` | nettoie et écrit `data/journal_nettoyage.md` |
 | `nutri/tools.py` | les outils de calcul que le modèle appelle |
-| `nutri/garde_fou.py` | la règle imposée par le code |
+| `nutri/garde_fou.py` | les deux règles imposées par le code |
 | `nutri/agent.py` | la boucle d'agent avec Ollama, sauve les traces dans `traces/` |
+| `nutri/evaluation.py` | brique 9 : système complet contre modèle seul, résultats dans `resultats/` |
 | `tests/` | tests pytest à réponse connue |
 | `EVIDENCE.md` | preuves, brique par brique |
 | `ai_log/` | journal d'usage de l'IA |
+| `explications/` | une fiche PDF d'explication par fichier de code |
 
 Aucune clé d'API ni donnée personnelle n'est nécessaire ni présente dans le dépôt.

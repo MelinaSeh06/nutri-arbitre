@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Nutri-Arbitre — 7. Les tests expliqués</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 10.5pt;
+         line-height: 1.5; color: #1d1d1f; }
+  h1 { font-size: 20pt; margin: 0 0 2mm; color: #0b3d2e; }
+  .sous-titre { color: #666; margin: 0 0 6mm; }
+  h2 { font-size: 13pt; color: #0b3d2e; border-bottom: 1.5px solid #cfe3d8; padding-bottom: 1mm;
+       margin-top: 7mm; page-break-after: avoid; }
+  h3 { font-size: 11pt; color: #2e7d5b; margin: 5mm 0 1mm; page-break-after: avoid; }
+  pre { background: #f5f7f6; border-left: 3px solid #2e7d5b; padding: 3mm 4mm; font-size: 8.6pt;
+        line-height: 1.4; overflow: hidden; white-space: pre-wrap; page-break-inside: avoid; }
+  code { font-family: Menlo, Consolas, monospace; font-size: 9pt; background: #eef2f0;
+         padding: 0 1mm; border-radius: 2px; }
+  pre code { background: none; padding: 0; }
+  .ln { color: #999; }
+  .resume { background: #e8f4ee; border-radius: 4px; padding: 3mm 5mm; }
+  .cle { background: #f3eefa; border-left: 3px solid #7a4fb5; padding: 3mm 5mm; page-break-inside: avoid; }
+  .reel { background: #fff6e0; border-left: 3px solid #e0a100; padding: 3mm 5mm; page-break-inside: avoid; }
+  .q { background: #eef1fa; border-left: 3px solid #4a62b0; padding: 3mm 5mm; page-break-inside: avoid; }
+  .corrige { page-break-before: always; }
+  table { border-collapse: collapse; font-size: 9.5pt; margin: 2mm 0; }
+  td, th { border: 1px solid #cfd8d3; padding: 1mm 3mm; text-align: left; vertical-align: top; }
+  th { background: #eef2f0; }
+  li { margin-bottom: 1.2mm; }
+</style>
+</head>
+<body>
+
+<h1>7. Les tests expliqués (<code>tests/</code>)</h1>
+<p class="sous-titre">Nutri-Arbitre — fiche de révision · les tests vérifient chaque étape du trajet
+(clean → tools → garde_fou → agent → evaluation) · <b>R2</b> et preuves des briques 1, 3, 6, 8, 9</p>
+
+<div class="resume">
+<b>En une phrase :</b> un test est une petite fonction qui lance une partie du code sur un exemple dont on
+connaît <b>déjà</b> la bonne réponse, calculée à la main, et qui vérifie que le code trouve la même.
+<br><b>42 tests</b>, répartis en 5 fichiers. Ils tournent en moins d'une seconde, <b>sans appeler Qwen</b> :
+ils donnent toujours le même résultat.
+<br><b>Lancer :</b> <code>python -m pytest</code> (tous) ou <code>python -m pytest tests/test_garde_fou.py -v</code>
+(un seul fichier, avec le nom de chaque test).
+</div>
+
+<h2>Comment marche un test</h2>
+<pre><code>def test_decrire_sucres_bio(df):
+    r = tools.decrire(df, "sucres", bio=True)
+    assert r["n"] == 2 and r["moyenne"] == 15.0      # (10 + 20) / 2</code></pre>
+<ul>
+  <li><b>pytest</b> est l'outil qui lance les tests. Il cherche dans le dossier <code>tests/</code> les fichiers
+      qui commencent par <code>test_</code>, et dans ces fichiers les fonctions qui commencent par
+      <code>test_</code>. Il les lance toutes, une par une.</li>
+  <li><b><code>assert</code></b> veut dire « je vérifie que ». Si la condition est vraie, rien ne se passe ; si
+      elle est fausse, le test <b>échoue</b> et pytest affiche la ligne et les valeurs.</li>
+  <li>La bonne réponse est écrite <b>dans le test</b>, avec le calcul en commentaire : (10 + 20) / 2 = 15. On
+      peut la vérifier à la main, sans faire confiance au code.</li>
+</ul>
+
+<h2>Les données de test : <code>conftest.py</code></h2>
+<p>On ne teste pas sur les 953 vraies céréales : on ne pourrait pas calculer les réponses à la main. On invente
+<b>7 petits produits</b>, chacun avec un défaut choisi exprès :</p>
+<table>
+<tr><th>Produit</th><th>Ce qu'il a de particulier</th><th>Ce que le nettoyage doit faire</th></tr>
+<tr><td>1</td><td>bio (label <code>en:organic</code>), sans énergie</td><td>la garder, calculer l'énergie par INCO : 341 kcal</td></tr>
+<tr><td>2</td><td>bio (label AB), « BIO VILLAGE » en majuscules, sodium sans sel</td><td>marque « bio village », sel = 0,2 × 2,5 = 0,5</td></tr>
+<tr><td>3</td><td>Kellogg's</td><td>le garder</td></tr>
+<tr><td>3 bis</td><td>même code-barres que le 3</td><td>retirer le doublon</td></tr>
+<tr><td>4</td><td>sans nom</td><td>le retirer</td></tr>
+<tr><td>5</td><td>sucres (90) &gt; glucides (50), 150 g de sel, Nutri-Score « unknown »</td><td>mettre ces 3 valeurs à vide, garder le produit</td></tr>
+<tr><td>6</td><td>aucune valeur nutritionnelle</td><td>le retirer</td></tr>
+</table>
+<p>Résultat attendu : 7 − 1 doublon − 1 sans nom − 1 vide = <b>4 produits</b>, dont 2 bio.</p>
+<pre><code><span class="ln">12</span> @pytest.fixture
+<span class="ln">13</span> def produits_bruts():
+<span class="ln">33</span> @pytest.fixture
+<span class="ln">34</span> def df(produits_bruts):
+<span class="ln">35</span>     return nettoyer(produits_bruts)[0]</code></pre>
+<p>Une <b>fixture</b> (<code>@pytest.fixture</code>) est une donnée préparée pour les tests. Un test qui écrit
+<code>df</code> entre ses parenthèses la reçoit automatiquement : pytest appelle la fonction <code>df()</code> et
+lui donne le résultat. Le fichier s'appelle <code>conftest.py</code> : pytest le lit tout seul, et ses fixtures
+servent à tous les fichiers de tests.</p>
+
+<h2>Ce que prouve chaque fichier</h2>
+<table>
+<tr><th>Fichier</th><th>Tests</th><th>Ce qu'il prouve</th><th>Brique</th></tr>
+<tr><td><code>test_clean.py</code></td><td>9</td><td>le nettoyage retire les bonnes lignes, applique les règles INCO, vide les valeurs
+impossibles, retire les fiches incohérentes, regroupe les marques</td><td>6</td></tr>
+<tr><td><code>test_tools.py</code></td><td>12</td><td>les outils donnent les moyennes, les marges et
+<code>difference_nette</code> calculées à la main</td><td>1, 8</td></tr>
+<tr><td><code>test_garde_fou.py</code></td><td>15</td><td>on <b>essaie d'enfreindre</b> les deux règles, et le code bloque</td><td>3</td></tr>
+<tr><td><code>test_evaluation.py</code></td><td>6</td><td>la façon de juger les réponses (juste, fausse, bloquée) et le calcul
+de la moyenne et de l'écart type</td><td>9</td></tr>
+</table>
+
+<h2>Quatre tests à savoir expliquer</h2>
+
+<h3>1. La règle INCO (<code>test_clean.py</code>, lignes 20 à 22)</h3>
+<pre><code><span class="ln">20</span> def test_regle_inco_energie_calculee(df):
+<span class="ln">21</span>     # produit 1 : 4*60 + 4*10 + 9*5 + 2*8 = 341 kcal
+<span class="ln">22</span>     assert df.loc[df["code"] == "1", "energie_kcal"].item() == 341</code></pre>
+<p>Le produit 1 n'a pas d'énergie. Le nettoyage doit la calculer : 4 × glucides + 4 × protéines + 9 × lipides +
+2 × fibres. <code>df.loc[df["code"] == "1", "energie_kcal"]</code> prend la case « énergie » de la ligne dont le
+code est « 1 » (le masque), et <code>.item()</code> sort la valeur de cette case.</p>
+
+<h3>2. La marge d'erreur (<code>test_tools.py</code>, lignes 46 à 50)</h3>
+<pre><code><span class="ln">47</span>     # bio : 10 et 20 -> écart-type 7,07 ; erreur type 7,07 / racine(2) = 5 ; marge 1,96 x 5 = 9,8
+<span class="ln">48</span>     r = tools.decrire(df, "sucres", bio=True)
+<span class="ln">49</span>     assert r["marge_95"] == 9.8
+<span class="ln">50</span>     assert r["intervalle_95"] == [5.2, 24.8]              # 15 - 9,8 et 15 + 9,8</code></pre>
+<p>Toute la brique 8 tient dans le commentaire : on refait le calcul à la main et on compare.</p>
+
+<h3>3. Une erreur attendue (<code>test_tools.py</code>, lignes 30 à 32)</h3>
+<pre><code><span class="ln">30</span> def test_nutriment_inconnu_refuse(df):
+<span class="ln">31</span>     with pytest.raises(ValueError):
+<span class="ln">32</span>         tools.decrire(df, "vitamine_c")</code></pre>
+<p>Ici, le test <b>réussit si le code lève une erreur</b>. <code>with pytest.raises(ValueError):</code> veut dire
+« la ligne en dessous doit provoquer une ValueError ». Si elle ne la provoque pas, le test échoue : l'outil aurait
+accepté un nutriment qui n'existe pas.</p>
+
+<h3>4. Essayer d'enfreindre la règle (<code>test_garde_fou.py</code>, lignes 36 à 42)</h3>
+<pre><code><span class="ln">39</span>     resultat = [{"nutriment": "sucres", "n": 543, "moyenne": 13.17, "marge_95": 0.69}]
+<span class="ln">40</span>     question = "Combien de grammes de sucre y a-t-il dans un bol de 40 g de céréales bio ?"
+<span class="ln">41</span>     reponse = "100 g contiennent 13,2 ± 0,7 g de sucre. Pour un bol de 40 g, environ 5,3 g."
+<span class="ln">42</span>     assert verifier(reponse, resultat, question) == (False, ["5,3"])</code></pre>
+<p>C'est la vraie réponse de Qwen du 2 novembre, recopiée dans le test. On <b>simule</b> le modèle : pas besoin
+de le lancer, on lui fait « dire » une réponse qui contient un chiffre non calculé. Le test vérifie que le
+garde-fou refuse, et qu'il désigne exactement le bon nombre (5,3). 13,2, 0,7 et 40 sont acceptés : ils viennent
+de l'outil ou de la question.</p>
+
+<h2>Pourquoi les tests n'appellent jamais Qwen</h2>
+<ul>
+  <li><b>Qwen ne répond pas deux fois pareil</b> : un test qui l'appellerait passerait une fois et échouerait la
+      suivante. Un test doit toujours donner le même résultat.</li>
+  <li><b>Qwen est lent</b> : 30 s par question. Les 42 tests tournent en moins d'une seconde.</li>
+  <li>Le comportement réel de Qwen est mesuré ailleurs : dans <b>la brique 9</b> (<code>evaluation.py</code>, 3
+      lancements par question) et dans les traces.</li>
+</ul>
+
+<h2>Les limites (à dire soi-même)</h2>
+<ul>
+  <li>Un test ne prouve que <b>les cas qu'on a pensé à écrire</b>. Le filtre bio non demandé n'était testé
+      nulle part, jusqu'à ce qu'on le voie dans une vraie trace.</li>
+  <li>Les données de test sont inventées : elles ne garantissent pas que les 953 vraies fiches n'ont pas un défaut
+      auquel on n'a pas pensé.</li>
+  <li><code>download.py</code> n'a pas de test : il dépend d'Internet et de l'API d'Open Food Facts.</li>
+</ul>
+
+<h2>Questions d'examinateur</h2>
+<div class="q">
+<ol>
+  <li>Qu'est-ce qu'un test, et que fait <code>assert</code> ?</li>
+  <li>Comment connaissez-vous la bonne réponse d'un test ?</li>
+  <li>Pourquoi ne pas tester sur les 953 vraies céréales ?</li>
+  <li>Qu'est-ce qu'une fixture ? Comment un test reçoit-il <code>df</code> ?</li>
+  <li>Pourquoi 7 produits au départ et 4 à l'arrivée ?</li>
+  <li>Que vérifie <code>with pytest.raises(ValueError):</code> ?</li>
+  <li>Comment testez-vous le garde-fou sans lancer Qwen ?</li>
+  <li>Pourquoi aucun test n'appelle-t-il le modèle ?</li>
+  <li>Vos tests passent tous. Le système est-il donc sans erreur ?</li>
+</ol>
+</div>
+
+<div class="corrige">
+<h2>Corrigé</h2>
+<ol>
+  <li>Une petite fonction qui lance une partie du code sur un exemple à réponse connue. <code>assert</code>
+      vérifie une condition : si elle est fausse, le test échoue et pytest montre où.</li>
+  <li>Je la calcule <b>à la main</b>, et le calcul est écrit en commentaire dans le test. Exemple : la marge
+      1,96 × 7,07 / √2 = 9,8.</li>
+  <li>On ne pourrait pas calculer les réponses à la main, et un défaut précis (doublon, sel impossible) ne serait
+      pas forcément présent. Les petits produits inventés ont chacun un défaut choisi exprès.</li>
+  <li>Une donnée préparée pour les tests, avec <code>@pytest.fixture</code>, dans <code>conftest.py</code>. Un test
+      qui écrit <code>df</code> en paramètre la reçoit : pytest appelle la fixture <code>df</code>, qui nettoie
+      les 7 produits.</li>
+  <li>On retire le doublon (même code-barres), le produit sans nom et le produit sans aucune valeur. Le produit 5,
+      qui a des valeurs impossibles, est gardé : seules ces cases sont mises à vide.</li>
+  <li>Que la ligne en dessous <b>provoque</b> une ValueError. Le test réussit si le code refuse, par exemple un
+      nutriment « vitamine_c » qui n'existe pas.</li>
+  <li>On <b>simule</b> sa réponse : on écrit dans le test une réponse avec un chiffre non calculé (la vraie réponse
+      « 5,3 g » du 2 novembre) et on vérifie que <code>verifier</code> la refuse.</li>
+  <li>Qwen ne répond pas deux fois pareil et met 30 s par question : un test doit être rapide et donner toujours
+      le même résultat. Le vrai comportement du modèle est mesuré par la brique 9.</li>
+  <li><b>Non.</b> Les tests vérifient les cas qu'on a pensé à écrire. Les traces réelles et la brique 9 ont montré
+      des erreurs qu'aucun test ne couvrait (le filtre bio non demandé) : on a alors ajouté la règle et le test.</li>
+</ol>
+</div>
+
+</body>
+</html>

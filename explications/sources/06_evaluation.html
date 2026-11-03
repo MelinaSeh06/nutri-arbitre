@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Nutri-Arbitre — 6. evaluation.py expliqué</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 10.5pt;
+         line-height: 1.5; color: #1d1d1f; }
+  h1 { font-size: 20pt; margin: 0 0 2mm; color: #0b3d2e; }
+  .sous-titre { color: #666; margin: 0 0 6mm; }
+  h2 { font-size: 13pt; color: #0b3d2e; border-bottom: 1.5px solid #cfe3d8; padding-bottom: 1mm;
+       margin-top: 7mm; page-break-after: avoid; }
+  h3 { font-size: 11pt; color: #2e7d5b; margin: 5mm 0 1mm; page-break-after: avoid; }
+  pre { background: #f5f7f6; border-left: 3px solid #2e7d5b; padding: 3mm 4mm; font-size: 8.6pt;
+        line-height: 1.4; overflow: hidden; white-space: pre-wrap; page-break-inside: avoid; }
+  code { font-family: Menlo, Consolas, monospace; font-size: 9pt; background: #eef2f0;
+         padding: 0 1mm; border-radius: 2px; }
+  pre code { background: none; padding: 0; }
+  .ln { color: #999; }
+  .resume { background: #e8f4ee; border-radius: 4px; padding: 3mm 5mm; }
+  .cle { background: #f3eefa; border-left: 3px solid #7a4fb5; padding: 3mm 5mm; page-break-inside: avoid; }
+  .reel { background: #fff6e0; border-left: 3px solid #e0a100; padding: 3mm 5mm; page-break-inside: avoid; }
+  .q { background: #eef1fa; border-left: 3px solid #4a62b0; padding: 3mm 5mm; page-break-inside: avoid; }
+  .corrige { page-break-before: always; }
+  table { border-collapse: collapse; font-size: 9.5pt; margin: 2mm 0; }
+  td, th { border: 1px solid #cfd8d3; padding: 1mm 3mm; text-align: left; vertical-align: top; }
+  th { background: #eef2f0; }
+  li { margin-bottom: 1.2mm; }
+</style>
+</head>
+<body>
+
+<h1>6. <code>evaluation.py</code> expliqué</h1>
+<p class="sous-titre">Nutri-Arbitre — fiche de révision · la mesure du système entier · <b>brique 9</b>
+(une comparaison mesurée)</p>
+
+<div class="resume">
+<b>En une phrase :</b> ce fichier pose <b>16 questions dont on connaît la bonne réponse</b>, 3 fois chacune, à deux
+systèmes : le <b>système complet</b> (Qwen + outils + garde-fou) et le <b>modèle seul</b> (Qwen sans outils ni
+garde-fou). Il juge chaque réponse (juste, fausse ou bloquée) et calcule le taux de réponses justes, avec sa
+moyenne et sa dispersion.
+<br><b>Brique 9</b> : au moins 10 tâches, au moins 3 lancements chacune, moyenne et dispersion, et un échec
+expliqué à partir de sa trace.
+<br><b>Lancer :</b> <code>python -m nutri.evaluation</code> (environ 35 minutes, 96 réponses de Qwen) ou
+<code>--rapide</code> (2 questions, 1 lancement, 1 minute).
+</div>
+
+<h2>Les réglages (lignes 24 à 26)</h2>
+<pre><code><span class="ln">24</span> N_LANCEMENTS = 3
+<span class="ln">25</span> TOLERANCE = 0.02
+<span class="ln">26</span> DOSSIER = Path("resultats")</code></pre>
+<ul>
+  <li><b>3 lancements</b> : Qwen ne répond pas deux fois pareil. Une seule fois ne dirait rien de sa régularité.</li>
+  <li><b>2 %</b> : un nombre de la réponse est juste s'il est à 2 % près de la bonne réponse (13 pour 13,17 :
+      1,3 % d'écart, juste).</li>
+  <li>Les résultats sont écrits dans <code>resultats/evaluation.md</code> (le tableau) et
+      <code>resultats/evaluation.json</code> (toutes les traces).</li>
+</ul>
+
+<h2><code>construire_taches</code> : les 16 questions (lignes 29 à 82)</h2>
+<p>Chaque question est un petit dictionnaire : la question, le <b>type</b> de réponse attendue, et la bonne
+réponse (<code>attendu</code>).</p>
+<div class="cle"><b>Les bonnes réponses sont calculées directement avec pandas</b>, par exemple
+<code>bio["sucres"].mean()</code>, <b>sans passer par <code>tools.py</code></b>. Si un outil avait une erreur
+de calcul, l'évaluation la verrait : c'est une vérification <b>indépendante</b>.</div>
+<table>
+<tr><th>Type</th><th>Questions</th><th>Bonne réponse</th></tr>
+<tr><td><code>nombre</code></td><td>combien de céréales, moyenne de sucres, de sel, de calories…</td><td>un nombre (ex. 953, 13,17)</td></tr>
+<tr><td><code>texte</code></td><td>la marque la moins sucrée</td><td>« jardin bio etic »</td></tr>
+<tr><td><code>prudence</code></td><td>les bio ont-elles plus de lipides ?</td><td>« on ne peut pas conclure » : l'écart 0,21 g est plus petit que sa marge 0,84 g</td></tr>
+<tr><td><code>refus</code></td><td>la vitamine C</td><td>aucun chiffre : la donnée n'existe pas dans le fichier</td></tr>
+</table>
+<h3>Les 4 questions pièges (lignes 67 à 81)</h3>
+<p>Les 12 premières questions demandent chacune un seul outil : elles sont faciles. On a ajouté 4 questions qui
+visent les failles connues du système, parce que le but est aussi de <b>montrer ses limites</b> :</p>
+<ul>
+  <li><b>une portion de 30 g</b> : aucun outil ne fait ce calcul. Qwen calcule lui-même, le garde-fou bloque ;</li>
+  <li><b>l'écart de sucres entre Nutri-Score A et E</b> : l'outil donne les deux moyennes, mais la soustraction
+      est faite par Qwen ;</li>
+  <li><b>la vitamine C</b> : elle n'est pas dans les données. La bonne réponse est de le dire, sans inventer ;</li>
+  <li><b>« les céréales sont-elles riches en sucres ? »</b> : la question ne parle pas de bio, mais Qwen est tenté
+      de comparer bio et non bio (la règle n° 2 du garde-fou).</li>
+</ul>
+<h3>La marque la moins sucrée (lignes 36 et 37)</h3>
+<pre><code><span class="ln">36</span>     par_marque = df.groupby("marque")["sucres"].agg(["count", "mean"])
+<span class="ln">37</span>     marque_moins_sucree = par_marque[par_marque["count"] >= 5]["mean"].idxmin()</code></pre>
+<p>Pour chaque marque : le nombre de produits et la moyenne de sucres. On garde les marques d'au moins 5 produits
+(le masque), puis <code>idxmin()</code> donne le <b>nom</b> de la ligne où la moyenne est la plus petite.</p>
+
+<h2><code>nombre_juste</code> (lignes 85 à 94)</h2>
+<pre><code><span class="ln">89</span>     ecart_permis = max(TOLERANCE * abs(attendu), 0.01)
+<span class="ln">90</span>     for ecrit in garde_fou.extraire_nombres(reponse):
+<span class="ln">91</span>         valeur = abs(garde_fou.en_float(ecrit))
+<span class="ln">92</span>         if abs(valeur - abs(attendu)) &lt;= ecart_permis:
+<span class="ln">93</span>             return True
+<span class="ln">94</span>     return False</code></pre>
+<ul>
+  <li>On <b>réutilise</b> le garde-fou pour trouver les nombres de la réponse (la même expression régulière).</li>
+  <li>L'écart permis est 2 % de la bonne réponse, mais <b>au moins 0,01</b>. Pourquoi : le sel bio vaut 0,1265.
+      L'outil l'arrondit à « 0,13 », qui est à 0,0035 ; or 2 % de 0,1265, c'est seulement 0,0025. Sans ce minimum,
+      une réponse juste serait comptée fausse.</li>
+  <li><code>abs</code> enlève le signe : un écart de −5,42 peut s'écrire « 5,42 g de moins ».</li>
+  <li>Il suffit qu'<b>un</b> nombre de la réponse soit juste.</li>
+</ul>
+
+<h2><code>juger</code> : le verdict (lignes 97 à 113)</h2>
+<pre><code><span class="ln">99</span>     if trace["bloquee"]:
+<span class="ln">100</span>        return "bloquee"
+<span class="ln">102</span>    if tache["type"] == "nombre":
+<span class="ln">103</span>        ok = nombre_juste(reponse, tache["attendu"])
+<span class="ln">104</span>    elif tache["type"] == "texte":
+<span class="ln">105</span>        ok = tache["attendu"].lower() in reponse.lower()
+<span class="ln">106</span>    elif tache["type"] == "refus":
+<span class="ln">107</span>        ok = garde_fou.verifier(reponse, [], trace["question"])[0]
+<span class="ln">108</span>    else:   # prudence
+<span class="ln">110</span>        for mot in tache["attendu"]:
+<span class="ln">111</span>            if mot in reponse.lower():
+<span class="ln">112</span>                ok = True</code></pre>
+<ul>
+  <li><b>On regarde d'abord si la réponse est bloquée</b>, et c'est important : le message de refus contient les
+      nombres refusés (« … (122,84) »). Sans cette ligne, un refus pourrait être compté « juste » par accident.
+      Une réponse bloquée n'est ni juste ni fausse : le système n'a <b>rien affirmé</b>.</li>
+  <li><b>texte</b> : le nom de la marque est-il dans la réponse ? <code>.lower()</code> met tout en minuscules,
+      pour que « Jardin Bio Etic » compte aussi.</li>
+  <li><b>refus</b> : on passe la réponse dans le garde-fou <b>sans aucun résultat d'outil</b>. Si elle contient
+      un nombre qui ne vient pas de la question, elle a inventé : fausse.</li>
+  <li><b>prudence</b> : la réponse contient-elle un des mots « hasard », « pas conclure »… ?</li>
+</ul>
+
+<h2><code>resumer</code> : moyenne et dispersion (lignes 116 à 129)</h2>
+<pre><code><span class="ln">119</span>     taux = []
+<span class="ln">120</span>     for lancement in verdicts:
+<span class="ln">121</span>         taux.append(lancement.count("juste") / len(lancement))
+<span class="ln">126</span>             "taux_juste_moyen": round(statistics.mean(taux), 3),
+<span class="ln">127</span>             "ecart_type": round(statistics.stdev(taux), 3) if len(taux) >= 2 else None,</code></pre>
+<ul>
+  <li>Pour chaque lancement : le <b>taux de réponses justes</b> = nombre de « juste » / nombre de questions.
+      Ex. : 14 justes sur 16 = 0,875, soit 87,5 %.</li>
+  <li><b>La moyenne</b> des 3 taux, et leur <b>écart type</b> : il mesure de combien les taux changent d'un
+      lancement à l'autre. 0 % veut dire : les 3 lancements ont donné le même score.</li>
+  <li><code>stdev</code> a besoin d'au moins 2 valeurs (on ne mesure pas la dispersion d'un seul nombre) : d'où le
+      <code>None</code> en mode rapide.</li>
+  <li>Lignes 122 à 124 : on met bout à bout les verdicts des 3 lancements pour compter les justes, les fausses et
+      les bloquées au total.</li>
+</ul>
+
+<h2><code>evaluer</code> : la grande boucle (lignes 132 à 163)</h2>
+<pre><code><span class="ln">139</span>     for lancement in range(n_lancements):
+<span class="ln">142</span>         for i, tache in enumerate(taches):
+<span class="ln">143</span>             for nom, avec_outils in systemes.items():
+<span class="ln">144</span>                 trace = repondre(tache["question"], df, avec_outils=avec_outils)
+<span class="ln">145</span>                 verdict = juger(tache, trace)</code></pre>
+<ul>
+  <li>Trois boucles l'une dans l'autre : 3 lancements × 16 questions × 2 systèmes = <b>96 réponses</b>.</li>
+  <li><code>repondre</code> est la fonction d'<code>agent.py</code> : l'évaluation teste <b>le vrai système</b>,
+      exactement comme dans le terminal. <code>avec_outils=False</code> donne le modèle seul.</li>
+  <li><code>enumerate</code> donne le numéro de la question (<code>i</code>) en plus de la question.</li>
+  <li>Chaque trace est gardée dans <code>details</code> : c'est là qu'on va chercher un échec pour l'expliquer.</li>
+  <li><code>construire_taches(df)[:n_taches]</code> (ligne 134) : on garde les <code>n_taches</code> premières
+      questions. Avec <code>None</code> (par défaut), <code>[:None]</code> les garde toutes.</li>
+  <li>Lignes 151 à 160 : on range les verdicts par question (ex. <code>["juste", "juste", "bloquee"]</code>) pour
+      le tableau.</li>
+</ul>
+
+<h2>Les résultats (3 novembre 2026, 96 réponses)</h2>
+<table>
+<tr><th>Système</th><th>Réponses justes (moyenne ± écart type)</th><th>Justes</th><th>Fausses</th><th>Bloquées</th><th>Durée</th></tr>
+<tr><td>Complet</td><td><b>73 % ± 4 %</b></td><td>35</td><td>5</td><td>8</td><td>19 s</td></tr>
+<tr><td>Modèle seul</td><td><b>12 % ± 6 %</b></td><td>6</td><td>42</td><td>0</td><td>13 s</td></tr>
+</table>
+<ul>
+  <li><b>Les outils changent tout</b> : sans eux, Qwen ne connaît pas nos données. Il dit « j'ai besoin d'un outil »,
+      ou il <b>invente</b> (17 réponses sur 48), souvent avec une fausse marge « ± ».</li>
+  <li><b>Le garde-fou a bloqué 8 réponses</b>, toutes à raison : 5 calculs faits par Qwen (portion, écart A / E),
+      un « 4,42 g de moins » au lieu de 5,42, et 2 réponses de mémoire.</li>
+  <li>Une première évaluation sans les pièges avait donné <b>100 %</b> au système complet : c'est pour ça qu'on les
+      a ajoutés.</li>
+</ul>
+
+<div class="reel">
+<b>L'échec expliqué (lancement 1, question 11, système complet)</b> : « Quelle marque (au moins 5 produits) a la
+teneur moyenne en sucres la plus basse ? » Bonne réponse : jardin bio etic, 6,5 g.
+<ol>
+  <li>Qwen appelle <code>classement_marques(sucres, ordre="decroissant")</code> : l'outil renvoie les marques les
+      <b>plus</b> sucrées en premier ;</li>
+  <li>il lit la première comme la moins sucrée : « Crownfield, 18,61 g » ;</li>
+  <li>le garde-fou laisse passer : 18,61 vient d'un outil. <b>Il vérifie l'origine des chiffres, pas le sens.</b></li>
+</ol>
+Fausse 3 fois sur 3, alors que 30 minutes plus tôt, la même question était juste 3 fois sur 3 (avec
+<code>ordre="croissant"</code>) : Qwen change d'un passage à l'autre.
+</div>
+
+<div class="cle">
+<b>Les faux positifs, gardés volontairement.</b> Pour les lipides, le modèle seul est compté juste 3 fois sur 3 :
+il invente des moyennes (« 3,2 g ± 0,4 g » au lieu de 10,69 g) mais écrit « pas significatif ». Le jugement par
+mots-clés ne vérifie pas les chiffres. <b>Ma décision</b> : ne pas corriger le jugement après avoir vu les
+résultats, et montrer cette erreur de la mesure. Malgré les outils, le garde-fou et le prompt, le système se
+trompe, et la mesure aussi.
+</div>
+
+
+<h2>Questions d'examinateur</h2>
+<div class="q">
+<ol>
+  <li>Que compare la brique 9, et pourquoi ces deux systèmes ?</li>
+  <li>Comment connaissez-vous les bonnes réponses ? Pourquoi ne pas utiliser <code>tools.py</code> pour les calculer ?</li>
+  <li>Pourquoi poser chaque question 3 fois ?</li>
+  <li>Que veut dire « 2 % près », et pourquoi un minimum de 0,01 ?</li>
+  <li>Pourquoi tester <code>trace["bloquee"]</code> en premier dans <code>juger</code> ?</li>
+  <li>Une réponse bloquée est-elle un échec ?</li>
+  <li>Que mesure l'écart type ici ?</li>
+  <li>Pourquoi avoir ajouté des questions pièges ?</li>
+  <li>Racontez un échec à partir de sa trace.</li>
+  <li>Quelles sont les limites de cette mesure ?</li>
+</ol>
+</div>
+
+<div class="corrige">
+<h2>Corrigé</h2>
+<ol>
+  <li>Le <b>système complet</b> (Qwen + outils + garde-fou) et le <b>modèle seul</b> (Qwen sans outils). On mesure
+      ce qu'apportent les outils et le garde-fou, en justesse et en coût (temps, tokens).</li>
+  <li>Calculées directement avec pandas dans <code>construire_taches</code>. C'est une vérification indépendante :
+      si <code>tools.py</code> avait une erreur, on la verrait, alors qu'avec les outils on comparerait le code à
+      lui-même.</li>
+  <li>Qwen ne répond pas deux fois pareil. Avec 3 lancements, on peut calculer une moyenne et une dispersion
+      (la consigne en demande au moins 3).</li>
+  <li>Un nombre est juste s'il s'écarte de moins de 2 % de la bonne réponse (13 pour 13,17). Le minimum de 0,01
+      vient des arrondis à 2 décimales des outils : 0,13 pour un sel de 0,1265 doit être juste.</li>
+  <li>Le message de refus contient les nombres refusés. Sans ce test, un refus qui contient par hasard le bon nombre
+      serait compté juste.</li>
+  <li>Pas une erreur : le système n'a rien affirmé de faux, il a refusé. Mais ce n'est pas une réussite non plus :
+      l'utilisateur n'a pas de réponse. C'est pour ça qu'on la compte à part.</li>
+  <li>De combien le taux de réponses justes change d'un lancement à l'autre : la régularité du système.</li>
+  <li>Les 12 premières questions demandent un seul outil : le système les réussit toutes. Les pièges montrent ses
+      failles connues (calcul fait par le modèle, donnée absente, filtre non demandé). Le but du devoir est de
+      mesurer honnêtement, pas d'obtenir 100 %.</li>
+  <li>Question 11, système complet : Qwen demande le classement des marques en ordre <b>décroissant</b>, puis lit
+      la première (la plus sucrée, Crownfield, 18,61 g) comme la moins sucrée. Le garde-fou laisse passer, parce que
+      18,61 vient d'un outil : il ne vérifie pas le sens de la phrase.</li>
+  <li>16 questions et 3 lancements, c'est peu (la question 11 a changé d'un passage à l'autre) ; le jugement par
+      mots-clés ne lit pas le sens (les faux positifs des lipides, gardés volontairement) ; le modèle seul garde un prompt qui parle d'outils qu'il n'a pas ; les questions sont écrites
+      par nous.</li>
+</ol>
+</div>
+
+</body>
+</html>

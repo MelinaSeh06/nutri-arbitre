@@ -1,6 +1,6 @@
 """Brique 9 : une comparaison mesurée.
 
-On pose 12 questions dont on connaît la bonne réponse, 3 fois chacune, à deux systèmes :
+On pose 16 questions (dont 4 pièges) dont on connaît la bonne réponse, 3 fois chacune, à deux systèmes :
   - le système complet (Qwen + outils + garde-fou) ;
   - le modèle seul (Qwen sans outils ni garde-fou, il répond de mémoire).
 On compte les réponses justes, fausses et bloquées, puis on donne la moyenne et la dispersion.
@@ -9,7 +9,7 @@ Les bonnes réponses sont calculées ici directement avec pandas, sans passer pa
 c'est une vérification indépendante.
 
 Usage :
-  python -m nutri.evaluation            # tout (environ 30 minutes)
+  python -m nutri.evaluation            # tout (environ 35 minutes)
   python -m nutri.evaluation --rapide   # 2 questions, 1 lancement : pour vérifier que ça marche
 """
 import argparse
@@ -27,8 +27,9 @@ DOSSIER = Path("resultats")
 
 
 def construire_taches(df) -> list[dict]:
-    """Les 12 questions et leur bonne réponse, calculée avec pandas.
-    3 types de réponse : un nombre, un texte (nom de marque), ou de la prudence (« on ne peut pas conclure »)."""
+    """Les 16 questions et leur bonne réponse, calculée avec pandas.
+    4 types de réponse : un nombre, un texte (nom de marque), de la prudence (« on ne peut pas conclure »),
+    ou un refus (la donnée n'existe pas : aucun chiffre ne doit être donné)."""
     bio = df[df["bio"]]
     non_bio = df[~df["bio"]]
     # la marque (au moins 5 produits) dont la moyenne de sucres est la plus basse
@@ -62,6 +63,22 @@ def construire_taches(df) -> list[dict]:
         # l'écart de lipides est petit (0,21 g) devant sa marge (0,84 g) : la bonne réponse est la prudence
         {"question": "Les céréales bio contiennent-elles plus de lipides que les non bio ?",
          "type": "prudence", "attendu": ["hasard", "pas conclure", "pas de conclure", "pas de différence nette"]},
+
+        # Questions pièges, choisies pour montrer les failles connues du système :
+        # une portion (aucun outil ne fait ce calcul : le modèle calcule lui-même, le garde-fou bloque)
+        {"question": "Combien de calories apporte une portion de 30 g de céréales, en moyenne ?",
+         "type": "nombre", "attendu": df["energie_kcal"].mean() * 0.30},
+        # une soustraction entre deux résultats d'outil (même problème : c'est le modèle qui calcule)
+        {"question": "Quel est l'écart de sucres entre les céréales au Nutri-Score A et celles au "
+                     "Nutri-Score E, pour 100 g ?",
+         "type": "nombre", "attendu": df[df["nutriscore"] == "a"]["sucres"].mean()
+                                      - df[df["nutriscore"] == "e"]["sucres"].mean()},
+        # une donnée absente du fichier : la bonne réponse est de ne donner aucun chiffre
+        {"question": "Quelle est la teneur moyenne en vitamine C des céréales, pour 100 g ?",
+         "type": "refus", "attendu": None},
+        # toutes les céréales : tentant de filtrer sur le bio alors que la question n'en parle pas
+        {"question": "Les céréales du petit-déjeuner sont-elles riches en sucres ? Donne la moyenne pour 100 g.",
+         "type": "nombre", "attendu": df["sucres"].mean()},
     ]
 
 
@@ -86,6 +103,8 @@ def juger(tache: dict, trace: dict) -> str:
         ok = nombre_juste(reponse, tache["attendu"])
     elif tache["type"] == "texte":
         ok = tache["attendu"].lower() in reponse.lower()
+    elif tache["type"] == "refus":   # donnée absente : juste si la réponse n'invente aucun chiffre
+        ok = garde_fou.verifier(reponse, [], trace["question"])[0]
     else:   # prudence : la réponse doit dire qu'on ne peut pas conclure
         ok = False
         for mot in tache["attendu"]:
@@ -100,7 +119,9 @@ def resumer(verdicts: list[list[str]]) -> dict:
     taux = []
     for lancement in verdicts:
         taux.append(lancement.count("juste") / len(lancement))
-    tous = [v for lancement in verdicts for v in lancement]
+    tous = []
+    for lancement in verdicts:
+        tous += lancement            # on met bout à bout les verdicts de tous les lancements
     return {"taux_juste_par_lancement": [round(t, 3) for t in taux],
             "taux_juste_moyen": round(statistics.mean(taux), 3),
             "ecart_type": round(statistics.stdev(taux), 3) if len(taux) >= 2 else None,
@@ -127,12 +148,19 @@ def evaluer(n_lancements: int = N_LANCEMENTS, n_taches: int = None) -> dict:
                                 "attendu": tache["attendu"], "verdict": verdict, "trace": trace})
                 print(f"lancement {lancement + 1}, question {i + 1:2d}, {nom:11s} : {verdict}")
 
-    return {"date": time.strftime("%Y-%m-%d %H:%M"),
-            "questions": [t["question"] for t in taches],
-            "resume": {nom: resumer(v) for nom, v in verdicts.items()},
-            "par_question": {nom: [[verdicts[nom][l][i] for l in range(n_lancements)]
-                                   for i in range(len(taches))] for nom in systemes},
-            "details": details}
+    resume = {}
+    par_question = {}     # pour chaque question, ses verdicts aux 3 lancements, ex. ["juste", "juste", "bloquee"]
+    for nom in systemes:
+        resume[nom] = resumer(verdicts[nom])
+        par_question[nom] = []
+        for i in range(len(taches)):
+            verdicts_question = []
+            for l in range(n_lancements):
+                verdicts_question.append(verdicts[nom][l][i])
+            par_question[nom].append(verdicts_question)
+
+    return {"date": time.strftime("%Y-%m-%d %H:%M"), "questions": [t["question"] for t in taches],
+            "resume": resume, "par_question": par_question, "details": details}
 
 
 def ecrire_tableau(res: dict) -> str:

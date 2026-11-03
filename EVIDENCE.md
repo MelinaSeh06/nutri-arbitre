@@ -85,47 +85,76 @@ Modèle : `qwen3.5:4b-q4_K_M` (Ollama), `num_ctx` = 8192, `think=False`.
 
 ## Brique 9 : une comparaison mesurée
 - **Ce que je compare :** le système complet (Qwen + outils + garde-fou) et le modèle seul (Qwen sans outils ni
-  garde-fou, `--modele-seul`), sur **12 questions à réponse connue**, **3 lancements** chacune (72 réponses).
-  Les bonnes réponses sont calculées directement avec pandas, sans passer par `tools.py`.
-- **Jugement :** une réponse est *juste* si elle contient un nombre à 2 % près de la bonne réponse (au moins
-  0,01 d'écart permis), le bon nom de marque, ou, pour les lipides, une phrase prudente (« hasard »,
-  « pas conclure »). *Bloquée* si le garde-fou l'a refusée. *Fausse* sinon.
+  garde-fou, `--modele-seul`), sur **16 questions à réponse connue**, dont 4 pièges, **3 lancements** chacune
+  (96 réponses). Les bonnes réponses sont calculées directement avec pandas, sans passer par `tools.py`.
+- **Les 4 pièges** visent les failles connues : une portion de 30 g et un écart entre deux groupes (le modèle doit
+  calculer lui-même, aucun outil ne le fait), la vitamine C (absente des données : il ne faut donner aucun
+  chiffre), et « les céréales sont-elles riches en sucres ? » (tentation de filtrer sur le bio).
+- **Jugement :** une réponse est *juste* si elle contient un nombre à 2 % près de la bonne réponse (au moins 0,01
+  d'écart permis), le bon nom de marque, une phrase prudente pour les lipides (« hasard », « pas conclure »), ou,
+  pour la vitamine C, aucun chiffre inventé. *Bloquée* si le garde-fou l'a refusée. *Fausse* sinon, ce qui
+  comprend aussi les non-réponses (« je n'ai pas réussi à répondre »).
 - **Fichiers :** `nutri/evaluation.py`, `tests/test_evaluation.py`, résultats dans `resultats/evaluation.md`
-  (tableau) et `resultats/evaluation.json` (les 72 traces complètes).
-- **Reproduire :** `python -m nutri.evaluation` (environ 25 minutes ; `--rapide` pour un essai de 1 minute).
+  (tableau) et `resultats/evaluation.json` (les 96 traces complètes).
+- **Reproduire :** `python -m nutri.evaluation` (environ 35 minutes ; `--rapide` pour un essai de 1 minute).
+  Qwen ne répond pas deux fois pareil : un nouveau lancement donnera des chiffres proches, pas identiques.
 
-### Résultats (3 novembre 2026)
+### Résultats (3 novembre 2026, 13 h 36)
 | Système | Taux de réponses justes, moyenne ± écart type sur 3 lancements | Justes | Fausses | Bloquées | Durée moyenne | Tokens lus en moyenne |
 |---|---|---|---|---|---|---|
-| Complet | **100 % ± 0 %** | 36 | 0 | 0 | 32 s | 2 371 |
-| Modèle seul | **3 % ± 5 %** | 1 | 35 | 0 | 9 s | 195 |
+| Complet | **73 % ± 4 %** (69 %, 75 %, 75 %) | 35 | 5 | 8 | 19 s | 2 668 |
+| Modèle seul | **12 % ± 6 %** (6 %, 19 %, 12 %) | 6 | 42 | 0 | 13 s | 196 |
 
-Parmi les 35 réponses fausses du modèle seul : 26 disent qu'il faut un outil ou des données, et **9 inventent
-des chiffres** (repérées en passant ses réponses dans le garde-fou). Le système complet est 3 à 4 fois plus
-lent et lit 12 fois plus de tokens : c'est le prix des outils.
+- **Sur les 12 questions simples**, le système complet a 32 réponses justes sur 36 : une réponse bloquée
+  (question 4) et la question 11 fausse 3 fois. Sur les 4 pièges, il n'a que les 3 réponses sur la vitamine C.
+- **Le garde-fou a bloqué 8 réponses**, toutes à juste titre : 5 calculs faits par le modèle (portion, écart A / E),
+  un « 4,42 g de moins » au lieu de 5,42 (question 4), et 2 réponses de mémoire après des appels refusés
+  (« 13 g ± 2,6 g », « entre 12 et 25 g », question 16).
+- **Le modèle seul invente des chiffres dans 17 réponses sur 48** (repérées en passant ses réponses dans le
+  garde-fou), souvent avec une fausse marge (« 13,2 g ± 0,9 g ») et en prétendant avoir consulté un outil.
+- **Une première évaluation**, sur les 12 questions simples seulement, avait donné 100 % ± 0 % pour le système
+  complet et 3 % ± 5 % pour le modèle seul. J'ai décidé d'ajouter les 4 pièges, parce qu'un score de 100 % sur des
+  questions faciles ne montrait pas les limites du système. Elle est dans l'historique git (commit `b66aa42`).
 
 ### Un échec expliqué à partir de sa trace
-- **Trace :** `resultats/evaluation.json`, lancement 1, question 4, modèle seul : « Quelle est la teneur moyenne
-  en sucres des céréales bio, pour 100 g ? »
-- **Réponse :** « La teneur moyenne en sucres totaux dans les céréales bio vendues en France s'élève à
-  **6,8 g ± 1,4 g** pour chaque 100 g de produit. Cependant, la différence nette avec la valeur globale
-  (9,5 g ± 3,8 g) n'est pas significative, car le test statistique indique que cet écart pourrait être dû au
-  hasard… » La bonne réponse est 13,17 g.
-- **Ce que montre la trace :** la liste `appels` est vide : aucun outil n'a été appelé, aucun calcul n'a été
-  fait. Pourtant, la réponse imite la forme que le prompt demande (une marge « ± », « différence nette »,
-  « hasard ») : le modèle a recopié la *forme* des réponses du système sans en avoir les *chiffres*. Les quatre
-  nombres sont inventés, et la réponse est fausse de moitié. Dans le système complet, le garde-fou l'aurait
-  bloquée : aucun de ces nombres ne vient d'un outil.
-- **Un deuxième échec, celui de la mesure :** le seul « juste » du modèle seul (lancement 3, question 12) est un
-  faux positif de mon jugement. La réponse dit « … si la différence est statistiquement significative ou due au
-  hasard » : elle ne conclut rien, elle annonce qu'elle va chercher. Le mot « hasard » suffit à mon jugement par
-  mots-clés. Le vrai taux du modèle seul est donc 0 %.
+- **Trace :** `resultats/evaluation.json`, lancement 1, question 11, système complet : « Quelle marque (au moins
+  5 produits) a la teneur moyenne en sucres la plus basse ? » Bonne réponse : jardin bio etic (6,5 g).
+- **Ce que montre la trace :**
+  1. Qwen appelle `classement_marques(nutriment="sucres", n=10, ordre="decroissant", min_produits=5)`. Il a choisi
+     l'ordre **décroissant** : l'outil renvoie donc les marques les **plus** sucrées en premier ;
+  2. il lit la première de la liste comme la moins sucrée : « la marque Crownfield a la teneur moyenne en sucres la
+     plus basse avec 18,61 g » ;
+  3. le garde-fou laisse passer la réponse : 18,61 vient bien d'un outil. **Il vérifie l'origine des chiffres, pas
+     le sens de la phrase.**
+- **Même erreur aux lancements 2 et 3** (au lancement 3, Belle France, 22,32 g, après un premier appel avec un
+  argument mal écrit, `nutriments`). Lors de la première évaluation, 30 minutes plus tôt, la même question avait été
+  juste 3 fois sur 3, avec `ordre="croissant"`. Le comportement de Qwen change d'un passage à l'autre, et
+  3 lancements ne suffisent pas à le voir.
+- **Ce qui l'éviterait :** un outil sans choix d'ordre (« marques_les_moins_sucrees »), ou une vérification qu'une
+  réponse « la plus basse » cite bien le minimum. On ne l'a pas fait : c'est une limite connue.
+
+### D'autres échecs tirés des traces
+- **La règle n° 2 peut empêcher de répondre** (question 13, lancement 3) : Qwen fait 7 appels filtrés sur le bio
+  ou le Nutri-Score, reçoit 7 fois l'erreur, et la boucle s'arrête à `MAX_TOURS` sans réponse. Question 16, lancement 3 : après
+  4 refus, il conclut à tort qu'« aucun outil ne permet de calculer la moyenne générale ».
+- **Un nom d'outil inventé** (question 16, lancement 2) : 3 appels à « descrire », refusés (« outil inconnu »), puis
+  une réponse de mémoire, bloquée par le garde-fou.
+
+### Les faux positifs de mon jugement (gardés volontairement)
+- **Question 12 (lipides), modèle seul, compté juste 3 fois sur 3 :** les trois réponses inventent des moyennes
+  (« 3,2 g ± 0,4 g » au lieu de 10,69 g) et ajoutent « pas significatif ». Mon jugement « prudence » ne cherche que
+  des mots (« hasard », « pas conclure ») : il ne vérifie pas les chiffres.
+- **Question 4, modèle seul, lancement 2, compté juste :** il invente 4 valeurs de « 5 produits » et en donne la
+  moyenne, 14,04 g ; l'une des valeurs inventées, 13,2 g, tombe à 2 % de la bonne réponse (13,17 g). Juste par
+  chance.
+- **Ma décision :** j'aurais pu corriger le jugement et rejuger les traces (le modèle seul serait descendu vers 6 %).
+  J'ai choisi de **garder ces faux positifs** et de les montrer. Malgré les outils, le garde-fou et le prompt,
+  le système se trompe, et la mesure elle-même a des erreurs : c'est ce que je veux faire voir, plutôt qu'un
+  chiffre corrigé après avoir vu les résultats.
 
 ### Limites de cette mesure
-- Les 12 questions demandent chacune **un seul outil** : le système complet les réussit toutes. Les questions où
-  il échoue (une portion de 30 g, un filtre que la question ne demande pas) sont connues mais pas dans les 12 :
-  voir les traces bloquées de la brique 3 (`traces/trace_20261102_113111.json`, `113921`).
-- Le modèle seul garde le même prompt, qui lui parle d'outils qu'il n'a pas : c'est pour ça qu'il répond
-  souvent « j'ai besoin d'un outil ».
-- 3 lancements, c'est peu pour mesurer la dispersion. Ici, elle est nulle pour le système complet.
-- Le jugement par mots-clés et par nombres ne lit pas le sens (voir le faux positif ci-dessus).
+- 16 questions et 3 lancements, c'est peu ; la question 11 montre que le score change d'un passage à l'autre.
+- Le jugement par nombres et par mots-clés ne lit pas le sens (faux positifs ci-dessus).
+- Le modèle seul garde le même prompt, qui lui parle d'outils qu'il n'a pas : il répond souvent « j'ai besoin d'un
+  outil ».
+- Les questions sont écrites par moi : un utilisateur réel poserait des questions plus variées.

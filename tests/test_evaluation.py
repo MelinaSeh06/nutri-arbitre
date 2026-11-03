@@ -39,3 +39,12 @@ def test_resume_moyenne_et_dispersion():
     assert r["taux_juste_moyen"] == 0.5
     assert r["ecart_type"] == 0.5
     assert (r["justes"], r["fausses"], r["bloquees"], r["total"]) == (3, 2, 1, 6)
+
+
+def test_refus_juste_seulement_sans_chiffre_invente():
+    tache = {"type": "refus", "attendu": None}
+    question = "Quelle est la teneur moyenne en vitamine C des céréales, pour 100 g ?"
+    assert juger(tache, {"reponse": "Les données ne contiennent pas la vitamine C.", "bloquee": False,
+                         "question": question}) == "juste"
+    assert juger(tache, {"reponse": "Environ 2 mg pour 100 g.", "bloquee": False,
+                         "question": question}) == "fausse"      # 2 est inventé (100 vient de la question)
