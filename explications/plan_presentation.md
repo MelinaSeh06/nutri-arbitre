@@ -17,7 +17,7 @@ Idée directrice : « un modèle qui n'a pas le droit d'inventer un chiffre ».
      → Qwen calcule lui-même : **réponse bloquée** (brique 3).
 4. **La preuve que les règles tiennent (1 min)** : `python -m pytest tests/test_garde_fou.py -v`
    → les tests qui essaient d'enfreindre les règles, dont 3 tirés de vraies réponses de Qwen.
-5. **Les résultats chiffrés (1 min)** : `resultats/evaluation.md` (brique 9)
+5. **Les résultats chiffrés (1 min)** : `cat resultats/evaluation.md` (brique 9)
    - système complet 73 % ± 4 %, modèle seul 12 % ± 6 % ; 8 réponses bloquées, 17 chiffres inventés par le modèle seul ;
    - l'échec expliqué : la marque « la moins sucrée » lue dans un classement décroissant (Crownfield, 18,61 g),
      laissée passer par le garde-fou parce que le chiffre vient bien d'un outil.
